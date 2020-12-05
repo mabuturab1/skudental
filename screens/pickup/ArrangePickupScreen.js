@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ThemeColors } from '../../constants/Colors';
+import { FlatButton } from '../../components';
 const ArrangePickeupScreen = (props) => {
   const ValidationSchema = Yup.object({
     pickupAddress: Yup.string().required('Kindly enter a pickup address'),
@@ -30,12 +31,7 @@ const ArrangePickeupScreen = (props) => {
             onBlur={handleBlur}
           />
           <View style={styles.submitButtonWrapper}>
-            <TouchableHighlight
-              style={styles.submitButton}
-              onPress={handleSubmit}
-            >
-              <Text style={styles.submitButtonText}>Submit</Text>
-            </TouchableHighlight>
+           <FlatButton onPress={handleSubmit} title={'Submit'} />
           </View>
         </View>
       )}
@@ -63,20 +59,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingRight: 10,
   },
-  submitButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  submitButton: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    width: 100,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: ThemeColors.primary,
-    backgroundColor: ThemeColors.primary,
-  },
+ 
+ 
 });
 export default ArrangePickeupScreen;

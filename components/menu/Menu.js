@@ -22,7 +22,7 @@ const MaterialMenu = ({ data, onItemClick }) => {
     <View style={styles.menuWrapper}>
       <Menu ref={menuRef} button={MenuButton}>
         {data.map((item, index) => (
-          <Fragment>
+          <Fragment key={index}>
             <MenuItem
               textStyle={styles.singleMenuItemText}
               key={index}

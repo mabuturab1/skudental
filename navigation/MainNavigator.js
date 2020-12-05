@@ -45,16 +45,16 @@ const recordListData = [
 ];
 
 const authData = [
-  { componentScreenName: 'User SignIn', component: UserSigninScreen },
-  { componentScreenName: 'User SignUp', component: UserSignupScreen },
+  { componentScreenName: routes.UserSignIn, component: UserSigninScreen },
+  { componentScreenName: routes.UserSignUp, component: UserSignupScreen },
 ];
 
-const createStackNav = (listData, drawerNavigation) => (
+const createStackNav = (listData, drawerNavigation, headerShown) => (
   <Stack.Navigator screenOptions={screenOptions}>
     {listData.map(({ component, componentScreenName }) => (
       <Stack.Screen
         key={componentScreenName}
-        options={{ headerShown: false }}
+        options={{ headerShown: headerShown || false }}
         name={componentScreenName}
         component={component}
       />
@@ -64,7 +64,8 @@ const createStackNav = (listData, drawerNavigation) => (
 
 const RecordListNavigator = (props) =>
   createStackNav(recordListData, props.navigation);
-const AuthNavigator = (props) => createStackNav(authData, props.navigation);
+const AuthNavigator = (props) =>
+  createStackNav(authData, props.navigation, false);
 
 const drawerData = [
   {
@@ -269,29 +270,18 @@ const tabNavigator = () => (
     }}
   >
     {tabData.map(
-      ({ wrapStackNavigator, component, componentName, navigatorName }) =>
-        wrapStackNavigator ? (
-          <Tab.Screen key={componentName + navigatorName} name={navigatorName}>
-            {(props) => (
-              <WrapStackNavigator
-                {...props}
-                component={component}
-                name={componentName}
-              />
-            )}
-          </Tab.Screen>
-        ) : (
-          <Tab.Screen
-            key={navigatorName}
-            name={navigatorName}
-            component={component}
-          />
-        )
+      ({ wrapStackNavigator, component, componentName, navigatorName }) => (
+        <Tab.Screen
+          key={navigatorName}
+          name={navigatorName}
+          component={component}
+        />
+      )
     )}
   </Tab.Navigator>
 );
 export default mainStackNavigator = () => (
-  <Stack.Navigator screenOptions={screenOptions}>
+  <Stack.Navigator screenOptions={screenOptions} initialRouteName={routes.Auth}>
     <Stack.Screen
       options={({ navigation }) => ({
         title: 'SkDentals Lab',
@@ -301,5 +291,10 @@ export default mainStackNavigator = () => (
       component={tabNavigator}
     />
     <Stack.Screen name={routes.LabDocket} component={LabDocketScreen} />
+    <Stack.Screen
+      options={{ headerShown: false }}
+      name={routes.Auth}
+      component={AuthNavigator}
+    />
   </Stack.Navigator>
 );

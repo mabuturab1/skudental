@@ -8,4 +8,6 @@ export const routes = {
   RecordInquriy: 'Record Inquiry',
   PickupList: 'Pickup List',
   Auth: 'Auth',
+  UserSignIn:"UserSignin",
+  UserSignUp:"UserSignup"
 };

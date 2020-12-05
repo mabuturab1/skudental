@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import  moment from 'moment';
 import { ThemeColors } from '../../constants/Colors';
+import { FlatButton } from '../../components';
 const CreateRecordScreen = (props) => {
   const ValidationSchema = Yup.object({
     pickupAddress: Yup.string().required('Kindly enter a pickup address'),
@@ -33,12 +34,13 @@ const CreateRecordScreen = (props) => {
             />
           </View>
           <View style={styles.submitButtonWrapper}>
-            <TouchableHighlight
-              style={styles.submitButton}
+            <FlatButton
+             
               onPress={handleSubmit}
-            >
-              <Text style={styles.submitButtonText}>Submit</Text>
-            </TouchableHighlight>
+              title="Submit"
+            />
+              
+           
           </View>
         </View>
       )}

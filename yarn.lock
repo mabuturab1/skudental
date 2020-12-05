@@ -4762,6 +4762,11 @@ react-native-material-menu@^1.1.3:
   resolved "https://registry.yarnpkg.com/react-native-material-menu/-/react-native-material-menu-1.1.3.tgz#67b8760999104ffee2cc5aa78877de6b1bd73654"
   integrity sha512-/4j47dWP7x0laIYKkbKxgaG2663u8o02+OrNe4Qpdmmt9KrBAuAaU3wMpry1WC/ECh6ZjnACJYx0s06mSvdOlA==
 
+react-native-paper-dropdown@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/react-native-paper-dropdown/-/react-native-paper-dropdown-0.0.5.tgz#d5358519c0e503bd24f742d43306503d9d618150"
+  integrity sha512-KaiRO4YLEJ6+8aEImqYmKzVWv4Rzsqp2XKK6cjK2oJ3bPUHLqVnxl0FMQ2v0WbahjYM7MA9L08f8uLAW2M+Ckw==
+
 react-native-paper@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-4.4.1.tgz#b2fb7c0889fd15d52d6fd5c27df13075104ef911"

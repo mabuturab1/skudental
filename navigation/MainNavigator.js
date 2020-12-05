@@ -1,9 +1,11 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { HeaderButton } from '../components';
 import { isAndroid } from '../helpers/Utils';
+import { Ionicons } from '@expo/vector-icons';
 import {
   RecordDetailsScreen,
   RecordListScreen,
@@ -21,6 +23,7 @@ import {
 import { Platform, StyleSheet, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ThemeColors } from '../constants/Colors';
+import { routes } from '../constants/routes';
 const screenOptions = {
   headerStyle: {
     backgroundColor: isAndroid() ? ThemeColors.primary : '',
@@ -65,60 +68,109 @@ const AuthNavigator = (props) => createStackNav(authData, props.navigation);
 
 const drawerData = [
   {
-    navigatorName: 'Home',
+    navigatorName: routes.Home,
     component: SkSalesScreen,
     componentName: 'SkDental Lab',
     wrapStackNavigator: true,
   },
   {
-    navigatorName: 'Pricing',
+    navigatorName: routes.Pricing,
     component: PricingScreen,
     componentName: 'Pricing ',
     wrapStackNavigator: true,
   },
   {
-    navigatorName: 'LabDocket',
+    navigatorName: routes.LabDocket,
     component: LabDocketScreen,
     componentName: 'Lab Docket',
     wrapStackNavigator: true,
   },
   {
-    navigatorName: 'Create Record',
+    navigatorName: routes.CreateRecord,
     component: CreateRecordScreen,
     componentName: 'Create Patient Record ',
     wrapStackNavigator: true,
   },
   {
-    navigatorName: 'Patient Record',
+    navigatorName: routes.RecordList,
     component: RecordListNavigator,
     componentName: 'Patient Record List',
     wrapStackNavigator: false,
   },
   {
-    navigatorName: 'Arrange Pickup',
+    navigatorName: routes.ArrangePickup,
     component: ArrangePickupScreen,
     componentName: 'Arrange Pickup',
     wrapStackNavigator: true,
   },
   {
-    navigatorName: 'Record Inquiry',
+    navigatorName: routes.RecordInquriy,
     component: RecordInquiryScreen,
     componentName: 'Record Inquiry',
     wrapStackNavigator: true,
   },
   {
-    navigatorName: 'Pickup List',
+    navigatorName: routes.PickupList,
     component: PickupListScreen,
     componentName: 'Pickup List',
     wrapStackNavigator: true,
   },
   {
-    navigatorName: 'Auth',
+    navigatorName: routes.Auth,
     component: AuthNavigator,
     componentName: 'Authentication',
     wrapStackNavigator: false,
   },
 ];
+
+const tabData = [
+  {
+    navigatorName: routes.Home,
+    component: SkSalesScreen,
+    componentName: 'SkDental Lab',
+    wrapStackNavigator: true,
+  },
+  {
+    navigatorName: routes.RecordList,
+    component: RecordListNavigator,
+    componentName: 'Patient Record List',
+    wrapStackNavigator: false,
+  },
+  {
+    navigatorName: routes.CreateRecord,
+    component: CreateRecordScreen,
+    componentName: 'Create Patient Record ',
+    wrapStackNavigator: true,
+  },
+  {
+    navigatorName: routes.ArrangePickup,
+    component: ArrangePickupScreen,
+    componentName: 'Arrange Pickup',
+    wrapStackNavigator: true,
+  },
+  {
+    navigatorName: routes.RecordInquriy,
+    component: RecordInquiryScreen,
+    componentName: 'Record Inquiry',
+    wrapStackNavigator: true,
+  },
+];
+
+const getTabIcon = (routeName, focused) => {
+  switch (routeName) {
+    case routes.Home:
+      return focused ? 'home' : 'home-outline';
+    case routes.RecordList:
+      return focused ? 'receipt' : 'receipt-outline';
+    case routes.CreateRecord:
+      return focused ? 'add-circle' : 'add-circle-outline';
+    case routes.ArrangePickup:
+      return focused ? 'bus' : 'bus-outline';
+    case routes.RecordInquriy:
+      return focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline';
+  }
+};
+
 const styles = StyleSheet.create({
   menuButtonWrapper: {
     paddingLeft: 5,
@@ -152,15 +204,52 @@ const WrapStackNavigator = ({ component: Component, name, navigation }) => (
 );
 const Drawer = createDrawerNavigator();
 
-export default drawerNavigator = () => (
-  <Drawer.Navigator initialRouteName='Home' >
-    {drawerData.map(
+// export default drawerNavigator = () => (
+//   <Drawer.Navigator initialRouteName='Home' >
+//     {drawerData.map(
+//       ({ wrapStackNavigator, component, componentName, navigatorName }) =>
+//         wrapStackNavigator ? (
+//           <Drawer.Screen
+//             key={componentName + navigatorName}
+//             name={navigatorName}
+//           >
+//             {(props) => (
+//               <WrapStackNavigator
+//                 {...props}
+//                 component={component}
+//                 name={componentName}
+//               />
+//             )}
+//           </Drawer.Screen>
+//         ) : (
+//           <Drawer.Screen
+//             key={navigatorName}
+//             name={navigatorName}
+//             component={component}
+//           />
+//         )
+//     )}
+//   </Drawer.Navigator>
+// );
+const Tab = createBottomTabNavigator();
+export default tabNavigator = () => (
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName = getTabIcon(route.name, focused);
+        // You can return any component that you like here!
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+    })}
+    tabBarOptions={{
+      activeTintColor: 'tomato',
+      inactiveTintColor: 'gray',
+    }}
+  >
+    {tabData.map(
       ({ wrapStackNavigator, component, componentName, navigatorName }) =>
         wrapStackNavigator ? (
-          <Drawer.Screen
-            key={componentName + navigatorName}
-            name={navigatorName}
-          >
+          <Tab.Screen key={componentName + navigatorName} name={navigatorName}>
             {(props) => (
               <WrapStackNavigator
                 {...props}
@@ -168,14 +257,14 @@ export default drawerNavigator = () => (
                 name={componentName}
               />
             )}
-          </Drawer.Screen>
+          </Tab.Screen>
         ) : (
-          <Drawer.Screen
+          <Tab.Screen
             key={navigatorName}
             name={navigatorName}
             component={component}
           />
         )
     )}
-  </Drawer.Navigator>
+  </Tab.Navigator>
 );

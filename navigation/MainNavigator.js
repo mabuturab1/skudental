@@ -3,7 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { HeaderButton } from '../components';
+import { HeaderButton, MaterialMenu } from '../components';
 import { isAndroid } from '../helpers/Utils';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -20,8 +20,7 @@ import {
   UserSignupScreen,
   PickupListScreen,
 } from '../screens';
-import { Platform, StyleSheet, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
 import { routes } from '../constants/routes';
 const screenOptions = {
@@ -34,7 +33,8 @@ const screenOptions = {
 };
 
 const getCommonOptions = (drawerNavigation) => ({
-  headerLeft: (props) => menuButton(drawerNavigation),
+  // headerLeft: (props) => menuButton(drawerNavigation),
+  headerRight: (props) => popupMenu(drawerNavigation),
 });
 
 const Stack = createStackNavigator();
@@ -54,7 +54,7 @@ const createStackNav = (listData, drawerNavigation) => (
     {listData.map(({ component, componentScreenName }) => (
       <Stack.Screen
         key={componentScreenName}
-        options={getCommonOptions(drawerNavigation)}
+        options={{ headerShown: false }}
         name={componentScreenName}
         component={component}
       />
@@ -128,7 +128,7 @@ const tabData = [
     navigatorName: routes.Home,
     component: SkSalesScreen,
     componentName: 'SkDental Lab',
-    wrapStackNavigator: true,
+    wrapStackNavigator: false,
   },
   {
     navigatorName: routes.RecordList,
@@ -140,34 +140,38 @@ const tabData = [
     navigatorName: routes.CreateRecord,
     component: CreateRecordScreen,
     componentName: 'Create Patient Record ',
-    wrapStackNavigator: true,
+    wrapStackNavigator: false,
   },
   {
     navigatorName: routes.ArrangePickup,
     component: ArrangePickupScreen,
     componentName: 'Arrange Pickup',
-    wrapStackNavigator: true,
+    wrapStackNavigator: false,
   },
   {
     navigatorName: routes.RecordInquriy,
     component: RecordInquiryScreen,
     componentName: 'Record Inquiry',
-    wrapStackNavigator: true,
+    wrapStackNavigator: false,
   },
 ];
 
 const getTabIcon = (routeName, focused) => {
+  const prefix = isAndroid() ? 'md-' : 'ios-';
   switch (routeName) {
     case routes.Home:
-      return focused ? 'home' : 'home-outline';
+      return prefix + (focused ? 'home' : 'home-outline');
     case routes.RecordList:
-      return focused ? 'receipt' : 'receipt-outline';
+      return prefix + (focused ? 'receipt' : 'receipt-outline');
     case routes.CreateRecord:
-      return focused ? 'add-circle' : 'add-circle-outline';
+      return prefix + (focused ? 'add-circle' : 'add-circle-outline');
     case routes.ArrangePickup:
-      return focused ? 'bus' : 'bus-outline';
+      return prefix + (focused ? 'bus' : 'bus-outline');
     case routes.RecordInquriy:
-      return focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline';
+      return (
+        prefix +
+        (focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline')
+      );
   }
 };
 
@@ -191,11 +195,28 @@ const menuButton = (navigation) => {
   );
 };
 
+const popupMenu = (navigation) => {
+  const popupMenuData = [
+    { label: 'Lab Docket', id: 1 },
+    { label: 'Logout', id: 2 },
+  ];
+  const onPopupMenuClick = (id) => {
+    switch (id) {
+      case 1:
+        return navigation.navigate(routes.LabDocket);
+      case 2:
+        return navigation.navigate(routes.Pricing);
+    }
+  };
+  return <MaterialMenu data={popupMenuData} onItemClick={onPopupMenuClick} />;
+};
+
 const WrapStackNavigator = ({ component: Component, name, navigation }) => (
   <Stack.Navigator headerMode='screen' screenOptions={screenOptions}>
     <Stack.Screen
       options={{
-        headerLeft: (props) => menuButton(navigation),
+        // headerLeft: (props) => menuButton(navigation),
+        headerRight: (props) => popupMenu(navigation),
       }}
       name={name}
       component={Component}
@@ -232,7 +253,7 @@ const Drawer = createDrawerNavigator();
 //   </Drawer.Navigator>
 // );
 const Tab = createBottomTabNavigator();
-export default tabNavigator = () => (
+const tabNavigator = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
@@ -244,6 +265,7 @@ export default tabNavigator = () => (
     tabBarOptions={{
       activeTintColor: 'tomato',
       inactiveTintColor: 'gray',
+      showLabel: false,
     }}
   >
     {tabData.map(
@@ -267,4 +289,17 @@ export default tabNavigator = () => (
         )
     )}
   </Tab.Navigator>
+);
+export default mainStackNavigator = () => (
+  <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen
+      options={({ navigation }) => ({
+        title: 'SkDentals Lab',
+        ...getCommonOptions(navigation),
+      })}
+      name='MainTabNav'
+      component={tabNavigator}
+    />
+    <Stack.Screen name={routes.LabDocket} component={LabDocketScreen} />
+  </Stack.Navigator>
 );

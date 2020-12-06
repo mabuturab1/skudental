@@ -10,7 +10,7 @@ import CreateRecordScreen from './record/CreateRecordScreen';
 import RecordInquiryScreen from './record/RecordInquiryScreen';
 import UserSigninScreen from './user/UserSigninScreen';
 import UserSignupScreen from './user/UserSignupScreen';
-import ImagePickerScreen from './imagePicker/ImagePickerScreen';
+
 export {
   RecordDetailsScreen,
   RecordListScreen,
@@ -23,6 +23,5 @@ export {
   RecordInquiryScreen,
   UserSigninScreen,
   UserSignupScreen,
-  PickupListScreen,
-  ImagePickerScreen
+  PickupListScreen
 };

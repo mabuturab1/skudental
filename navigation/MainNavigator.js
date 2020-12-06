@@ -19,7 +19,6 @@ import {
   UserSigninScreen,
   UserSignupScreen,
   PickupListScreen,
-  ImagePickerScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -301,6 +300,6 @@ export default mainStackNavigator = () => (
       name={routes.Auth}
       component={AuthNavigator}
     />
-    <Stack.Screen name={routes.ImagePicker} component={ImagePickerScreen} />
+    
   </Stack.Navigator>
 );

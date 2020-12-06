@@ -16,7 +16,7 @@ import Constants from 'expo-constants';
 import { ThemeColors } from '../../constants/Colors';
 import { Dropdown, FlatButton } from '../../components';
 import { routes } from '../../constants/routes';
-const UserSignUpScreen = (props) => {
+const UserSignUpScreen = ({ navigation }) => {
   const ValidationSchema = Yup.object({
     name: Yup.string().required('Kindly enter your name'),
     email: Yup.string()
@@ -31,7 +31,9 @@ const UserSignUpScreen = (props) => {
     role: Yup.string().required('Kindly select a role'),
   });
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
-  const onCreateRecordSubmit = (values) => {};
+  const onSignupSubmit = (values) => {
+    navigation.navigate(routes.UserSignIn);
+  };
   const getInitValues = () => ({
     name: '',
     password: '',
@@ -51,7 +53,7 @@ const UserSignUpScreen = (props) => {
           initialValues={getInitValues()}
           validationSchema={ValidationSchema}
           onSubmit={(values) => {
-            onCreateRecordSubmit(values);
+            onSignupSubmit(values);
           }}
         >
           {({
@@ -66,39 +68,44 @@ const UserSignUpScreen = (props) => {
                 <Text style={styles.textLabel}>Name</Text>
                 <TextInput
                   style={styles.textInput}
-                  name='name'
                   value={values.name}
+                  onChange={handleChange('name')}
+                  onBlur={handleBlur('name')}
                 />
               </View>
               <View style={styles.singleFormFieldWrapper}>
                 <Text style={styles.textLabel}>Email</Text>
                 <TextInput
                   style={styles.textInput}
-                  name='email'
                   value={values.email}
+                  onChange={handleChange('email')}
+                  onBlur={handleBlur('email')}
                 />
               </View>
               <View style={styles.singleFormFieldWrapper}>
                 <Text style={styles.textLabel}>Password</Text>
                 <TextInput
                   style={styles.textInput}
-                  name='password'
                   value={values.password}
+                  onChange={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  secureTextEntry={true}
                 />
               </View>
               <View style={styles.singleFormFieldWrapper}>
                 <Text style={styles.textLabel}>Confirm Password</Text>
                 <TextInput
                   style={styles.textInput}
-                  name='confirmPassword'
                   value={values.confirmPassword}
+                  onChange={handleChange('confirmPassword')}
+                  onBlur={handleBlur('confirmPassword')}
+                  secureTextEntry={true}
                 />
               </View>
               <View style={styles.singleFormFieldWrapper}>
                 <Text style={styles.textLabel}>Role</Text>
                 <Dropdown
                   style={styles.textInput}
-                  name='role'
                   value={values.role}
                   data={roleData}
                   onChange={(value) => setFieldValue('role', value)}
@@ -112,7 +119,7 @@ const UserSignUpScreen = (props) => {
                 <FlatButton
                   style={styles.loginButton}
                   title='Login'
-                  onPress={() => props.navigation.navigate(routes.UserSignIn)}
+                  onPress={() => navigation.navigate(routes.UserSignIn)}
                 />
               </View>
             </View>

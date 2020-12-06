@@ -7,7 +7,7 @@ import moment from 'moment';
 import { ThemeColors } from '../../constants/Colors';
 import { FlatButton, LogoBox } from '../../components';
 import { routes } from '../../constants/routes';
-const UserSignInScreen = (props) => {
+const UserSignInScreen = ({ navigation }) => {
   const ValidationSchema = Yup.object({
     email: Yup.string().email().required('Kindly enter your email'),
     password: Yup.string()
@@ -15,7 +15,10 @@ const UserSignInScreen = (props) => {
       .required('Kindly enter a valid password'),
   });
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
-  const onCreateRecordSubmit = (values) => {};
+  const onLoginSubmit = (values) => {
+    if (values.email === 'test@skl.com' && values.password === '12345')
+      navigation.navigate(routes.Home);
+  };
   const getInitValues = () => ({ email: '', password: '' });
 
   return (
@@ -23,7 +26,7 @@ const UserSignInScreen = (props) => {
       initialValues={getInitValues()}
       validationSchema={ValidationSchema}
       onSubmit={(values) => {
-        onCreateRecordSubmit(values);
+        onLoginSubmit(values);
       }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -33,16 +36,19 @@ const UserSignInScreen = (props) => {
             <Text style={styles.textLabel}>Email</Text>
             <TextInput
               style={styles.textInput}
-              name='email'
               value={values.email}
+              onChangeText={handleChange('email')}
+              onBlur={handleBlur('email')}
             />
           </View>
           <View style={styles.singleFormFieldWrapper}>
             <Text style={styles.textLabel}>Password</Text>
             <TextInput
               style={styles.textInput}
-              name='password'
               value={values.password}
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              secureTextEntry={true}
             />
           </View>
           <View style={styles.loginButtonWrapper}>
@@ -52,7 +58,7 @@ const UserSignInScreen = (props) => {
             <FlatButton
               style={styles.registerButton}
               title='Register'
-              onPress={() => props.navigation.navigate(routes.UserSignUp)}
+              onPress={() => navigation.navigate(routes.UserSignUp)}
             />
           </View>
         </View>

@@ -19,6 +19,7 @@ import {
   UserSigninScreen,
   UserSignupScreen,
   PickupListScreen,
+  ImagePickerScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -49,12 +50,12 @@ const authData = [
   { componentScreenName: routes.UserSignUp, component: UserSignupScreen },
 ];
 
-const createStackNav = (listData, drawerNavigation, headerShown) => (
+const createStackNav = (listData, drawerNavigation, additionalOptions = {}) => (
   <Stack.Navigator screenOptions={screenOptions}>
     {listData.map(({ component, componentScreenName }) => (
       <Stack.Screen
         key={componentScreenName}
-        options={{ headerShown: headerShown || false }}
+        options={{ headerShown: false, ...additionalOptions }}
         name={componentScreenName}
         component={component}
       />
@@ -65,11 +66,11 @@ const createStackNav = (listData, drawerNavigation, headerShown) => (
 const RecordListNavigator = (props) =>
   createStackNav(recordListData, props.navigation);
 const AuthNavigator = (props) =>
-  createStackNav(authData, props.navigation, false);
+  createStackNav(authData, props.navigation, { headerLeft: null });
 
 const drawerData = [
   {
-    navigatorName: routes.Home,
+    navigatorName: routes.SkSales,
     component: SkSalesScreen,
     componentName: 'SkDental Lab',
     wrapStackNavigator: true,
@@ -126,7 +127,7 @@ const drawerData = [
 
 const tabData = [
   {
-    navigatorName: routes.Home,
+    navigatorName: routes.SkSales,
     component: SkSalesScreen,
     componentName: 'SkDental Lab',
     wrapStackNavigator: false,
@@ -160,7 +161,7 @@ const tabData = [
 const getTabIcon = (routeName, focused) => {
   const prefix = isAndroid() ? 'md-' : 'ios-';
   switch (routeName) {
-    case routes.Home:
+    case routes.SkSales:
       return prefix + (focused ? 'home' : 'home-outline');
     case routes.RecordList:
       return prefix + (focused ? 'receipt' : 'receipt-outline');
@@ -206,7 +207,10 @@ const popupMenu = (navigation) => {
       case 1:
         return navigation.navigate(routes.LabDocket);
       case 2:
-        return navigation.navigate(routes.Pricing);
+        return navigation.reset({
+          index: 0,
+          routes: [{ name: routes.Auth }],
+        });
     }
   };
   return <MaterialMenu data={popupMenuData} onItemClick={onPopupMenuClick} />;
@@ -284,10 +288,11 @@ export default mainStackNavigator = () => (
   <Stack.Navigator screenOptions={screenOptions} initialRouteName={routes.Auth}>
     <Stack.Screen
       options={({ navigation }) => ({
-        title: 'SkDentals Lab',
         ...getCommonOptions(navigation),
+        title: 'SkDentals Lab',
+        headerLeft: null,
       })}
-      name='MainTabNav'
+      name={routes.Home}
       component={tabNavigator}
     />
     <Stack.Screen name={routes.LabDocket} component={LabDocketScreen} />
@@ -296,5 +301,6 @@ export default mainStackNavigator = () => (
       name={routes.Auth}
       component={AuthNavigator}
     />
+    <Stack.Screen name={routes.ImagePicker} component={ImagePickerScreen} />
   </Stack.Navigator>
 );

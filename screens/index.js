@@ -6,10 +6,11 @@ import SkSalesScreen from './info/SkSalesScreen';
 import ArrangePickupScreen from './pickup/ArrangePickupScreen';
 import PickupRequestDetailsScreen from './pickup/PickupDetailsScreen';
 import PickupListScreen from './pickup/PickupListScreen';
-import CreateRecordScreen from './test/CreateRecordScreen';
-import RecordInquiryScreen from './test/RecordInquiryScreen';
+import CreateRecordScreen from './record/CreateRecordScreen';
+import RecordInquiryScreen from './record/RecordInquiryScreen';
 import UserSigninScreen from './user/UserSigninScreen';
 import UserSignupScreen from './user/UserSignupScreen';
+import ImagePickerScreen from './imagePicker/ImagePickerScreen';
 export {
   RecordDetailsScreen,
   RecordListScreen,
@@ -22,5 +23,6 @@ export {
   RecordInquiryScreen,
   UserSigninScreen,
   UserSignupScreen,
-  PickupListScreen
+  PickupListScreen,
+  ImagePickerScreen
 };

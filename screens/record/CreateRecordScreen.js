@@ -1,19 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Text, Button, TextInput } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { TouchableHighlight } from 'react-native-gesture-handler';
-import  moment from 'moment';
+import moment from 'moment';
 import { ThemeColors } from '../../constants/Colors';
 import { FlatButton } from '../../components';
+import { routes } from '../../constants/routes';
 const CreateRecordScreen = (props) => {
   const ValidationSchema = Yup.object({
     pickupAddress: Yup.string().required('Kindly enter a pickup address'),
   });
-  const getCurrentDate = () =>  moment().format('dd MM YYYY hh:mm:ss')
+  const [images, setImages] = useState([]);
+  const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
   const onCreateRecordSubmit = (values) => {};
-  const getInitValues = () => ({ submissionDate: getCurrentDate() });
-
+  const getInitValues = () => ({
+    submissionDate: getCurrentDate(),
+    patientName: '',
+    additionalNotes: '',
+  });
+  const getPhotos = () => {
+    props.navigation.navigate(routes.ImagePicker);
+  };
+  const imageSelect = (imageList) => {
+    setImages(imageList);
+  };
+  console.log('image list is', images);
   return (
     <Formik
       initialValues={getInitValues()}
@@ -25,7 +36,27 @@ const CreateRecordScreen = (props) => {
       {({ handleChange, handleBlur, handleSubmit, values }) => (
         <View style={styles.wrapper}>
           <View style={styles.singleFormFieldWrapper}>
-            <Text style={styles.textLabel}>Pickup Address</Text>
+            <Text style={styles.textLabel}>Patient Name</Text>
+            <TextInput
+              style={styles.textInput}
+              value={values.patientName}
+              onChange={handleChange('patientName')}
+              onBlur={handleBlur('patientName')}
+            />
+          </View>
+          <View style={styles.singleFormFieldWrapper}>
+            <Text style={styles.textLabel}>Additional Notes</Text>
+            <TextInput
+              multiline={true}
+              numberOfLines={4}
+              style={styles.textInput}
+              value={values.additionalNotes}
+              onChange={handleChange('additionalNotes')}
+              onBlur={handleBlur('additionalNotes')}
+            />
+          </View>
+          <View style={styles.singleFormFieldWrapper}>
+            <Text style={styles.textLabel}>Submission Date</Text>
             <TextInput
               style={styles.textInput}
               name='submissionDate'
@@ -34,13 +65,10 @@ const CreateRecordScreen = (props) => {
             />
           </View>
           <View style={styles.submitButtonWrapper}>
-            <FlatButton
-             
-              onPress={handleSubmit}
-              title="Submit"
-            />
-              
-           
+            <FlatButton onPress={getPhotos} title='Select Photos' />
+          </View>
+          <View style={styles.submitButtonWrapper}>
+            <FlatButton onPress={handleSubmit} title='Submit' />
           </View>
         </View>
       )}

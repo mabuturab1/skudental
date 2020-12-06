@@ -27,11 +27,13 @@ const ArrangePickeupScreen = (props) => {
             style={styles.textInput}
             name='pickupAddress'
             value={values.pickupAddress}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            onChange={handleChange('pickupAddress')}
+            onBlur={handleBlur('pickupAddress')}
+            multiline={true}
+            numberOfLines={4}
           />
           <View style={styles.submitButtonWrapper}>
-           <FlatButton onPress={handleSubmit} title={'Submit'} />
+            <FlatButton onPress={handleSubmit} title={'Submit'} />
           </View>
         </View>
       )}
@@ -59,7 +61,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingRight: 10,
   },
- 
- 
 });
 export default ArrangePickeupScreen;

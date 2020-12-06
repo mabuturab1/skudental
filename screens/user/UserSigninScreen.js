@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import moment from 'moment';
 import { ThemeColors } from '../../constants/Colors';
-import { FlatButton, LogoBox } from '../../components';
+import { FlatButton, LogoBox, ScrollWrapper } from '../../components';
 import { routes } from '../../constants/routes';
 const UserSignInScreen = ({ navigation }) => {
   const ValidationSchema = Yup.object({
@@ -22,48 +22,50 @@ const UserSignInScreen = ({ navigation }) => {
   const getInitValues = () => ({ email: '', password: '' });
 
   return (
-    <Formik
-      initialValues={getInitValues()}
-      validationSchema={ValidationSchema}
-      onSubmit={(values) => {
-        onLoginSubmit(values);
-      }}
-    >
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
-        <View style={styles.wrapper}>
-          <LogoBox />
-          <View style={styles.singleFormFieldWrapper}>
-            <Text style={styles.textLabel}>Email</Text>
-            <TextInput
-              style={styles.textInput}
-              value={values.email}
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-            />
+    <ScrollWrapper>
+      <Formik
+        initialValues={getInitValues()}
+        validationSchema={ValidationSchema}
+        onSubmit={(values) => {
+          onLoginSubmit(values);
+        }}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values }) => (
+          <View style={styles.wrapper}>
+            <LogoBox />
+            <View style={styles.singleFormFieldWrapper}>
+              <Text style={styles.textLabel}>Email</Text>
+              <TextInput
+                style={styles.textInput}
+                value={values.email}
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+              />
+            </View>
+            <View style={styles.singleFormFieldWrapper}>
+              <Text style={styles.textLabel}>Password</Text>
+              <TextInput
+                style={styles.textInput}
+                value={values.password}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                secureTextEntry={true}
+              />
+            </View>
+            <View style={styles.loginButtonWrapper}>
+              <FlatButton title='Login' onPress={handleSubmit} />
+            </View>
+            <View style={styles.registerButtonWrapper}>
+              <FlatButton
+                style={styles.registerButton}
+                title='Register'
+                onPress={() => navigation.navigate(routes.UserSignUp)}
+              />
+            </View>
           </View>
-          <View style={styles.singleFormFieldWrapper}>
-            <Text style={styles.textLabel}>Password</Text>
-            <TextInput
-              style={styles.textInput}
-              value={values.password}
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
-              secureTextEntry={true}
-            />
-          </View>
-          <View style={styles.loginButtonWrapper}>
-            <FlatButton title='Login' onPress={handleSubmit} />
-          </View>
-          <View style={styles.registerButtonWrapper}>
-            <FlatButton
-              style={styles.registerButton}
-              title='Register'
-              onPress={() => navigation.navigate(routes.UserSignUp)}
-            />
-          </View>
-        </View>
-      )}
-    </Formik>
+        )}
+      </Formik>
+    </ScrollWrapper>
   );
 };
 const styles = StyleSheet.create({

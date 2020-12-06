@@ -284,7 +284,7 @@ const tabNavigator = () => (
   </Tab.Navigator>
 );
 export default mainStackNavigator = () => (
-  <Stack.Navigator screenOptions={screenOptions} initialRouteName={routes.Auth}>
+  <Stack.Navigator screenOptions={screenOptions} initialRouteName={routes.Home}>
     <Stack.Screen
       options={({ navigation }) => ({
         ...getCommonOptions(navigation),

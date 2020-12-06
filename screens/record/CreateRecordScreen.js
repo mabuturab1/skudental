@@ -4,12 +4,19 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
 import { ThemeColors } from '../../constants/Colors';
-import { FlatButton } from '../../components';
-import { routes } from '../../constants/routes';
+import {
+  FlatButton,
+  RoundedButton,
+  RounedImageList,
+  ScrollWrapper,
+} from '../../components';
+import ImagePicker from 'react-native-image-crop-picker';
+import { Ionicons } from '@expo/vector-icons';
 const CreateRecordScreen = (props) => {
   const ValidationSchema = Yup.object({
     pickupAddress: Yup.string().required('Kindly enter a pickup address'),
   });
+
   const [images, setImages] = useState([]);
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
   const onCreateRecordSubmit = (values) => {};
@@ -19,67 +26,81 @@ const CreateRecordScreen = (props) => {
     additionalNotes: '',
   });
   const getPhotos = () => {
-    props.navigation.navigate(routes.ImagePicker);
+    ImagePicker.openPicker({
+      multiple: true,
+    }).then((images) => {
+      console.log('images', images[0].path);
+      setImages(images);
+    });
   };
   const imageSelect = (imageList) => {
     setImages(imageList);
   };
-  console.log('image list is', images);
   return (
-    <Formik
-      initialValues={getInitValues()}
-      validationSchema={ValidationSchema}
-      onSubmit={(values) => {
-        onCreateRecordSubmit(values);
-      }}
-    >
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
-        <View style={styles.wrapper}>
-          <View style={styles.singleFormFieldWrapper}>
-            <Text style={styles.textLabel}>Patient Name</Text>
-            <TextInput
-              style={styles.textInput}
-              value={values.patientName}
-              onChange={handleChange('patientName')}
-              onBlur={handleBlur('patientName')}
-            />
+    <ScrollWrapper>
+      <Formik
+        initialValues={getInitValues()}
+        validationSchema={ValidationSchema}
+        onSubmit={(values) => {
+          onCreateRecordSubmit(values);
+        }}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values }) => (
+          <View style={styles.wrapper}>
+            <View style={styles.singleFormFieldWrapper}>
+              <Text style={styles.textLabel}>Submission Date</Text>
+              <TextInput
+                style={styles.textInput}
+                name='submissionDate'
+                value={values.submissionDate}
+                editable={false}
+              />
+            </View>
+            <View style={styles.singleFormFieldWrapper}>
+              <Text style={styles.textLabel}>Patient Name</Text>
+              <TextInput
+                style={styles.textInput}
+                value={values.patientName}
+                onChange={handleChange('patientName')}
+                onBlur={handleBlur('patientName')}
+              />
+            </View>
+            <View style={styles.singleFormFieldWrapper}>
+              <Text style={styles.textLabel}>Additional Notes</Text>
+              <TextInput
+                multiline={true}
+                numberOfLines={4}
+                style={styles.textInput}
+                value={values.additionalNotes}
+                onChange={handleChange('additionalNotes')}
+                onBlur={handleBlur('additionalNotes')}
+              />
+            </View>
+
+            <View style={styles.imageContainer}>
+              <View style={styles.imageList}>
+                <RounedImageList imageList={images} maxImages={2} />
+              </View>
+              <View style={styles.imagePicker}>
+                <RoundedButton
+                  icon={<Ionicons name='images' size={24} color='white' />}
+                  onPress={getPhotos}
+                />
+              </View>
+            </View>
+            <View style={styles.submitButtonWrapper}>
+              <FlatButton onPress={handleSubmit} title='Submit' />
+            </View>
           </View>
-          <View style={styles.singleFormFieldWrapper}>
-            <Text style={styles.textLabel}>Additional Notes</Text>
-            <TextInput
-              multiline={true}
-              numberOfLines={4}
-              style={styles.textInput}
-              value={values.additionalNotes}
-              onChange={handleChange('additionalNotes')}
-              onBlur={handleBlur('additionalNotes')}
-            />
-          </View>
-          <View style={styles.singleFormFieldWrapper}>
-            <Text style={styles.textLabel}>Submission Date</Text>
-            <TextInput
-              style={styles.textInput}
-              name='submissionDate'
-              value={values.submissionDate}
-              editable={false}
-            />
-          </View>
-          <View style={styles.submitButtonWrapper}>
-            <FlatButton onPress={getPhotos} title='Select Photos' />
-          </View>
-          <View style={styles.submitButtonWrapper}>
-            <FlatButton onPress={handleSubmit} title='Submit' />
-          </View>
-        </View>
-      )}
-    </Formik>
+        )}
+      </Formik>
+    </ScrollWrapper>
   );
 };
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     padding: 10,
-    paddingTop: 30,
   },
   singleFormFieldWrapper: {
     marginTop: 10,
@@ -95,9 +116,22 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
   },
+  imageContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+    paddingRight: 10,
+  },
+  imageList: {
+    flex: 1,
+  },
+  imagePicker: {
+    width: 50,
+    marginLeft: 10,
+  },
   submitButtonWrapper: {
-    alignSelf: 'flex-end',
-    marginTop: 10,
+    alignSelf: 'center',
+    marginTop: 20,
     paddingRight: 10,
   },
   submitButtonText: {

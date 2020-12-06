@@ -23,6 +23,7 @@
     "react-dom": "16.13.1",
     "react-native": "~0.63.3",
     "react-native-gesture-handler": "~1.7.0",
+    "react-native-image-crop-picker": "^0.35.1",
     "react-native-material-menu": "^1.1.3",
     "react-native-paper": "^4.4.1",
     "react-native-paper-dropdown": "^0.0.5",

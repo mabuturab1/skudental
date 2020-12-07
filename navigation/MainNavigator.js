@@ -284,11 +284,11 @@ const tabNavigator = () => (
   </Tab.Navigator>
 );
 export default mainStackNavigator = () => (
-  <Stack.Navigator screenOptions={screenOptions} initialRouteName={routes.Home}>
+  <Stack.Navigator screenOptions={screenOptions} initialRouteName={routes.Auth}>
     <Stack.Screen
       options={({ navigation }) => ({
         ...getCommonOptions(navigation),
-        title: 'SkDentals Lab',
+        title: 'Skdental Lab',
         headerLeft: null,
       })}
       name={routes.Home}

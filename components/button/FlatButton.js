@@ -15,8 +15,8 @@ const CustomButton = ({ style, onPress, title, icon }) => (
 export default CustomButton;
 const styles = StyleSheet.create({
   customButton: {
-    paddingTop: 7,
-    paddingBottom: 7,
+    paddingTop: 5,
+    paddingBottom: 5,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: ThemeColors.primary,

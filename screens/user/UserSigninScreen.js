@@ -2,21 +2,27 @@ import React from 'react';
 import { View, StyleSheet, Text, Button, TextInput } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { TouchableHighlight } from 'react-native-gesture-handler';
 import moment from 'moment';
 import { ThemeColors } from '../../constants/Colors';
 import { FlatButton, LogoBox, ScrollWrapper } from '../../components';
 import { routes } from '../../constants/routes';
 const UserSignInScreen = ({ navigation }) => {
   const ValidationSchema = Yup.object({
-    email: Yup.string().email().required('Kindly enter your email'),
+    email: Yup.string().email().trim().required('Kindly enter your email'),
     password: Yup.string()
       .min(5, 'Password should be atleast 5 characters')
       .required('Kindly enter a valid password'),
   });
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
   const onLoginSubmit = (values) => {
-    if (values.email === 'test@skl.com' && values.password === '12345')
+    console.log(
+      values.email?.trim().toLowerCase(),
+      values.email?.trim().toLowerCase() === 'test@skl.com'
+    );
+    if (
+      values.email?.trim().toLowerCase() === 'test@skl.com' &&
+      values.password === '12345'
+    )
       navigation.navigate(routes.Home);
   };
   const getInitValues = () => ({ email: '', password: '' });
@@ -30,12 +36,12 @@ const UserSignInScreen = ({ navigation }) => {
           onLoginSubmit(values);
         }}
       >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
+        {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
           <View style={styles.wrapper}>
             <LogoBox />
             <View style={styles.singleFormFieldWrapper}>
-              <Text style={styles.textLabel}>Email</Text>
               <TextInput
+                placeholder='Email address'
                 style={styles.textInput}
                 value={values.email}
                 onChangeText={handleChange('email')}
@@ -43,8 +49,8 @@ const UserSignInScreen = ({ navigation }) => {
               />
             </View>
             <View style={styles.singleFormFieldWrapper}>
-              <Text style={styles.textLabel}>Password</Text>
               <TextInput
+                placeholder='Password'
                 style={styles.textInput}
                 value={values.password}
                 onChangeText={handleChange('password')}
@@ -85,7 +91,7 @@ const styles = StyleSheet.create({
   textInput: {
     width: '100%',
     marginBottom: 10,
-    borderBottomColor: '#ccc',
+    borderBottomColor: ThemeColors.listItemBorder,
     borderBottomWidth: 1,
   },
   loginButtonWrapper: {

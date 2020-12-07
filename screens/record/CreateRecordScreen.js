@@ -12,14 +12,18 @@ import {
 } from '../../components';
 import ImagePicker from 'react-native-image-crop-picker';
 import { Ionicons } from '@expo/vector-icons';
-const CreateRecordScreen = (props) => {
+import { routes } from '../../constants/routes';
+const CreateRecordScreen = ({ navigation }) => {
   const ValidationSchema = Yup.object({
-    pickupAddress: Yup.string().required('Kindly enter a pickup address'),
+    patientName: Yup.string().trim().required('Kindly enter a patient name'),
+    additionalNotes: Yup.string().required('Kindly enter a additional Notes'),
   });
 
   const [images, setImages] = useState([]);
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
-  const onCreateRecordSubmit = (values) => {};
+  const onCreateRecordSubmit = (values) => {
+    navigation.navigate(routes.SkSales);
+  };
   const getInitValues = () => ({
     submissionDate: getCurrentDate(),
     patientName: '',
@@ -28,6 +32,7 @@ const CreateRecordScreen = (props) => {
   const getPhotos = () => {
     ImagePicker.openPicker({
       multiple: true,
+      mediaType: 'photo',
     }).then((images) => {
       console.log('images', images[0].path);
       setImages(images);
@@ -42,13 +47,14 @@ const CreateRecordScreen = (props) => {
         initialValues={getInitValues()}
         validationSchema={ValidationSchema}
         onSubmit={(values) => {
+          console.log('values are', values);
           onCreateRecordSubmit(values);
         }}
       >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
+        {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
           <View style={styles.wrapper}>
+            {console.log('errors are', errors)}
             <View style={styles.singleFormFieldWrapper}>
-              <Text style={styles.textLabel}>Submission Date</Text>
               <TextInput
                 style={styles.textInput}
                 name='submissionDate'
@@ -57,22 +63,22 @@ const CreateRecordScreen = (props) => {
               />
             </View>
             <View style={styles.singleFormFieldWrapper}>
-              <Text style={styles.textLabel}>Patient Name</Text>
               <TextInput
+                placeholder='Patient Name'
                 style={styles.textInput}
                 value={values.patientName}
-                onChange={handleChange('patientName')}
+                onChangeText={handleChange('patientName')}
                 onBlur={handleBlur('patientName')}
               />
             </View>
             <View style={styles.singleFormFieldWrapper}>
-              <Text style={styles.textLabel}>Additional Notes</Text>
               <TextInput
+                placeholder={'Additional Notes'}
                 multiline={true}
                 numberOfLines={4}
                 style={styles.textInput}
                 value={values.additionalNotes}
-                onChange={handleChange('additionalNotes')}
+                onChangeText={handleChange('additionalNotes')}
                 onBlur={handleBlur('additionalNotes')}
               />
             </View>

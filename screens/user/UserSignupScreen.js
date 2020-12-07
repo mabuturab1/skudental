@@ -5,10 +5,14 @@ import * as Yup from 'yup';
 import moment from 'moment';
 import { Dropdown, FlatButton, ScrollWrapper } from '../../components';
 import { routes } from '../../constants/routes';
+import { Role } from '../../constants/UIConstants';
+import { ThemeColors } from '../../constants/Colors';
+
 const UserSignUpScreen = ({ navigation }) => {
   const ValidationSchema = Yup.object({
     name: Yup.string().required('Kindly enter your name'),
     email: Yup.string()
+      .trim()
       .email('Kindly enter a valid email')
       .required('Kindly enter your email'),
     password: Yup.string()
@@ -28,12 +32,12 @@ const UserSignUpScreen = ({ navigation }) => {
     password: '',
     confirmPassword: '',
     email: '',
-    role: '',
+    role: Role.Doctor,
   });
   const roleData = [
-    { label: 'Doctor', value: 'Doctor' },
-    { label: 'Technician', value: 'Technician' },
-    { label: 'Admin', value: 'Admin' },
+    { label: 'Doctor', value: Role.Doctor },
+    { label: 'Technician', value: Role.Technician },
+    { label: 'Admin', value: Role.Admin },
   ];
   return (
     <ScrollWrapper>
@@ -53,17 +57,17 @@ const UserSignUpScreen = ({ navigation }) => {
         }) => (
           <View style={styles.wrapper}>
             <View style={styles.singleFormFieldWrapper}>
-              <Text style={styles.textLabel}>Name</Text>
               <TextInput
+                placeholder='Name'
                 style={styles.textInput}
                 value={values.name}
-                onChange={handleChange('name')}
+                onChangeText={handleChange('name')}
                 onBlur={handleBlur('name')}
               />
             </View>
             <View style={styles.singleFormFieldWrapper}>
-              <Text style={styles.textLabel}>Email</Text>
               <TextInput
+                placeholder='Email'
                 style={styles.textInput}
                 value={values.email}
                 onChange={handleChange('email')}
@@ -71,8 +75,8 @@ const UserSignUpScreen = ({ navigation }) => {
               />
             </View>
             <View style={styles.singleFormFieldWrapper}>
-              <Text style={styles.textLabel}>Password</Text>
               <TextInput
+                placeholder='Password'
                 style={styles.textInput}
                 value={values.password}
                 onChange={handleChange('password')}
@@ -81,8 +85,8 @@ const UserSignUpScreen = ({ navigation }) => {
               />
             </View>
             <View style={styles.singleFormFieldWrapper}>
-              <Text style={styles.textLabel}>Confirm Password</Text>
               <TextInput
+                placeholder='Confirm password'
                 style={styles.textInput}
                 value={values.confirmPassword}
                 onChange={handleChange('confirmPassword')}
@@ -91,8 +95,8 @@ const UserSignUpScreen = ({ navigation }) => {
               />
             </View>
             <View style={styles.singleFormFieldWrapper}>
-              <Text style={styles.textLabel}>Role</Text>
               <Dropdown
+                placeholder='Role'
                 style={styles.textInput}
                 value={values.role}
                 data={roleData}
@@ -134,7 +138,7 @@ const styles = StyleSheet.create({
   textInput: {
     width: '100%',
     marginBottom: 10,
-    borderBottomColor: '#ccc',
+    borderBottomColor: ThemeColors.listItemBorder,
     borderBottomWidth: 1,
   },
   signUpButtonWrapper: {

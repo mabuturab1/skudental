@@ -1,37 +1,28 @@
-import { Provider, TextInput } from 'react-native-paper';
 import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 
-import DropDown from 'react-native-paper-dropdown';
+import { Picker } from '@react-native-picker/picker';
+import { ThemeColors } from '../../constants/Colors';
 
-const Dropdown = ({ data, value, onChange }) => {
-  const [showDropDown, setShowDropDown] = useState(false);
-  const [gender, setGender] = useState();
-
-  const genderList = [
-    { label: 'Male', value: 'male' },
-    { label: 'Female', value: 'female' },
-    { label: 'Others', value: 'others' },
-  ];
-
+const Dropdown = ({ data, value, onChange, placeholder }) => {
   return (
-    <Provider>
-      <SafeAreaView style={styles.containerStyle}>
-        <DropDown
-          label={'Gender'}
-          mode={'outlined'}
-          value={value}
-          setValue={onChange}
-          list={data}
-          visible={showDropDown}
-          showDropDown={() => setShowDropDown(true)}
-          onDismiss={() => setShowDropDown(false)}
-          inputProps={{
-            right: <TextInput.Icon name={'menu-down'} />,
-          }}
-        />
-      </SafeAreaView>
-    </Provider>
+    <SafeAreaView style={styles.containerStyle}>
+      <Picker
+        placeholder={placeholder}
+        style={styles.dropdownStyle}
+        selectedValue={value}
+        mode={'dropdown'}
+        onValueChange={(value) => {
+          console.log(value);
+          onChange(value);
+        }}
+        itemStyle={styles.dropdownItemStyle}
+      >
+        {data?.map((el, index) => (
+          <Picker.Item key={index} label={el.label} value={el.value} />
+        ))}
+      </Picker>
+    </SafeAreaView>
   );
 };
 
@@ -40,6 +31,18 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 20,
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: ThemeColors.listItemBorder,
+  },
+
+  dropdownStyle: {
+    backgroundColor: '#fafafa',
+    flex:1,
+  },
+  dropdownItemStyle: {
+    borderWidth: 1,
+    flex:1,
+    borderColor: ThemeColors.listItemBorder,
   },
 });
 

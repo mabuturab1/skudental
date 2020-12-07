@@ -4,9 +4,9 @@
     "slug": "skdentallab",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/sklogo.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/sklogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,7 +23,7 @@
     "android": {
       "package": "com.skudentallab.sku",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/sklogo.png",
         "backgroundColor": "#FFFFFF"
       }
     },

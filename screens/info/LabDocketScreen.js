@@ -4,8 +4,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ThemeColors } from '../../constants/Colors';
 const LabDocketScreen = (props) => {
   const data = [
-    { key: 'Download pdf ', link: '#' },
-    { key: 'Download second pdf', link: '#' },
+    { key: 'Prosthetics Docket ', link: '#' },
+    { key: 'Crown&Bridge Docket', link: '#' },
   ];
   const onClickItem = (key) => {};
   const renderSingleListItem = ({ item }) => (

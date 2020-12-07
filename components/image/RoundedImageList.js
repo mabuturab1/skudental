@@ -6,11 +6,10 @@ const RoundedImageList = ({ imageList, maxImages }) => {
   if (maxImages && maxImages < imageList?.length)
     imageToBeShown = imageToBeShown.slice(0, maxImages);
   const lengthDiff = imageList?.length - imageToBeShown?.length;
-  imageToBeShown?.forEach((el) => console.log('uri is', el.path));
   return (
     <View style={styles.imageListWrapper}>
-      {imageToBeShown.map((el) => (
-        <View style={styles.imageTile}>
+      {imageToBeShown.map((el, index) => (
+        <View key={index} style={styles.imageTile}>
           <RounedImage path={el.path} />
         </View>
       ))}

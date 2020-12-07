@@ -1,5 +1,5 @@
 export const ThemeColors = {
-  primary: '#2b91bf',
+  primary: '#4994d3',
   scecondary: '#fff',
   listItemBorder:'#dddddd'
 };

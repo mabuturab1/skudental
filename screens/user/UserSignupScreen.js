@@ -7,8 +7,11 @@ import { Dropdown, FlatButton, ScrollWrapper } from '../../components';
 import { routes } from '../../constants/routes';
 import { Role } from '../../constants/UIConstants';
 import { ThemeColors } from '../../constants/Colors';
+import { useDispatch } from 'react-redux';
+import { userSignup } from '../../store/actions';
 
 const UserSignUpScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const ValidationSchema = Yup.object({
     name: Yup.string().required('Kindly enter your name'),
     email: Yup.string()
@@ -25,7 +28,8 @@ const UserSignUpScreen = ({ navigation }) => {
   });
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
   const onSignupSubmit = (values) => {
-    navigation.navigate(routes.UserSignIn);
+    delete values.confirmPassword;
+    dispatch(userSignup(values, (isSuccess) => {}));
   };
   const getInitValues = () => ({
     name: '',
@@ -44,8 +48,9 @@ const UserSignUpScreen = ({ navigation }) => {
       <Formik
         initialValues={getInitValues()}
         validationSchema={ValidationSchema}
-        onSubmit={(values) => {
+        onSubmit={(values, { setSubmitting }) => {
           onSignupSubmit(values);
+          setSubmitting(false);
         }}
       >
         {({

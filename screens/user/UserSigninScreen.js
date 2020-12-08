@@ -6,7 +6,10 @@ import moment from 'moment';
 import { ThemeColors } from '../../constants/Colors';
 import { FlatButton, LogoBox, ScrollWrapper } from '../../components';
 import { routes } from '../../constants/routes';
+import { useDispatch } from 'react-redux';
+import { userSignin } from '../../store/actions';
 const UserSignInScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const ValidationSchema = Yup.object({
     email: Yup.string().email().trim().required('Kindly enter your email'),
     password: Yup.string()
@@ -15,15 +18,11 @@ const UserSignInScreen = ({ navigation }) => {
   });
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
   const onLoginSubmit = (values) => {
-    console.log(
-      values.email?.trim().toLowerCase(),
-      values.email?.trim().toLowerCase() === 'test@skl.com'
+    dispatch(
+      userSignin(values, (isSuccess) => {
+        if (isSuccess) navigation.navigate(routes.Home);
+      })
     );
-    if (
-      values.email?.trim().toLowerCase() === 'test@skl.com' &&
-      values.password === '12345'
-    )
-      navigation.navigate(routes.Home);
   };
   const getInitValues = () => ({ email: '', password: '' });
 
@@ -32,8 +31,9 @@ const UserSignInScreen = ({ navigation }) => {
       <Formik
         initialValues={getInitValues()}
         validationSchema={ValidationSchema}
-        onSubmit={(values) => {
+        onSubmit={(values, { setSubmitting }) => {
           onLoginSubmit(values);
+          setSubmitting(false);
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors }) => (

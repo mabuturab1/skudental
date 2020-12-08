@@ -1,0 +1,17 @@
+export const apiRoutes = {
+  USER_SIGNUP: '/signup',
+  USER_SIGNIN: '/signin',
+  UPDATE_USER: '/updateuser',
+  VERIFY_EMAIL: '/verfiyEmail',
+  VERIFY_ADMIN: '/verfiyAdmin',
+  FORGORT_PASSWORD: '/forgotpassword',
+  UPDATE_PASSWORD: '/updatepassword',
+  CREATE_RECORD: '/createrecord',
+  UPDATE_RECORD: '/updaterecord',
+  SEND_INQUIRY_MESSAGE: '/createinquirymessage',
+  GET_ALL_RECORDS: '/allrecords',
+  GET_ALL_MESSAGES: '/allmessages',
+  CREATE_TRANSPORT_REQUEST: 'createtransportrequest',
+  ALL_TRANSPORT_REQUESTS: 'alltransportrequests',
+  SEND_TRANSPORT_MESSAGE: 'sendtransportmessage',
+};

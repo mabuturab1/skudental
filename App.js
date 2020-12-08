@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import DrawerNavigator from './navigation/MainNavigator';
 import { Provider } from 'react-redux';
-import ReduxThunk from 'redux-thunk;';
+import ReduxThunk from 'redux-thunk';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import UserReducer from './store/user/reducer';
 import TransportReducer from './store/transport/reducer';

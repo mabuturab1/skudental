@@ -24,11 +24,12 @@ const UserSignUpScreen = ({ navigation }) => {
     confirmPassword: Yup.string()
       .min(5, 'Password should be atleast 5 characters')
       .required('Kindly enter a valid password'),
-    role: Yup.string().required('Kindly select a role'),
+    role: Yup.number().required('Kindly select a role'),
   });
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
   const onSignupSubmit = (values) => {
     delete values.confirmPassword;
+    values = { ...values, email: values.email.trim().toLowerCase() };
     dispatch(userSignup(values, (isSuccess) => {}));
   };
   const getInitValues = () => ({
@@ -75,7 +76,7 @@ const UserSignUpScreen = ({ navigation }) => {
                 placeholder='Email'
                 style={styles.textInput}
                 value={values.email}
-                onChange={handleChange('email')}
+                onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
               />
             </View>
@@ -84,7 +85,7 @@ const UserSignUpScreen = ({ navigation }) => {
                 placeholder='Password'
                 style={styles.textInput}
                 value={values.password}
-                onChange={handleChange('password')}
+                onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 secureTextEntry={true}
               />
@@ -94,7 +95,7 @@ const UserSignUpScreen = ({ navigation }) => {
                 placeholder='Confirm password'
                 style={styles.textInput}
                 value={values.confirmPassword}
-                onChange={handleChange('confirmPassword')}
+                onChangeText={handleChange('confirmPassword')}
                 onBlur={handleBlur('confirmPassword')}
                 secureTextEntry={true}
               />

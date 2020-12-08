@@ -165,4 +165,5 @@ export default (state = initialState, action) => {
         error: { ...state.error, verifyUser: action.payload },
       };
   }
+  return state;
 };

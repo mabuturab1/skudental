@@ -1,4 +1,4 @@
-import axios from '../../axios/axios';
+import axios from 'axios';
 const CREATE_RECORD_START = 'CREATE_RECORD_START';
 const CREATE_RECORD_SUCCESS = 'CREATE_RECORD_SUCCESS';
 const CREATE_RECORD_FAILED = 'CREATE_RECORD_FAILED';

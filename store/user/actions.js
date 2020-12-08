@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { apiRoutes } from '../../constants/apiRoutes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL, apiRoutes } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
-const apiUrl = process.env.API_URL;
 export const USER_SIGNUP_START = 'USER_SIGNUP_START';
 export const USER_SIGNUP_SUCCESS = 'USER_SIGNUP_SUCCESS';
 export const USER_SIGNUP_FAILED = 'USER_SIGNUP_FAILED';
@@ -92,18 +92,21 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
       dispatch(userSignupStart());
+      console.log('signing up', userData, API_URL + apiRoutes.USER_SIGNUP);
       const response = await axios.post(
-        apiUrl + apiRoutes.USER_SIGNUP,
+        API_URL + apiRoutes.USER_SIGNUP,
         userData
       );
       if (response && response.data) {
         dispatch(userSignupSuccess(response.data));
+        console.log('signing up response', response.data);
         isSuccess(true);
       } else if (response.error) {
         dispatch(userSignupFailed(response.error));
         isSuccess(false);
       }
     } catch (error) {
+      console.log('signing up failed', error.message, error.msg);
       dispatch(userSignupFailed('An error occurred'));
     }
   };
@@ -112,19 +115,24 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
 export const userSignin = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
+      console.log('signin ', userData);
       dispatch(userSigninStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.USER_SIGNIN,
+        API_URL + apiRoutes.USER_SIGNIN,
         userData
       );
       if (response && response.data) {
         dispatch(userSigninSuccess(response.data));
+        console.log('signin res', response.data);
+        const token = response.data.token;
+        await AsyncStorage.setItem('token', token);
         isSuccess(true);
       } else if (response.error) {
         dispatch(userSigninFailed(response.error));
         isSuccess(false);
       }
     } catch (error) {
+      console.log('signin res', error);
       dispatch(userSigninFailed('An error occurred'));
       isSuccess(false);
     }
@@ -136,7 +144,7 @@ export const updateUser = (userData, isSuccess = isSuccessDefault) => {
     try {
       dispatch(updateUserStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.UPDATE_USER,
+        API_URL + apiRoutes.UPDATE_USER,
         userData
       );
       if (response && response.data) {
@@ -158,7 +166,7 @@ export const forgotPassword = (userData, isSuccess = isSuccessDefault) => {
     try {
       dispatch(forgotPasswordStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.FORGORT_PASSWORD,
+        API_URL + apiRoutes.FORGORT_PASSWORD,
         userData
       );
       if (response && response.data) {
@@ -180,7 +188,7 @@ export const updatePassword = (userData, isSuccess = isSuccessDefault) => {
     try {
       dispatch(updatePasswordStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.UPDATE_PASSWORD,
+        API_URL + apiRoutes.UPDATE_PASSWORD,
         userData
       );
       if (response && response.data) {
@@ -202,7 +210,7 @@ export const verifyUser = (userData, isSuccess = isSuccessDefault) => {
     try {
       dispatch(verifyUserStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.VERIFY_ADMIN,
+        API_URL + apiRoutes.VERIFY_ADMIN,
         userData
       );
       if (response && response.data) {

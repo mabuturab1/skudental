@@ -18,6 +18,7 @@ const UserSignInScreen = ({ navigation }) => {
   });
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
   const onLoginSubmit = (values) => {
+    values = { ...values, email: values.email.trim().toLowerCase() };
     dispatch(
       userSignin(values, (isSuccess) => {
         if (isSuccess) navigation.navigate(routes.Home);

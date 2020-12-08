@@ -94,27 +94,6 @@ export default (state = initialState, action) => {
         error: { ...state.error, getAllTransports: action.payload },
       };
 
-    case UPDATE_PASSWORD_START:
-      return {
-        ...state,
-        user: {},
-        loading: { ...state.loading, updatePassword: true },
-        error: { ...state.error, updatePassword: '' },
-      };
-    case UPDATE_PASSWORD_SUCCESS:
-      return {
-        ...state,
-        user: {},
-        loading: { ...state.loading, updatePassword: false },
-      };
-    case UPDATE_PASSWORD_FAILED:
-      return {
-        ...state,
-        user: {},
-        loading: { ...state.loading, updatePassword: false },
-        error: { ...state.error, updatePassword: action.payload },
-      };
-
     case GET_ALL_TRANSPORT_MESSAGE_START:
       return {
         ...state,
@@ -136,4 +115,5 @@ export default (state = initialState, action) => {
         error: { ...state.error, getAllTransportMessages: action.payload },
       };
   }
+  return state
 };

@@ -144,7 +144,7 @@ export default (state = initialState, action) => {
         error: { ...state.error, getAllMessages: action.payload },
       };
 
-      case SEND_RECORD_MESSAGE_START:
+    case SEND_RECORD_MESSAGE_START:
       return {
         ...state,
         user: {},
@@ -165,4 +165,5 @@ export default (state = initialState, action) => {
         error: { ...state.error, sendRecordMessage: action.payload },
       };
   }
+  return state;
 };

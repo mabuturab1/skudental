@@ -92,21 +92,20 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
       dispatch(userSignupStart());
-      console.log('signing up', userData, API_URL + apiRoutes.USER_SIGNUP);
+
       const response = await axios.post(
         API_URL + apiRoutes.USER_SIGNUP,
         userData
       );
       if (response && response.data) {
         dispatch(userSignupSuccess(response.data));
-        console.log('signing up response', response.data);
+
         isSuccess(true);
       } else if (response.error) {
         dispatch(userSignupFailed(response.error));
         isSuccess(false);
       }
     } catch (error) {
-      console.log('signing up failed', error.message, error.msg);
       dispatch(userSignupFailed('An error occurred'));
     }
   };
@@ -115,16 +114,15 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
 export const userSignin = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
-      console.log('signin ', userData);
       dispatch(userSigninStart());
       const response = await axios.post(
         API_URL + apiRoutes.USER_SIGNIN,
         userData
       );
-      if ( response?.data?.data) {
-        const result=response?.data?.data
-        dispatch(userSigninSuccess(result.user));
-        console.log('signin res', result);
+      if (response?.data?.data) {
+        const result = response?.data?.data;
+        dispatch(userSigninSuccess(result));
+
         const token = result.token;
         await AsyncStorage.setItem('token', token);
         isSuccess(true);
@@ -133,7 +131,6 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
         isSuccess(false);
       }
     } catch (error) {
-      console.log('signin res', error);
       dispatch(userSigninFailed('An error occurred'));
       isSuccess(false);
     }

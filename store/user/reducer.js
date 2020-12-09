@@ -21,6 +21,7 @@ import {
 
 const initialState = {
   user: {},
+  token: null,
   loading: {
     userSignin: false,
     userSignup: false,
@@ -64,19 +65,22 @@ export default (state = initialState, action) => {
       return {
         ...state,
         user: {},
+        token: null,
         loading: { ...state.loading, userSignin: true },
         error: { ...state.error, userSignin: '' },
       };
     case USER_SIGNIN_SUCCESS:
       return {
         ...state,
-        user: action.payload,
+        user: action.payload.user,
+        token: action.payload.token,
         loading: { ...state.loading, userSignin: false },
       };
     case USER_SIGNIN_FAILED:
       return {
         ...state,
         user: {},
+        token: null,
         loading: { ...state.loading, userSignin: false },
         error: { ...state.error, userSignin: action.payload },
       };

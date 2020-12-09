@@ -1,23 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import MainNavigator from './navigation/MainNavigator';
-import { Provider } from 'react-redux';
-import ReduxThunk from 'redux-thunk';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import UserReducer from './store/user/reducer';
-import TransportReducer from './store/transport/reducer';
-import RecordReducer from './store/record/reducer';
-const rootReducer = combineReducers({
-  auth: UserReducer,
-  transport: TransportReducer,
-  record: RecordReducer,
-});
-const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
+import { Provider, useSelector } from 'react-redux';
+import { isUserAuthenticated } from './helpers/Utils';
+import { PersistGate } from 'redux-persist/integration/react';
+import * as SplashScreen from 'expo-splash-screen';
+import { store, persistor } from './store/store';
+const MainNavigationScreens = () => {
+  const token = useSelector(({ auth }) => auth.token);
+  return MainNavigator(isUserAuthenticated(token));
+};
 export default function App() {
+  useEffect(() => {
+    setTimeout(async () => {
+      try {
+        await SplashScreen.preventAutoHideAsync();
+      } catch (e) {
+        console.warn(e);
+      }
+    });
+  }, []);
+  const showApp = () => {
+    SplashScreen.hideAsync();
+  };
+
   return (
     <Provider store={store}>
-      <NavigationContainer>{MainNavigator()}</NavigationContainer>
+      <PersistGate loading={null} persistor={persistor} onBeforeLift={showApp}>
+        <NavigationContainer>
+          <MainNavigationScreens />
+        </NavigationContainer>
+      </PersistGate>
     </Provider>
   );
 }

@@ -106,38 +106,21 @@ const UserProfileForm = ({
             </View>
 
             {!isSignup ? (
-              <Fragment>
-                <View style={styles.singleFormFieldWrapper}>
-                  <TextInput
-                    placeholder='Current Password'
-                    style={styles.textInput}
-                    value={values.currentPassword}
-                    onChangeText={handleChange('currentPassword')}
-                    onBlur={handleBlur('currentPassword')}
-                    secureTextEntry={true}
-                  />
-                  <ErrorText
-                    errors={errors}
-                    touched={touched}
-                    name='currentPassword'
-                  />
-                </View>
-                <View style={styles.singleFormFieldWrapper}>
-                  <TextInput
-                    placeholder='New Password'
-                    style={styles.textInput}
-                    value={values.newPassword}
-                    onChangeText={handleChange('newPassword')}
-                    onBlur={handleBlur('newPassword')}
-                    secureTextEntry={true}
-                  />
-                  <ErrorText
-                    errors={errors}
-                    touched={touched}
-                    name='newPassword'
-                  />
-                </View>
-              </Fragment>
+              <View style={styles.singleFormFieldWrapper}>
+                <TextInput
+                  placeholder='New Password'
+                  style={styles.textInput}
+                  value={values.newPassword}
+                  onChangeText={handleChange('newPassword')}
+                  onBlur={handleBlur('newPassword')}
+                  secureTextEntry={true}
+                />
+                <ErrorText
+                  errors={errors}
+                  touched={touched}
+                  name='newPassword'
+                />
+              </View>
             ) : (
               <View style={styles.singleFormFieldWrapper}>
                 <TextInput

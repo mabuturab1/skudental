@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { HeaderButton, MaterialMenu } from '../components';
 import { isAndroid } from '../helpers/Utils';
-import  {Ionicons}  from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import {
   RecordDetailsScreen,
   RecordListScreen,
@@ -267,7 +267,7 @@ const tabNavigator = () => (
       tabBarIcon: ({ focused, color, size }) => {
         let iconName = getTabIcon(route.name, focused);
         // You can return any component that you like here!
-        return <Ionicons  name={iconName} size={size} color={color} />;
+        return <Ionicons name={iconName} size={size} color={color} />;
       },
     })}
     tabBarOptions={{
@@ -287,8 +287,11 @@ const tabNavigator = () => (
     )}
   </Tab.Navigator>
 );
-export default mainStackNavigator = () => (
-  <Stack.Navigator screenOptions={screenOptions} initialRouteName={routes.Auth}>
+export default mainStackNavigator = (isAuthenticated) => (
+  <Stack.Navigator
+    screenOptions={screenOptions}
+    initialRouteName={isAuthenticated ? routes.Home : routes.Auth}
+  >
     <Stack.Screen
       options={({ navigation }) => ({
         ...getCommonOptions(navigation),

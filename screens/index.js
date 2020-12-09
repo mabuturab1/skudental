@@ -11,6 +11,7 @@ import RecordInquiryScreen from './record/RecordInquiryScreen';
 import UserSigninScreen from './user/UserSigninScreen';
 import UserSignupScreen from './user/UserSignupScreen';
 import UpdateUserScreen from './user/UpdateUserScreen';
+import ConfirmPasswordScreen from './user/ConfirmPasswordScreen';
 
 export {
   RecordDetailsScreen,
@@ -25,5 +26,6 @@ export {
   UserSigninScreen,
   UserSignupScreen,
   PickupListScreen,
-  UpdateUserScreen
+  UpdateUserScreen,
+  ConfirmPasswordScreen,
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { HelperText } from 'react-native-paper';
-export default ({ errors, touched, name }) => {
+const ErrorText = ({ errors, touched, name }) => {
   return (
     <HelperText
       type='error'
@@ -10,3 +10,4 @@ export default ({ errors, touched, name }) => {
     </HelperText>
   );
 };
+export default ErrorText;

@@ -20,6 +20,7 @@ import {
   UserSignupScreen,
   PickupListScreen,
   UpdateUserScreen,
+  ConfirmPasswordScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -206,7 +207,9 @@ const popupMenu = (navigation) => {
   const onPopupMenuClick = (id) => {
     switch (id) {
       case 1:
-        return navigation.navigate(routes.UpdateUser);
+        return navigation.navigate(routes.ConfirmPassword, {
+          routeToNavigate: routes.UpdateUser,
+        });
       case 2:
         return navigation.navigate(routes.LabDocket);
       case 3:
@@ -303,6 +306,10 @@ export default mainStackNavigator = (isAuthenticated) => (
     />
     <Stack.Screen name={routes.LabDocket} component={LabDocketScreen} />
     <Stack.Screen name={routes.UpdateUser} component={UpdateUserScreen} />
+    <Stack.Screen
+      name={routes.ConfirmPassword}
+      component={ConfirmPasswordScreen}
+    />
     <Stack.Screen
       options={{ headerShown: false }}
       name={routes.Auth}

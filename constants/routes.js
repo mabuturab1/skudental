@@ -1,6 +1,6 @@
 export const routes = {
   Home: 'Home',
-  SkSales:'SkSales',
+  SkSales: 'SkSales',
   Pricing: 'Pricing',
   LabDocket: 'LabDocket',
   RecordList: 'Patient Record',
@@ -9,8 +9,9 @@ export const routes = {
   RecordInquriy: 'Record Inquiry',
   PickupList: 'Pickup List',
   Auth: 'Auth',
-  UserSignIn:"UserSignin",
-  UserSignUp:"UserSignup",
-  UpdateUser:"UpdateUser",
-  ImagePicker:"ImagePicker"
+  UserSignIn: 'UserSignin',
+  UserSignUp: 'UserSignup',
+  UpdateUser: 'UpdateUser',
+  ConfirmPassword: 'ConfirmPassword',
+  ImagePicker: 'ImagePicker',
 };

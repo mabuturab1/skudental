@@ -137,6 +137,28 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
   };
 };
 
+export const confirmPassword = (userData, isSuccess = isSuccessDefault) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        API_URL + apiRoutes.USER_SIGNIN,
+        userData
+      );
+      if (response?.data?.data) {
+        const result = response?.data?.data;
+        dispatch(userSigninSuccess(result));
+        const token = result.token;
+        await AsyncStorage.setItem('token', token);
+        isSuccess(true);
+      } else if (response.error) {
+        isSuccess(false);
+      }
+    } catch (error) {
+      isSuccess(false);
+    }
+  };
+};
+
 export const updateUser = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {

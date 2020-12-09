@@ -1,7 +1,5 @@
 import React from 'react';
 
-import * as Yup from 'yup';
-import moment from 'moment';
 import { UserProfileForm } from '../../components';
 
 import { useDispatch, useSelector } from 'react-redux';

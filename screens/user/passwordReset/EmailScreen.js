@@ -1,15 +1,16 @@
 import React from 'react';
-import { View, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, Text, Button, TextInput } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-
+import { ThemeColors } from '../../constants/Colors';
 import FlatButton from '../button/FlatButton';
 import LogoBox from '../logoBox/LogoBox';
 import ScrollWrapper from '../scrollWrapper/ScrollWrapper';
 import ErrorText from './ErrorText';
 import { routes } from '../../constants/routes';
 import { useDispatch } from 'react-redux';
-import { FormInputWrapper, FormTextInput, FormWrapper } from './FormComponents';
+import { userSignin } from '../../store/actions';
+import { FormTextInput, FormWrapper } from '../../../components';
 const UserSignInScreen = ({
   navigation,
   isLogin = true,
@@ -24,7 +25,7 @@ const UserSignInScreen = ({
       .min(5, 'Password should be atleast 5 characters')
       .required('Kindly enter a valid password'),
   });
-  
+
   const getInitValues = () => ({ email: email || '', password: '' });
 
   return (
@@ -33,7 +34,7 @@ const UserSignInScreen = ({
         initialValues={getInitValues()}
         validationSchema={ValidationSchema}
         onSubmit={(values, { setSubmitting }) => {
-            onSubmit(values);
+          onSubmit(values);
           setSubmitting(false);
         }}
       >
@@ -88,7 +89,6 @@ const UserSignInScreen = ({
   );
 };
 const styles = StyleSheet.create({
- 
   loginButtonWrapper: {
     alignSelf: 'flex-end',
     margin: 10,
@@ -100,6 +100,5 @@ const styles = StyleSheet.create({
   registerButton: {
     width: 150,
   },
-  
 });
 export default UserSignInScreen;

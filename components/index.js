@@ -11,6 +11,12 @@ import RounedImageList from './image/RoundedImageList';
 import RounedImage from './image/RoundedImage';
 import UserProfileForm from './forms/UserProfileForm';
 import UserSigninForm from './forms/UserSigninForm';
+import {
+  FormWrapper,
+  FormInputWrapper,
+  FormTextInput,
+} from './forms/FormComponents';
+
 import ErrorText from './forms/ErrorText';
 export {
   HeaderButton,
@@ -27,4 +33,7 @@ export {
   UserProfileForm,
   UserSigninForm,
   ErrorText,
+  FormWrapper,
+  FormInputWrapper,
+  FormTextInput,
 };

@@ -91,14 +91,17 @@ const verifyUserFailed = (error) => ({
 export const userSignup = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
+      console.log('signup user data', userData);
       dispatch(userSignupStart());
 
       const response = await axios.post(
         API_URL + apiRoutes.USER_SIGNUP,
         userData
       );
-      if (response && response.data) {
-        dispatch(userSignupSuccess(response.data));
+      if (response && response.data?.data) {
+        const result = response?.data?.data;
+        dispatch(userSignupSuccess(result));
+        console.log('signup user data', result);
 
         isSuccess(true);
       } else if (response.error) {

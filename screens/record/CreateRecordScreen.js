@@ -7,6 +7,7 @@ import { ThemeColors } from '../../constants/Colors';
 import {
   ErrorText,
   FlatButton,
+  FormTextInput,
   RoundedButton,
   RounedImageList,
   ScrollWrapper,
@@ -60,18 +61,18 @@ const CreateRecordScreen = ({ navigation }) => {
           errors,
           touched,
         }) => (
-          <View style={styles.wrapper}>
+          <FormWrapper style={styles.wrapper}>
             {console.log('errors are', errors)}
-            <View style={styles.singleFormFieldWrapper}>
-              <TextInput
+            <FormInputWrapper style={styles.singleFormFieldWrapper}>
+              <FormTextInput
                 style={styles.textInput}
                 name='submissionDate'
                 value={values.submissionDate}
                 editable={false}
               />
-            </View>
-            <View style={styles.singleFormFieldWrapper}>
-              <TextInput
+            </FormInputWrapper>
+            <FormInputWrapper style={styles.singleFormFieldWrapper}>
+              <FormTextInput
                 placeholder='Patient Name'
                 style={styles.textInput}
                 value={values.patientName}
@@ -79,9 +80,9 @@ const CreateRecordScreen = ({ navigation }) => {
                 onBlur={handleBlur('patientName')}
               />
               <ErrorText errors={errors} touched={touched} name='patientName' />
-            </View>
-            <View style={styles.singleFormFieldWrapper}>
-              <TextInput
+            </FormInputWrapper>
+            <FormInputWrapper style={styles.singleFormFieldWrapper}>
+              <FormTextInput
                 placeholder={'Additional Notes'}
                 multiline={true}
                 numberOfLines={4}
@@ -95,7 +96,7 @@ const CreateRecordScreen = ({ navigation }) => {
                 touched={touched}
                 name='additionalNotes'
               />
-            </View>
+            </FormInputWrapper>
 
             <View style={styles.imageContainer}>
               <View style={styles.imageList}>
@@ -111,31 +112,14 @@ const CreateRecordScreen = ({ navigation }) => {
             <View style={styles.submitButtonWrapper}>
               <FlatButton onPress={handleSubmit} title='Submit' />
             </View>
-          </View>
+          </FormWrapper>
         )}
       </Formik>
     </ScrollWrapper>
   );
 };
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    padding: 10,
-  },
-  singleFormFieldWrapper: {
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  textLabel: {
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  textInput: {
-    width: '100%',
-    marginBottom: 10,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-  },
+  
   imageContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -154,20 +138,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingRight: 10,
   },
-  submitButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  submitButton: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    width: 100,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: ThemeColors.primary,
-    backgroundColor: ThemeColors.primary,
-  },
+  
 });
 export default CreateRecordScreen;

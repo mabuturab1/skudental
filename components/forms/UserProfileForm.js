@@ -9,6 +9,7 @@ import { routes } from '../../constants/routes';
 import { Role } from '../../constants/UIConstants';
 import { ThemeColors } from '../../constants/Colors';
 import ErrorText from './ErrorText';
+import { FormInputWrapper, FormTextInput, FormWrapper } from './FormComponents';
 
 const UserProfileForm = ({
   navigation,
@@ -82,9 +83,9 @@ const UserProfileForm = ({
           errors,
           touched,
         }) => (
-          <View style={styles.wrapper}>
-            <View style={styles.singleFormFieldWrapper}>
-              <TextInput
+          <FormWrapper>
+            <FormInputWrapper style={styles.singleFormFieldWrapper}>
+              <FormTextInput
                 placeholder='Name'
                 style={styles.textInput}
                 value={values.name}
@@ -92,9 +93,9 @@ const UserProfileForm = ({
                 onBlur={handleBlur('name')}
               />
               <ErrorText errors={errors} touched={touched} name='name' />
-            </View>
-            <View style={styles.singleFormFieldWrapper}>
-              <TextInput
+            </FormInputWrapper>
+            <FormInputWrapper style={styles.singleFormFieldWrapper}>
+              <FormTextInput
                 placeholder='Email'
                 style={styles.textInput}
                 value={values.email}
@@ -103,11 +104,11 @@ const UserProfileForm = ({
                 editable={isSignup}
               />
               <ErrorText errors={errors} touched={touched} name='email' />
-            </View>
+            </FormInputWrapper>
 
             {!isSignup ? (
-              <View style={styles.singleFormFieldWrapper}>
-                <TextInput
+              <FormInputWrapper style={styles.singleFormFieldWrapper}>
+                <FormTextInput
                   placeholder='New Password'
                   style={styles.textInput}
                   value={values.newPassword}
@@ -120,10 +121,10 @@ const UserProfileForm = ({
                   touched={touched}
                   name='newPassword'
                 />
-              </View>
+              </FormInputWrapper>
             ) : (
-              <View style={styles.singleFormFieldWrapper}>
-                <TextInput
+              <FormInputWrapper style={styles.singleFormFieldWrapper}>
+                <FormTextInput
                   placeholder='Password'
                   style={styles.textInput}
                   value={values.password}
@@ -132,10 +133,10 @@ const UserProfileForm = ({
                   secureTextEntry={true}
                 />
                 <ErrorText errors={errors} touched={touched} name='password' />
-              </View>
+              </FormInputWrapper>
             )}
-            <View style={styles.singleFormFieldWrapper}>
-              <TextInput
+            <FormInputWrapper style={styles.singleFormFieldWrapper}>
+              <FormTextInput
                 placeholder='Confirm password'
                 style={styles.textInput}
                 value={values.confirmPassword}
@@ -148,8 +149,8 @@ const UserProfileForm = ({
                 touched={touched}
                 name='confirmPassword'
               />
-            </View>
-            <View style={styles.singleFormFieldWrapper}>
+            </FormInputWrapper>
+            <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <Dropdown
                 placeholder='Role'
                 style={styles.textInput}
@@ -158,7 +159,7 @@ const UserProfileForm = ({
                 enabled={isSignup}
                 onChange={(value) => setFieldValue('role', value)}
               />
-            </View>
+            </FormInputWrapper>
 
             <View style={styles.signUpButtonWrapper}>
               <FlatButton
@@ -175,7 +176,7 @@ const UserProfileForm = ({
                 />
               </View>
             ) : null}
-          </View>
+          </FormWrapper>
         )}
       </Formik>
     </ScrollWrapper>

@@ -15,7 +15,7 @@ const MaterialMenu = ({ data, onItemClick }) => {
   };
   const MenuButton = (
     <HeaderButtons HeaderButtonComponent={HeaderButton}>
-      <Item title='Menu' iconName={'ellipsis-vertical'} onPress={showMenu} />
+      <Item title='Menu' iconName={isAndroid()?'md-ellipsis-vertical':'ios-ellipsis-vertical'} onPress={showMenu} />
     </HeaderButtons>
   );
   return (

@@ -4,7 +4,7 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { ThemeColors } from '../../constants/Colors';
 
-const Dropdown = ({ data, value, onChange, placeholder }) => {
+const Dropdown = ({ data, value, onChange, placeholder, enabled=true }) => {
   return (
     <SafeAreaView style={styles.containerStyle}>
       <Picker
@@ -12,6 +12,7 @@ const Dropdown = ({ data, value, onChange, placeholder }) => {
         style={styles.dropdownStyle}
         selectedValue={value}
         mode={'dropdown'}
+        enabled={enabled}
         onValueChange={(value) => {
           console.log(value);
           onChange(value);

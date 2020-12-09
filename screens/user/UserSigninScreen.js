@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
 import { ThemeColors } from '../../constants/Colors';
-import { FlatButton, LogoBox, ScrollWrapper } from '../../components';
+import { ErrorText, FlatButton, LogoBox, ScrollWrapper } from '../../components';
 import { routes } from '../../constants/routes';
 import { useDispatch } from 'react-redux';
 import { userSignin } from '../../store/actions';
@@ -37,7 +37,7 @@ const UserSignInScreen = ({ navigation }) => {
           setSubmitting(false);
         }}
       >
-        {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <View style={styles.wrapper}>
             <LogoBox />
             <View style={styles.singleFormFieldWrapper}>
@@ -48,6 +48,7 @@ const UserSignInScreen = ({ navigation }) => {
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
               />
+               <ErrorText errors={errors} touched={touched} name='email' />
             </View>
             <View style={styles.singleFormFieldWrapper}>
               <TextInput
@@ -58,6 +59,7 @@ const UserSignInScreen = ({ navigation }) => {
                 onBlur={handleBlur('password')}
                 secureTextEntry={true}
               />
+              <ErrorText errors={errors} touched={touched} name='password' />
             </View>
             <View style={styles.loginButtonWrapper}>
               <FlatButton title='Login' onPress={handleSubmit} />

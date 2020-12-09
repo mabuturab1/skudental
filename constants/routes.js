@@ -11,5 +11,6 @@ export const routes = {
   Auth: 'Auth',
   UserSignIn:"UserSignin",
   UserSignUp:"UserSignup",
+  UpdateUser:"UpdateUser",
   ImagePicker:"ImagePicker"
 };

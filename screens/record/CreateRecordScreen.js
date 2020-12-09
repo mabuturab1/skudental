@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import moment from 'moment';
 import { ThemeColors } from '../../constants/Colors';
 import {
+  ErrorText,
   FlatButton,
   RoundedButton,
   RounedImageList,
@@ -51,7 +52,14 @@ const CreateRecordScreen = ({ navigation }) => {
           onCreateRecordSubmit(values);
         }}
       >
-        {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
           <View style={styles.wrapper}>
             {console.log('errors are', errors)}
             <View style={styles.singleFormFieldWrapper}>
@@ -70,6 +78,7 @@ const CreateRecordScreen = ({ navigation }) => {
                 onChangeText={handleChange('patientName')}
                 onBlur={handleBlur('patientName')}
               />
+              <ErrorText errors={errors} touched={touched} name='patientName' />
             </View>
             <View style={styles.singleFormFieldWrapper}>
               <TextInput
@@ -80,6 +89,11 @@ const CreateRecordScreen = ({ navigation }) => {
                 value={values.additionalNotes}
                 onChangeText={handleChange('additionalNotes')}
                 onBlur={handleBlur('additionalNotes')}
+              />
+              <ErrorText
+                errors={errors}
+                touched={touched}
+                name='additionalNotes'
               />
             </View>
 

@@ -121,10 +121,11 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
         API_URL + apiRoutes.USER_SIGNIN,
         userData
       );
-      if (response && response.data) {
-        dispatch(userSigninSuccess(response.data));
-        console.log('signin res', response.data);
-        const token = response.data.token;
+      if ( response?.data?.data) {
+        const result=response?.data?.data
+        dispatch(userSigninSuccess(result.user));
+        console.log('signin res', result);
+        const token = result.token;
         await AsyncStorage.setItem('token', token);
         isSuccess(true);
       } else if (response.error) {

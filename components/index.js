@@ -9,6 +9,8 @@ import LogoBox from './logoBox/LogoBox';
 import ScrollWrapper from './scrollWrapper/ScrollWrapper';
 import RounedImageList from './image/RoundedImageList';
 import RounedImage from './image/RoundedImage';
+import UserProfileForm from './forms/UserProfileForm';
+import ErrorText from './forms/ErrorText';
 export {
   HeaderButton,
   LoadingIndicator,
@@ -20,5 +22,7 @@ export {
   ScrollWrapper,
   RoundedButton,
   RounedImageList,
-  RounedImage
+  RounedImage,
+  UserProfileForm,
+  ErrorText,
 };

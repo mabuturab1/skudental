@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { HeaderButton, MaterialMenu } from '../components';
 import { isAndroid } from '../helpers/Utils';
-import { Ionicons } from '@expo/vector-icons';
+import  {Ionicons}  from '@expo/vector-icons';
 import {
   RecordDetailsScreen,
   RecordListScreen,
@@ -19,6 +19,7 @@ import {
   UserSigninScreen,
   UserSignupScreen,
   PickupListScreen,
+  UpdateUserScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -198,14 +199,17 @@ const menuButton = (navigation) => {
 
 const popupMenu = (navigation) => {
   const popupMenuData = [
-    { label: 'Lab Docket', id: 1 },
-    { label: 'Logout', id: 2 },
+    { label: 'Update User', id: 1 },
+    { label: 'Lab Docket', id: 2 },
+    { label: 'Logout', id: 3 },
   ];
   const onPopupMenuClick = (id) => {
     switch (id) {
       case 1:
-        return navigation.navigate(routes.LabDocket);
+        return navigation.navigate(routes.UpdateUser);
       case 2:
+        return navigation.navigate(routes.LabDocket);
+      case 3:
         return navigation.reset({
           index: 0,
           routes: [{ name: routes.Auth }],
@@ -263,7 +267,7 @@ const tabNavigator = () => (
       tabBarIcon: ({ focused, color, size }) => {
         let iconName = getTabIcon(route.name, focused);
         // You can return any component that you like here!
-        return <Ionicons name={iconName} size={size} color={color} />;
+        return <Ionicons  name={iconName} size={size} color={color} />;
       },
     })}
     tabBarOptions={{
@@ -295,11 +299,11 @@ export default mainStackNavigator = () => (
       component={tabNavigator}
     />
     <Stack.Screen name={routes.LabDocket} component={LabDocketScreen} />
+    <Stack.Screen name={routes.UpdateUser} component={UpdateUserScreen} />
     <Stack.Screen
       options={{ headerShown: false }}
       name={routes.Auth}
       component={AuthNavigator}
     />
-    
   </Stack.Navigator>
 );

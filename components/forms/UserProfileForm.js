@@ -20,15 +20,15 @@ const UserProfileForm = ({
   const getValidationSchema = () => {
     const signupObj = {
       password: Yup.string()
-        .min(5, 'Password should be atleast 5 characters')
+        .min(6, 'Password should be atleast 6 characters')
         .required('Kindly enter a valid password'),
     };
     const updateUserObj = {
       currentPassword: Yup.string()
-        .min(5, 'Password should be atleast 5 characters')
+        .min(6, 'Password should be atleast 6 characters')
         .required('Kindly enter a valid password'),
       newPassword: Yup.string()
-        .min(5, 'Password should be atleast 5 characters')
+        .min(6, 'Password should be atleast 5 characters')
         .required('Kindly enter a valid password'),
     };
     let schemaObj = {
@@ -37,10 +37,10 @@ const UserProfileForm = ({
         .trim()
         .email('Kindly enter a valid email')
         .required('Kindly enter your email'),
-
       confirmPassword: Yup.string()
         .min(5, 'Password should be atleast 5 characters')
-        .required('Kindly enter a valid password'),
+        .required('Kindly enter a valid password')
+        .oneOf([Yup.ref('password'), null], 'Passwords must match'),
       role: Yup.number().required('Kindly select a role'),
     };
     const mergeObj = isSignup ? signupObj : updateUserObj;

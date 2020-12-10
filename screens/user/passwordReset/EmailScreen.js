@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { routes } from '../../../constants/routes';
 import { useDispatch } from 'react-redux';
-import { forgotPassword } from '../../../store/actions';
+import { firebaseResetPassword } from '../../../store/actions';
 import {
   FormTextInput,
   FormWrapper,
@@ -21,10 +21,10 @@ const EmailScreen = ({ navigation }) => {
   });
   const onForgotPassword = (values) => {
     dispatch(
-      forgotPassword(
+      firebaseResetPassword(
         { email: values.email.trim().toLowerCase() },
         (isSuccess) => {
-          if (isSuccess) navigation.navigate(routes.Pin);
+          if (isSuccess) navigation.navigate(routes.UserSignIn);
         }
       )
     );

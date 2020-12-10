@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL, apiRoutes } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
 import { getAxiosConfig } from '../../helpers/Utils';
+import { auth } from '../../helpers/firebase/Firebase';
 export const USER_SIGNUP_START = 'USER_SIGNUP_START';
 export const USER_SIGNUP_SUCCESS = 'USER_SIGNUP_SUCCESS';
 export const USER_SIGNUP_FAILED = 'USER_SIGNUP_FAILED';
@@ -101,6 +102,7 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
       );
       if (response && response.data?.data) {
         const result = response?.data?.data;
+
         dispatch(userSignupSuccess(result));
         console.log('signup user data', result);
 
@@ -110,19 +112,44 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
         isSuccess(false);
       }
     } catch (error) {
+      console.log('signup error', error);
       dispatch(userSignupFailed('An error occurred'));
     }
   };
+};
+export const sendEmail = () => {
+  return async (dispatch) => {
+    try {
+      console.log('sending email');
+      await auth.currentUser.sendEmailVerification();
+      console.log('email sent');
+    } catch (error) {
+      console.log('error in sending email', error);
+    }
+  };
+};
+const firebaseLogin = async (email, password) => {
+  return auth.signInWithEmailAndPassword(email, password);
 };
 
 export const userSignin = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
+      console.log('user signin', userData);
       dispatch(userSigninStart());
-      const response = await axios.post(
-        API_URL + apiRoutes.USER_SIGNIN,
-        userData
+      const firebaseResponse = await firebaseLogin(
+        userData.email,
+        userData.password
       );
+      const idToken = await firebaseResponse.user.getIdToken();
+      const emailVerified = firebaseResponse.user.emailVerified;
+      console.log('email verified is', emailVerified);
+      const response = await axios.post(API_URL + apiRoutes.USER_SIGNIN, {
+        ...userData,
+        idToken,
+        emailVerified,
+      });
+
       if (response?.data?.data) {
         const result = response?.data?.data;
         dispatch(userSigninSuccess(result));
@@ -135,6 +162,7 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
         isSuccess(false);
       }
     } catch (error) {
+      console.log('user signin failed', error);
       dispatch(userSigninFailed('An error occurred'));
       isSuccess(false);
     }
@@ -177,9 +205,7 @@ export const updateUser = (
 export const forgotPassword = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
-      {
-        console.log('user data is', userData);
-      }
+     
       dispatch(forgotPasswordStart());
       const response = await axios.post(
         API_URL + apiRoutes.FORGORT_PASSWORD,
@@ -194,7 +220,7 @@ export const forgotPassword = (userData, isSuccess = isSuccessDefault) => {
       }
     } catch (error) {
       dispatch(forgotPasswordFailed('An error occurred'));
-      isSuccess(true);
+      isSuccess(false);
     }
   };
 };
@@ -218,6 +244,22 @@ export const confirmPin = (userData, isSuccess = isSuccessDefault) => {
       }
     } catch (error) {
       dispatch(confirmPinFailed('An error occurred'));
+      isSuccess(false);
+    }
+  };
+};
+
+export const firebaseResetPassword = (userData, isSuccess=isSuccessDefault) => {
+  return async (dispatch) => {
+    try {
+      console.log('sending firebase reset password email');
+      dispatch(forgotPasswordStart());
+      await auth.sendPasswordResetEmail(userData.email);
+      dispatch(forgotPasswordSuccess(userData.email));
+      isSuccess(true);
+      console.log('sending firebase reset password email sent');
+    } catch (error) {
+      dispatch(forgotPasswordFailed('An error occurred'));
       isSuccess(false);
     }
   };

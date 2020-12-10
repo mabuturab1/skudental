@@ -13,13 +13,11 @@ const MainNavigationScreens = () => {
 };
 export default function App() {
   useEffect(() => {
-    setTimeout(async () => {
-      try {
-        await SplashScreen.preventAutoHideAsync();
-      } catch (e) {
-        console.warn(e);
-      }
-    });
+    try {
+      SplashScreen.preventAutoHideAsync();
+    } catch (e) {
+      console.warn(e);
+    }
   }, []);
   const showApp = () => {
     SplashScreen.hideAsync();

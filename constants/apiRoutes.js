@@ -1,4 +1,4 @@
-export const API_URL = 'https://skdentalkab.herokuapp.com/api';
+export const API_URL = 'http://192.168.10.5:4000/api';
 export const apiRoutes = {
   USER_SIGNUP: '/user/signup',
   USER_SIGNIN: '/user/signin',

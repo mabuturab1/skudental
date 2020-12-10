@@ -8,9 +8,9 @@ import {
   FORGOT_PASSWORD_START,
   FORGOT_PASSWORD_SUCCESS,
   FORGOT_PASSWORD_FAILED,
-  UPDATE_PASSWORD_START,
-  UPDATE_PASSWORD_SUCCESS,
-  UPDATE_PASSWORD_FAILED,
+  CONFIRM_PIN_START,
+  CONFIRM_PIN_SUCCESS,
+  CONFIRM_PIN_FAILED,
   UPDATE_USER_START,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_FAILED,
@@ -22,6 +22,7 @@ import {
 const initialState = {
   user: {},
   token: null,
+  passwordResetToken: null,
   loading: {
     userSignin: false,
     userSignup: false,
@@ -95,7 +96,7 @@ export default (state = initialState, action) => {
     case FORGOT_PASSWORD_SUCCESS:
       return {
         ...state,
-        user: {},
+        user: {email:action.payload},
         loading: { ...state.loading, forgotPassword: false },
       };
     case FORGOT_PASSWORD_FAILED:
@@ -106,23 +107,26 @@ export default (state = initialState, action) => {
         error: { ...state.error, forgotPassword: action.payload },
       };
 
-    case UPDATE_PASSWORD_START:
+    case CONFIRM_PIN_START:
       return {
         ...state,
         user: {},
+        passwordResetToken: null,
         loading: { ...state.loading, updatePassword: true },
         error: { ...state.error, updatePassword: '' },
       };
-    case UPDATE_PASSWORD_SUCCESS:
+    case CONFIRM_PIN_SUCCESS:
       return {
         ...state,
-        user: {},
+        user: action.payload.user,
+        passwordResetToken: action.payload.token,
         loading: { ...state.loading, updatePassword: false },
       };
-    case UPDATE_PASSWORD_FAILED:
+    case CONFIRM_PIN_FAILED:
       return {
         ...state,
         user: {},
+        passwordResetToken: null,
         loading: { ...state.loading, updatePassword: false },
         error: { ...state.error, updatePassword: action.payload },
       };

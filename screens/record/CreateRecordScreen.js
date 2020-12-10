@@ -65,7 +65,6 @@ const CreateRecordScreen = ({ navigation }) => {
             {console.log('errors are', errors)}
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
-                style={styles.textInput}
                 name='submissionDate'
                 value={values.submissionDate}
                 editable={false}
@@ -74,7 +73,6 @@ const CreateRecordScreen = ({ navigation }) => {
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
                 placeholder='Patient Name'
-                style={styles.textInput}
                 value={values.patientName}
                 onChangeText={handleChange('patientName')}
                 onBlur={handleBlur('patientName')}
@@ -86,7 +84,6 @@ const CreateRecordScreen = ({ navigation }) => {
                 placeholder={'Additional Notes'}
                 multiline={true}
                 numberOfLines={4}
-                style={styles.textInput}
                 value={values.additionalNotes}
                 onChangeText={handleChange('additionalNotes')}
                 onBlur={handleBlur('additionalNotes')}
@@ -119,7 +116,6 @@ const CreateRecordScreen = ({ navigation }) => {
   );
 };
 const styles = StyleSheet.create({
-  
   imageContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -138,6 +134,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingRight: 10,
   },
-  
 });
 export default CreateRecordScreen;

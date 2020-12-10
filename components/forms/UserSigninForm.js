@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -10,6 +10,7 @@ import ErrorText from './ErrorText';
 import { routes } from '../../constants/routes';
 import { useDispatch } from 'react-redux';
 import { FormInputWrapper, FormTextInput, FormWrapper } from './FormComponents';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 const UserSignInScreen = ({
   navigation,
   isLogin = true,
@@ -24,7 +25,7 @@ const UserSignInScreen = ({
       .min(5, 'Password should be atleast 5 characters')
       .required('Kindly enter a valid password'),
   });
-  
+
   const getInitValues = () => ({ email: email || '', password: '' });
 
   return (
@@ -33,7 +34,7 @@ const UserSignInScreen = ({
         initialValues={getInitValues()}
         validationSchema={ValidationSchema}
         onSubmit={(values, { setSubmitting }) => {
-            onSubmit(values);
+          onSubmit(values);
           setSubmitting(false);
         }}
       >
@@ -50,7 +51,6 @@ const UserSignInScreen = ({
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
                 placeholder='Email address'
-                style={styles.textInput}
                 value={values.email}
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
@@ -61,7 +61,6 @@ const UserSignInScreen = ({
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
                 placeholder='Password'
-                style={styles.textInput}
                 value={values.password}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
@@ -69,6 +68,15 @@ const UserSignInScreen = ({
               />
               <ErrorText errors={errors} touched={touched} name='password' />
             </FormInputWrapper>
+            {isLogin ? (
+              <FormInputWrapper>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate(routes.Email)}
+                >
+                  <Text>Forgot Password</Text>
+                </TouchableOpacity>
+              </FormInputWrapper>
+            ) : null}
             <View style={styles.loginButtonWrapper}>
               <FlatButton title={loginButtonText} onPress={handleSubmit} />
             </View>
@@ -88,7 +96,6 @@ const UserSignInScreen = ({
   );
 };
 const styles = StyleSheet.create({
- 
   loginButtonWrapper: {
     alignSelf: 'flex-end',
     margin: 10,
@@ -100,6 +107,5 @@ const styles = StyleSheet.create({
   registerButton: {
     width: 150,
   },
-  
 });
 export default UserSignInScreen;

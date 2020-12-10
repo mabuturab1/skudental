@@ -8,3 +8,11 @@ export const isUserAuthenticated = (token) => {
   }
   return false;
 };
+
+export const getAxiosConfig = (token) => {
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};

@@ -21,6 +21,9 @@ import {
   PickupListScreen,
   UpdateUserScreen,
   ConfirmPasswordScreen,
+  PasswordResetScreen,
+  PinScreen,
+  EmailScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -49,6 +52,9 @@ const recordListData = [
 const authData = [
   { componentScreenName: routes.UserSignIn, component: UserSigninScreen },
   { componentScreenName: routes.UserSignUp, component: UserSignupScreen },
+  { componentScreenName: routes.PasswordReset, component: PasswordResetScreen },
+  { componentScreenName: routes.Email, component: EmailScreen },
+  { componentScreenName: routes.Pin, component: PinScreen },
 ];
 
 const createStackNav = (listData, drawerNavigation, additionalOptions = {}) => (

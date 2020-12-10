@@ -87,7 +87,6 @@ const UserProfileForm = ({
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
                 placeholder='Name'
-                style={styles.textInput}
                 value={values.name}
                 onChangeText={handleChange('name')}
                 onBlur={handleBlur('name')}
@@ -97,7 +96,6 @@ const UserProfileForm = ({
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
                 placeholder='Email'
-                style={styles.textInput}
                 value={values.email}
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
@@ -110,7 +108,6 @@ const UserProfileForm = ({
               <FormInputWrapper style={styles.singleFormFieldWrapper}>
                 <FormTextInput
                   placeholder='New Password'
-                  style={styles.textInput}
                   value={values.newPassword}
                   onChangeText={handleChange('newPassword')}
                   onBlur={handleBlur('newPassword')}
@@ -126,7 +123,6 @@ const UserProfileForm = ({
               <FormInputWrapper style={styles.singleFormFieldWrapper}>
                 <FormTextInput
                   placeholder='Password'
-                  style={styles.textInput}
                   value={values.password}
                   onChangeText={handleChange('password')}
                   onBlur={handleBlur('password')}
@@ -138,7 +134,6 @@ const UserProfileForm = ({
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
                 placeholder='Confirm password'
-                style={styles.textInput}
                 value={values.confirmPassword}
                 onChangeText={handleChange('confirmPassword')}
                 onBlur={handleBlur('confirmPassword')}
@@ -153,7 +148,6 @@ const UserProfileForm = ({
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <Dropdown
                 placeholder='Role'
-                style={styles.textInput}
                 value={values.role}
                 data={roleData}
                 enabled={isSignup}

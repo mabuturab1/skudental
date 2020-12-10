@@ -9,7 +9,7 @@ export const FormInputWrapper = ({ children, style }) => (
 );
 
 export const FormTextInput = (props) => (
-  <TextInput {...props} style={{ ...styles.textInput, ...props.style }} />
+  <TextInput {...props}  style={{ ...styles.textInput, ...props.style }} />
 );
 
 const styles = StyleSheet.create({

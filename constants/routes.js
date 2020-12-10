@@ -14,4 +14,7 @@ export const routes = {
   UpdateUser: 'UpdateUser',
   ConfirmPassword: 'ConfirmPassword',
   ImagePicker: 'ImagePicker',
+  Pin: 'PinScreen',
+  PasswordReset: 'PasswordReset',
+  Email: 'Email',
 };

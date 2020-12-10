@@ -2,6 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL, apiRoutes } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
+import { getAxiosConfig } from '../../helpers/Utils';
 export const USER_SIGNUP_START = 'USER_SIGNUP_START';
 export const USER_SIGNUP_SUCCESS = 'USER_SIGNUP_SUCCESS';
 export const USER_SIGNUP_FAILED = 'USER_SIGNUP_FAILED';
@@ -18,9 +19,9 @@ export const FORGOT_PASSWORD_START = 'FORGOT_PASSWORD_START';
 export const FORGOT_PASSWORD_SUCCESS = 'FORGOT_PASSWORD_SUCCESS';
 export const FORGOT_PASSWORD_FAILED = 'FORGOT_PASSWORD_FAILED';
 
-export const UPDATE_PASSWORD_START = 'UPDATE_PASSWORD_START';
-export const UPDATE_PASSWORD_SUCCESS = 'UPDATE_PASSWORD_SUCCESS';
-export const UPDATE_PASSWORD_FAILED = 'UPDATE_PASSWORD_FAILED';
+export const CONFIRM_PIN_START = 'CONFIRM_PIN_START';
+export const CONFIRM_PIN_SUCCESS = 'CONFIRM_PIN_SUCCESS';
+export const CONFIRM_PIN_FAILED = 'CONFIRM_PIN_FAILED';
 
 export const VERIFY_USER_START = 'VERIFY_USER_START';
 export const VERIFY_USER_SUCCESS = 'VERIFY_USER_SUCCESS';
@@ -64,15 +65,15 @@ const forgotPasswordFailed = (error) => ({
   type: FORGOT_PASSWORD_FAILED,
   error,
 });
-const updatePasswordStart = () => ({
-  type: UPDATE_PASSWORD_START,
+const confirmPinStart = () => ({
+  type: CONFIRM_PIN_START,
 });
-const updatePasswordSuccess = (payload) => ({
-  type: UPDATE_PASSWORD_SUCCESS,
+const confirmPinSuccess = (payload) => ({
+  type: CONFIRM_PIN_SUCCESS,
   payload,
 });
-const updatePasswordFailed = (error) => ({
-  type: UPDATE_PASSWORD_FAILED,
+const confirmPinFailed = (error) => ({
+  type: CONFIRM_PIN_FAILED,
   error,
 });
 
@@ -140,38 +141,27 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
   };
 };
 
-export const confirmPassword = (userData, isSuccess = isSuccessDefault) => {
-  return async (dispatch) => {
+export const updateUser = (
+  userData,
+  isSuccess = isSuccessDefault,
+  resetPassword = false
+) => {
+  return async (dispatch, getState) => {
     try {
-      const response = await axios.post(
-        API_URL + apiRoutes.USER_SIGNIN,
-        userData
-      );
-      if (response?.data?.data) {
-        const result = response?.data?.data;
-        dispatch(userSigninSuccess(result));
-        const token = result.token;
-        await AsyncStorage.setItem('token', token);
-        isSuccess(true);
-      } else if (response.error) {
-        isSuccess(false);
-      }
-    } catch (error) {
-      isSuccess(false);
-    }
-  };
-};
-
-export const updateUser = (userData, isSuccess = isSuccessDefault) => {
-  return async (dispatch) => {
-    try {
+      const { auth } = getState();
       dispatch(updateUserStart());
       const response = await axios.post(
         API_URL + apiRoutes.UPDATE_USER,
-        userData
+        userData,
+        {
+          ...getAxiosConfig(
+            resetPassword ? auth.passwordResetToken : auth.token
+          ),
+        }
       );
       if (response && response.data) {
-        dispatch(updateUserSuccess(response.data));
+        const result = response?.data?.data;
+        dispatch(updateUserSuccess(result));
         isSuccess(true);
       } else if (response.error) {
         dispatch(updateUserFailed(response.error));
@@ -187,13 +177,16 @@ export const updateUser = (userData, isSuccess = isSuccessDefault) => {
 export const forgotPassword = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
+      {
+        console.log('user data is', userData);
+      }
       dispatch(forgotPasswordStart());
       const response = await axios.post(
         API_URL + apiRoutes.FORGORT_PASSWORD,
         userData
       );
       if (response && response.data) {
-        dispatch(forgotPasswordSuccess(response.data));
+        dispatch(forgotPasswordSuccess(userData.email));
         isSuccess(true);
       } else if (response.error) {
         dispatch(forgotPasswordFailed(response.error));
@@ -206,23 +199,25 @@ export const forgotPassword = (userData, isSuccess = isSuccessDefault) => {
   };
 };
 
-export const updatePassword = (userData, isSuccess = isSuccessDefault) => {
-  return async (dispatch) => {
+export const confirmPin = (userData, isSuccess = isSuccessDefault) => {
+  return async (dispatch, getState) => {
     try {
-      dispatch(updatePasswordStart());
+      const { auth } = getState();
+      dispatch(confirmPinStart());
       const response = await axios.post(
-        API_URL + apiRoutes.UPDATE_PASSWORD,
+        API_URL + apiRoutes.VERIFY_PIN,
         userData
       );
-      if (response && response.data) {
-        dispatch(updatePasswordSuccess(response.data));
+      if (response?.data?.data) {
+        const result = response?.data?.data;
+        dispatch(confirmPinSuccess(result));
         isSuccess(true);
       } else if (response.error) {
-        dispatch(updatePasswordFailed(response.error));
+        dispatch(confirmPinFailed(response.error));
         isSuccess(false);
       }
     } catch (error) {
-      dispatch(updatePasswordFailed('An error occurred'));
+      dispatch(confirmPinFailed('An error occurred'));
       isSuccess(false);
     }
   };

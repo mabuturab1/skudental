@@ -24,7 +24,6 @@ const ArrangePickeupScreen = (props) => {
         <FormWrapper style={styles.wrapper}>
           <FormTextInput
             placeholder={'Pickup Address'}
-            style={styles.textInput}
             name='pickupAddress'
             value={values.pickupAddress}
             onChange={handleChange('pickupAddress')}

@@ -1,23 +1,53 @@
-import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { StyleSheet, View, Image, TextInput } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Card, Paragraph, Title } from 'react-native-paper';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Image, Text, Dimensions } from 'react-native';
+import {
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
+import { useDispatch } from 'react-redux';
+import { ThemeColors } from '../../constants/Colors';
+import { routes } from '../../constants/routes';
 import { isAndroid } from '../../helpers/Utils';
-const UploadImageItem = ({
-  item,
-  index,
-  onAddComments,
-  isLastItem,
-  sendImageData,
-  initTextValue,
-}) => {
-  console.log(isLastItem);
+const UploadImageItem = ({ imageObj, navigation, isUploadedToServer }) => {
+  const dispatch = useDispatch();
+  console.log('imageobj is', imageObj.imageFile.path);
+  const [sendToServer, setSendToServerStatus] = useState(false);
+  useEffect(() => {}, []);
+  const showImagePreview = () => {
+    navigation.navigate(routes.ImagePreview, {
+      imageObj,
+    });
+  };
   return (
     <View style={styles.wrapper}>
-      <View style={styles.card}>
-        <Paragraph>{initTextValue}</Paragraph>
-        <Image style={styles.coverPhoto} source={{ uri: item.path }} />
+      <View style={styles.iconWrapper}>
+        {imageObj.additionalComments != null ? (
+          <Text style={styles.commentsText}>{imageObj.additionalComments}</Text>
+        ) : null}
+
+        <View style={styles.singleIconWrapper}>
+          <MaterialIcons name={'delete'} size={24} color='black' />
+        </View>
+      </View>
+
+      <TouchableWithoutFeedback onPress={showImagePreview}>
+        <View style={styles.coverPhotoWrapper}>
+          <Image
+            style={styles.coverPhoto}
+            source={{ uri: imageObj.imagePath }}
+          />
+        </View>
+      </TouchableWithoutFeedback>
+      <View style={styles.iconWrapper}>
+        <View></View>
+        <View style={styles.singleIconWrapper}>
+          <Ionicons
+            name={isAndroid() ? 'md-checkmark-done' : 'ios-checkmark-done'}
+            color={ThemeColors.primary}
+            size={24}
+          />
+        </View>
       </View>
     </View>
   );
@@ -25,29 +55,35 @@ const UploadImageItem = ({
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    width: '100%',
+    height: 500,
     alignItems: 'center',
-    position: 'relative',
-    paddingVertical:10,
-    backgroundColor:'white'
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    marginVertical: 10,
   },
-  card: {
+  iconWrapper: {
+    flexDirection: 'row',
     width: '100%',
+    height: 40,
+    paddingHorizontal: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  singleIconWrapper: {
+    width: 40,
     height: '100%',
-    alignItems:'center'
+    justifyContent: 'center',
+    alignItems: 'flex-end',
   },
   coverPhoto: {
-    width: '98%',
-    height: '95%',
+    width: Dimensions.get('window').width,
+    height: 420,
     resizeMode: 'cover',
   },
 
-  textInput: {
-    paddingHorizontal: 20,
-    marginLeft: 20,
-    marginRight: 20,
-
-    bottom: 40,
+  commentsText: {
+    fontSize: 16,
+    fontWeight: '500',
     color: 'black',
   },
 });

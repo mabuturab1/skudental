@@ -17,10 +17,14 @@ import {
   SEND_RECORD_MESSAGE_START,
   SEND_RECORD_MESSAGE_SUCCESS,
   SEND_RECORD_MESSAGE_FAILED,
+  DATA_UPLOAD,
+  UPDATE_UPLOAD_PROGRESS,
 } from './actions';
+import { getUpdatedUploadingDataObj, removeItemFromUploadingArr } from './recordUtilsFunctions';
 
 const initialState = {
   user: {},
+  uploadingDataArr: [],
   loading: {
     createRecord: false,
     updateRecord: false,
@@ -38,6 +42,7 @@ const initialState = {
     sendRecordMessage: '',
   },
 };
+
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -163,6 +168,27 @@ export default (state = initialState, action) => {
         user: {},
         loading: { ...state.loading, sendRecordMessage: false },
         error: { ...state.error, sendRecordMessage: action.payload },
+      };
+    case DATA_UPLOAD:
+      return {
+        ...state,
+        uploadingDataArr: state.uploadingDataArr.concat(action.payload),
+      };
+    case UPDATE_UPLOAD_PROGRESS:
+      return {
+        ...state,
+        uploadingDataArr: getUpdatedUploadingDataObj(
+          state.uploadingDataArr,
+          action.payload
+        ),
+      };
+    case CLEAR_UPLOADING_RECORD:
+      return {
+        ...state,
+        uploadingDataArr: removeItemFromUploadingArr(
+          state.uploadingDataArr,
+          action.payload
+        ),
       };
   }
   return state;

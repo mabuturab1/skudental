@@ -3,17 +3,25 @@ import React from 'react';
 import { StyleSheet, View, Image, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { isAndroid } from '../../helpers/Utils';
-const ImageItem = ({ item, index, onAddComments, isLastItem, sendImageData, initTextValue }) => {
+const ImageItem = ({
+  imageObj,
+  index,
+  textEditable = true,
+  onAddComments = () => {},
+  isLastItem,
+  sendImageData,
+}) => {
   console.log(isLastItem);
   return (
     <View style={styles.imageItemWrapper}>
-      <Image style={styles.singleImage} source={{ uri: item.path }} />
+      <Image style={styles.singleImage} source={{ uri: imageObj.imagePath }} />
       <View>
         <TextInput
           style={styles.textInput}
-          defaultValue={initTextValue}
+          defaultValue={imageObj.additionalComments || ''}
           placeholderTextColor='rgba(255,255,255,0.6)'
           placeholder='Add comments'
+          editable={textEditable}
           onChangeText={(text) => onAddComments(index, text)}
         />
       </View>

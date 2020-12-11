@@ -13,6 +13,7 @@ import UserProfileForm from './forms/UserProfileForm';
 import UserSigninForm from './forms/UserSigninForm';
 import ImageItem from './carousel/ImageItem';
 import UploadImageItem from './carousel/UploadImageItem';
+import CircularProgressbar from './progressbar/CircularProgressbar';
 import {
   FormWrapper,
   FormInputWrapper,
@@ -39,5 +40,6 @@ export {
   FormInputWrapper,
   FormTextInput,
   ImageItem,
-  UploadImageItem
+  UploadImageItem,
+  CircularProgressbar
 };

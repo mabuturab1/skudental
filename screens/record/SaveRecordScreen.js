@@ -1,51 +1,41 @@
-import React, { useRef, useState } from 'react';
-import { View, SafeAreaView, StyleSheet, Dimensions } from 'react-native';
-import { UploadImageItem} from '../../components';
-import Carousel from 'react-native-snap-carousel';
+import React, { useRef } from 'react';
+import {
+  View,
+  SafeAreaView,
+  StyleSheet,
+  FlatList,
+  Dimensions,
+} from 'react-native';
+import { useSelector } from 'react-redux';
+import { UploadImageItem } from '../../components';
 import { routes } from '../../constants/routes';
 const SaveRecordScreen = ({ route, navigation }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const { images = [], recordData = {} } = route.params;
-  const comments = useRef(recordData?.additionalComments||{});
-  const windowWidth = Dimensions.get('window').width;
-  const windowHeight = Dimensions.get('window').height;
-  const onAddComments = (item, text) => {
-    comments.current[item] = text;
-    console.log('text is', text);
-  };
-  const sendImageData = () => {
-   
-  };
+  const { currentRecordIndex } = route.params;
+  const uploadingData = useSelector(({ record }) => record.uploadingData) || [];
+  let attachedItems = [];
+  if (uploadingData.length >= currentRecordIndex + 1) {
+    attachedItems = uploadingData[currentRecordIndex];
+  }
+  const carouselItemsList = attachedItems.map((el, index) => ({
+    id: index.toString(),
+    ...el,
+  }));
+  const sendImageData = () => {};
+
   const renderItem = ({ item, index }) => {
     return (
-      <UploadImageItem
-        item={item}
-        index={index}
-        initTextValue={comments.current[index] || ''}
-        isLastItem={index + 1 === images.length}
-        onAddComments={onAddComments}
-        sendImageData={sendImageData}
-      />
+      <UploadImageItem imageObj={item} index={index} navigation={navigation} />
     );
   };
   const carouselRef = useRef();
+
   return (
     <SafeAreaView style={styles.safeAreaWrapper}>
-      <View style={styles.carouselWrapper}>
-        <Carousel
-          layout={'default'}
-          ref={carouselRef}
-          data={images}
-          sliderWidth={windowWidth}
-          itemWidth={windowWidth}
-          sliderHeight={windowHeight}
-          itemHeight={windowHeight-100}
-          renderItem={renderItem}
-          vertical={true}
-          inactiveSlideScale={1}
-          onSnapToItem={(index) => setActiveIndex(index)}
-        />
-      </View>
+      <FlatList
+        data={carouselItemsList}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
     </SafeAreaView>
   );
 };
@@ -55,5 +45,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e5e5ea',
   },
-  carouselWrapper: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+
+  carouselWrapper: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
 });

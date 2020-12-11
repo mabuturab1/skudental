@@ -18,3 +18,10 @@ export const getAxiosConfig = (getState, additionalHeader={}) => {
     },
   };
 };
+export const getImageComments = (itemsList = []) => {
+  let tempComments = {};
+  itemsList.forEach(
+    (el, index) => (tempComments[index] = el.additionalComments || '')
+  );
+  return itemsList;
+};

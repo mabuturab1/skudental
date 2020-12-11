@@ -17,6 +17,7 @@ import ConfirmPasswordScreen from './user/ConfirmPasswordScreen';
 import EmailScreen from './user/passwordReset/EmailScreen';
 import PasswordResetScreen from './user/passwordReset/PasswordResetScreen';
 import PinScreen from './user/passwordReset/PinScreen';
+import ImagePreviewScreen from './record/ImagePreviewScreen';
 
 export {
   RecordDetailsScreen,
@@ -38,4 +39,5 @@ export {
   PinScreen,
   PreviewCarouselScreen,
   SaveRecordScreen,
+  ImagePreviewScreen,
 };

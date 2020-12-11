@@ -39,7 +39,17 @@ const CreateRecordScreen = ({ navigation }) => {
       mediaType: 'photo',
     }).then((selectedImages) => {
       setImages(selectedImages);
-      navigation.navigate(routes.PreviewCarousel,{carouselItems:selectedImages});
+      const imageList = selectedImages.map((el) => ({
+        imagePath: el.path,
+        imageFile: el,
+        additionalComments: '',
+        isLocalItem:true,
+        recordUpdateFailed:false,
+        progress: 0,
+      }));
+      navigation.navigate(routes.PreviewCarousel, {
+        carouselItems: imageList,
+      });
     });
   };
   const imageSelect = (imageList) => {

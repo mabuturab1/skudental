@@ -3,34 +3,48 @@ import { View, SafeAreaView, StyleSheet, Dimensions } from 'react-native';
 import { ImageItem } from '../../components';
 import Carousel from 'react-native-snap-carousel';
 import { routes } from '../../constants/routes';
-const PreviewCarouselScreen = ({ route, recordData={}, navigation }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const { carouselItems = [] } = route.params;
-  const comments = useRef({});
+import { StackActions } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { startUploadingData } from '../../store/record/actions';
+const PreviewCarouselScreen = ({ route, recordData = {}, navigation }) => {
+  const dispatch = useDispatch();
   const windowWidth = Dimensions.get('window').width;
-  const onAddComments = (item, text) => {
-    comments.current[item] = text;
-    console.log('text is', text);
+  const { carouselItems = [] } = route.params;
+  const updatedCarouselItems = useRef(carouselItems);
+
+  const updateComments = (index, text) => {
+    updatedCarouselItems.current[index].additionalComments = text;
   };
-  const sendImageData=()=>{
-    navigation.navigate(routes.SaveRecord, {
-      recordData: { ...recordData, additionalComments: comments.current },
-      images: carouselItems,
-    });
-  }
+
+  const sendImageData = () => {
+    const uploadingDataArr = useSelector(
+      ({ record }) => record.uploadingDataArr
+    );
+    dispatch(
+      startUploadingData({
+        recordData: recordData,
+        attachedItems: updatedCarouselItems.current,
+      },uploadingDataArr.length)
+    );
+    navigation.navigate(
+      StackActions.replace(routes.SaveRecord, {
+        currentRecordIndex: uploadingDataArr.length,
+      })
+    );
+  };
+
   const renderItem = ({ item, index }) => {
-   
     return (
       <ImageItem
-        item={item}
+        imageObj={item}
         index={index}
-        initTextValue={comments.current[item]||''}
         isLastItem={index + 1 === carouselItems.length}
-        onAddComments={onAddComments}
+        onAddComments={updateComments}
         sendImageData={sendImageData}
       />
     );
   };
+
   const carouselRef = useRef();
   return (
     <SafeAreaView style={styles.safeAreaWrapper}>
@@ -42,7 +56,6 @@ const PreviewCarouselScreen = ({ route, recordData={}, navigation }) => {
           sliderWidth={windowWidth}
           itemWidth={windowWidth}
           renderItem={renderItem}
-          onSnapToItem={(index) => setActiveIndex(index)}
         />
       </View>
     </SafeAreaView>
@@ -53,7 +66,6 @@ const styles = StyleSheet.create({
   safeAreaWrapper: {
     flex: 1,
     backgroundColor: 'black',
-   
   },
   carouselWrapper: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
 });

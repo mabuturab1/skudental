@@ -169,11 +169,7 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
   };
 };
 
-export const updateUser = (
-  userData,
-  isSuccess = isSuccessDefault,
-  resetPassword = false
-) => {
+export const updateUser = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch, getState) => {
     try {
       const { auth } = getState();
@@ -182,9 +178,7 @@ export const updateUser = (
         API_URL + apiRoutes.UPDATE_USER,
         userData,
         {
-          ...getAxiosConfig(
-            resetPassword ? auth.passwordResetToken : auth.token
-          ),
+          ...getAxiosConfig(auth.token),
         }
       );
       if (response && response.data) {
@@ -202,54 +196,10 @@ export const updateUser = (
   };
 };
 
-export const forgotPassword = (userData, isSuccess = isSuccessDefault) => {
-  return async (dispatch) => {
-    try {
-     
-      dispatch(forgotPasswordStart());
-      const response = await axios.post(
-        API_URL + apiRoutes.FORGORT_PASSWORD,
-        userData
-      );
-      if (response && response.data) {
-        dispatch(forgotPasswordSuccess(userData.email));
-        isSuccess(true);
-      } else if (response.error) {
-        dispatch(forgotPasswordFailed(response.error));
-        isSuccess(false);
-      }
-    } catch (error) {
-      dispatch(forgotPasswordFailed('An error occurred'));
-      isSuccess(false);
-    }
-  };
-};
-
-export const confirmPin = (userData, isSuccess = isSuccessDefault) => {
-  return async (dispatch, getState) => {
-    try {
-      const { auth } = getState();
-      dispatch(confirmPinStart());
-      const response = await axios.post(
-        API_URL + apiRoutes.VERIFY_PIN,
-        userData
-      );
-      if (response?.data?.data) {
-        const result = response?.data?.data;
-        dispatch(confirmPinSuccess(result));
-        isSuccess(true);
-      } else if (response.error) {
-        dispatch(confirmPinFailed(response.error));
-        isSuccess(false);
-      }
-    } catch (error) {
-      dispatch(confirmPinFailed('An error occurred'));
-      isSuccess(false);
-    }
-  };
-};
-
-export const firebaseResetPassword = (userData, isSuccess=isSuccessDefault) => {
+export const firebaseResetPassword = (
+  userData,
+  isSuccess = isSuccessDefault
+) => {
   return async (dispatch) => {
     try {
       console.log('sending firebase reset password email');

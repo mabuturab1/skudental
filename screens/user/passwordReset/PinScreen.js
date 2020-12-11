@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import { routes } from '../../../constants/routes';
 import { useDispatch, useSelector } from 'react-redux';
-import { confirmPin } from '../../../store/actions';
+// import { confirmPin } from '../../../store/actions';
 import {
   FormTextInput,
   FormWrapper,
@@ -22,16 +22,16 @@ const PinScreen = ({ navigation }) => {
     pin: Yup.number().required('Kindly enter your pin'),
   });
   const onForgotPassword = (values) => {
-    dispatch(
-      confirmPin(
-        { ...values, email: email?.trim()?.toLowerCase() },
-        (isSuccess) => {
-          if (isSuccess) {
-            navigation.navigate(routes.PasswordReset);
-          }
-        }
-      )
-    );
+    // dispatch(
+    //   confirmPin(
+    //     { ...values, email: email?.trim()?.toLowerCase() },
+    //     (isSuccess) => {
+    //       if (isSuccess) {
+    //         navigation.navigate(routes.PasswordReset);
+    //       }
+    //     }
+    //   )
+    // );
   };
   const getInitValues = () => ({ pin: '' });
 

@@ -24,6 +24,8 @@ import {
   PasswordResetScreen,
   PinScreen,
   EmailScreen,
+  PreviewCarouselScreen,
+  SaveRecordScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -312,6 +314,8 @@ export default mainStackNavigator = (isAuthenticated) => (
     />
     <Stack.Screen name={routes.LabDocket} component={LabDocketScreen} />
     <Stack.Screen name={routes.UpdateUser} component={UpdateUserScreen} />
+    <Stack.Screen name={routes.PreviewCarousel} options={{headerShown:false}} component={PreviewCarouselScreen} />
+    <Stack.Screen name={routes.SaveRecord}  component={SaveRecordScreen} />
     <Stack.Screen
       name={routes.ConfirmPassword}
       component={ConfirmPasswordScreen}

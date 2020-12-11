@@ -11,6 +11,8 @@ import RounedImageList from './image/RoundedImageList';
 import RounedImage from './image/RoundedImage';
 import UserProfileForm from './forms/UserProfileForm';
 import UserSigninForm from './forms/UserSigninForm';
+import ImageItem from './carousel/ImageItem';
+import UploadImageItem from './carousel/UploadImageItem';
 import {
   FormWrapper,
   FormInputWrapper,
@@ -36,4 +38,6 @@ export {
   FormWrapper,
   FormInputWrapper,
   FormTextInput,
+  ImageItem,
+  UploadImageItem
 };

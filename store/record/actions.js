@@ -1,4 +1,7 @@
 import axios from 'axios';
+import { apiRoutes } from '../../constants/apiRoutes';
+import { isSuccessDefault } from '../../constants/UIConstants';
+import { getAxiosConfig } from '../../helpers/Utils';
 const CREATE_RECORD_START = 'CREATE_RECORD_START';
 const CREATE_RECORD_SUCCESS = 'CREATE_RECORD_SUCCESS';
 const CREATE_RECORD_FAILED = 'CREATE_RECORD_FAILED';
@@ -102,6 +105,36 @@ export const createRecord = (userData) => {
       }
     } catch (error) {
       dispatch(createRecordFailed('An error occurred'));
+    }
+  };
+};
+const getPhotoFormData = (fileInfo) => {
+  let formData = new FormData();
+  formData.append('photo', fileInfo.file);
+  formData.append('additionalComments', fileInfo.additionalComments);
+  return formData;
+};
+export const uploadRecordPhoto = (
+  recordId,
+  fileInfo,
+  uploadProgress,
+  isSuccess = isSuccessDefault
+) => {
+  return async (dispatch, getState) => {
+    try {
+      let formData = getPhotoFormData(fileInfo);
+      const fileHeader = { 'Content-Type': 'multipart/form-data' };
+      await axios.post(
+        API_URL + apiRoutes.UPLOAD_RECORD_FILE + `/${recordId}`,
+        formData,
+        {
+          ...getAxiosConfig(getState, fileHeader),
+          uploadProgress,
+        }
+      );
+      isSuccess(true);
+    } catch (error) {
+      console.log('An error occurred while uploading file', error);
     }
   };
 };

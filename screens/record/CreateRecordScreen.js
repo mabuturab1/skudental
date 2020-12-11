@@ -8,6 +8,8 @@ import {
   ErrorText,
   FlatButton,
   FormTextInput,
+  FormWrapper,
+  FormInputWrapper,
   RoundedButton,
   RounedImageList,
   ScrollWrapper,
@@ -35,9 +37,9 @@ const CreateRecordScreen = ({ navigation }) => {
     ImagePicker.openPicker({
       multiple: true,
       mediaType: 'photo',
-    }).then((images) => {
-      console.log('images', images[0].path);
-      setImages(images);
+    }).then((selectedImages) => {
+      setImages(selectedImages);
+      navigation.navigate(routes.PreviewCarousel,{carouselItems:selectedImages});
     });
   };
   const imageSelect = (imageList) => {

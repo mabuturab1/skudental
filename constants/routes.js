@@ -17,4 +17,6 @@ export const routes = {
   Pin: 'PinScreen',
   PasswordReset: 'PasswordReset',
   Email: 'Email',
+  PreviewCarousel: 'PreviewCarousel',
+  SaveRecord:'SaveRecord'
 };

@@ -9,10 +9,12 @@ export const isUserAuthenticated = (token) => {
   return false;
 };
 
-export const getAxiosConfig = (token) => {
+export const getAxiosConfig = (getState, additionalHeader={}) => {
+  const {auth}=getState();
   return {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${auth.token}`,
+      ...additionalHeader
     },
   };
 };

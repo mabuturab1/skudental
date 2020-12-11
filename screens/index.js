@@ -8,6 +8,8 @@ import PickupRequestDetailsScreen from './pickup/PickupDetailsScreen';
 import PickupListScreen from './pickup/PickupListScreen';
 import CreateRecordScreen from './record/CreateRecordScreen';
 import RecordInquiryScreen from './record/RecordInquiryScreen';
+import PreviewCarouselScreen from './record/PreviewCarouselScreen';
+import SaveRecordScreen from './record/SaveRecordScreen';
 import UserSigninScreen from './user/UserSigninScreen';
 import UserSignupScreen from './user/UserSignupScreen';
 import UpdateUserScreen from './user/UpdateUserScreen';
@@ -34,4 +36,6 @@ export {
   EmailScreen,
   PasswordResetScreen,
   PinScreen,
+  PreviewCarouselScreen,
+  SaveRecordScreen,
 };

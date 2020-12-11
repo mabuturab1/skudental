@@ -162,7 +162,7 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
         isSuccess(false);
       }
     } catch (error) {
-      console.log('user signin failed', error);
+      console.log('user signin failed', error, error.message);
       dispatch(userSigninFailed('An error occurred'));
       isSuccess(false);
     }
@@ -172,13 +172,12 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
 export const updateUser = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch, getState) => {
     try {
-      const { auth } = getState();
       dispatch(updateUserStart());
       const response = await axios.post(
         API_URL + apiRoutes.UPDATE_USER,
         userData,
         {
-          ...getAxiosConfig(auth.token),
+          ...getAxiosConfig(getState),
         }
       );
       if (response && response.data) {

@@ -2,8 +2,9 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import { ThemeColors } from '../../constants/Colors';
-const CustomButton = ({ style, onPress, title, icon }) => (
+const CustomButton = ({   style, onPress, title, icon, other }) => (
   <Button
+  {...other}
     mode='contained'
     style={{ ...styles.customButton, ...style }}
     onPress={onPress}

@@ -27,6 +27,7 @@ export const CONFIRM_PIN_FAILED = 'CONFIRM_PIN_FAILED';
 export const VERIFY_USER_START = 'VERIFY_USER_START';
 export const VERIFY_USER_SUCCESS = 'VERIFY_USER_SUCCESS';
 export const VERIFY_USER_FAILED = 'VERIFY_USER_FAILED';
+export const USER_LOGOUT = 'USER_LOGOUT';
 
 export const userSignupStart = () => ({ type: USER_SIGNUP_START });
 export const userSignupSuccess = (payload) => ({
@@ -90,6 +91,7 @@ const verifyUserFailed = (error) => ({
   error,
 });
 
+export const userLogout = () => ({ type: USER_LOGOUT });
 export const userSignup = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {

@@ -33,7 +33,7 @@ const CreateRecordScreen = ({ navigation }) => {
     patientName: '',
     additionalNotes: '',
   });
-  const getPhotos = () => {
+  const getPhotos = (values) => {
     ImagePicker.openPicker({
       multiple: true,
       mediaType: 'photo',
@@ -48,6 +48,7 @@ const CreateRecordScreen = ({ navigation }) => {
         progress: 0,
       }));
       navigation.navigate(routes.PreviewCarousel, {
+        recordData:values,
         carouselItems: imageList,
       });
     });
@@ -61,7 +62,7 @@ const CreateRecordScreen = ({ navigation }) => {
         initialValues={getInitValues()}
         validationSchema={ValidationSchema}
         onSubmit={(values) => {
-          console.log('values are', values);
+         
           onCreateRecordSubmit(values);
         }}
       >
@@ -74,7 +75,7 @@ const CreateRecordScreen = ({ navigation }) => {
           touched,
         }) => (
           <FormWrapper style={styles.wrapper}>
-            {console.log('errors are', errors)}
+          
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
                 name='submissionDate'
@@ -113,8 +114,9 @@ const CreateRecordScreen = ({ navigation }) => {
               </View>
               <View style={styles.imagePicker}>
                 <RoundedButton
+                disabled={errors.patientName}
                   icon={<Ionicons name='images' size={24} color='white' />}
-                  onPress={getPhotos}
+                  onPress={ ()=> getPhotos(values)}
                 />
               </View>
             </View>

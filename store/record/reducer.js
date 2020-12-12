@@ -19,6 +19,7 @@ import {
   SEND_RECORD_MESSAGE_FAILED,
   DATA_UPLOAD,
   UPDATE_UPLOAD_PROGRESS,
+  CLEAR_UPLOADING_RECORD
 } from './actions';
 import { getUpdatedUploadingDataObj, removeItemFromUploadingArr } from './recordUtilsFunctions';
 

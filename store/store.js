@@ -12,11 +12,19 @@ const persistConfig = {
   // Storage Method (React Native)
   storage: AsyncStorage,
 };
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   auth: UserReducer,
   transport: TransportReducer,
   record: RecordReducer,
 });
+const rootReducer = (state, action) => {
+  if (action.type === 'USER_LOGOUT') {
+    state = undefined;
+    AsyncStorage.removeItem('persist:root');
+  }
+ 
+  return appReducer(state, action);
+};
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = createStore(persistedReducer, applyMiddleware(ReduxThunk));
 let persistor = persistStore(store);

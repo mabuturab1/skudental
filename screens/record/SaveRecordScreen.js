@@ -11,10 +11,11 @@ import { UploadImageItem } from '../../components';
 import { routes } from '../../constants/routes';
 const SaveRecordScreen = ({ route, navigation }) => {
   const { currentRecordIndex } = route.params;
-  const uploadingData = useSelector(({ record }) => record.uploadingData) || [];
+ 
+  const uploadingDataArr = useSelector(({ record }) => record.uploadingDataArr) || [];
   let attachedItems = [];
-  if (uploadingData.length >= currentRecordIndex + 1) {
-    attachedItems = uploadingData[currentRecordIndex];
+  if (uploadingDataArr?.length >= currentRecordIndex + 1) {
+    attachedItems = uploadingDataArr[currentRecordIndex].attachedItems;
   }
   const carouselItemsList = attachedItems.map((el, index) => ({
     id: index.toString(),

@@ -19,5 +19,6 @@ export const routes = {
   Email: 'Email',
   PreviewCarousel: 'PreviewCarousel',
   SaveRecord:'SaveRecord',
-  ImagePreview:"ImagePreview"
+  ImagePreview:"ImagePreview",
+  Logout:"Logout"
 };

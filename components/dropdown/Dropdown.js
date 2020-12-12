@@ -14,7 +14,7 @@ const Dropdown = ({ data, value, onChange, placeholder, enabled=true }) => {
         mode={'dropdown'}
         enabled={enabled}
         onValueChange={(value) => {
-          console.log(value);
+        
           onChange(value);
         }}
         itemStyle={styles.dropdownItemStyle}

@@ -27,6 +27,7 @@ import {
   PreviewCarouselScreen,
   SaveRecordScreen,
   ImagePreviewScreen,
+  LogoutScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -193,7 +194,6 @@ const styles = StyleSheet.create({
   },
 });
 const menuButton = (navigation) => {
-  console.log('navigation is', navigation.toggleDrawer);
   return (
     <View style={styles.menuButtonWrapper}>
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
@@ -222,10 +222,7 @@ const popupMenu = (navigation) => {
       case 2:
         return navigation.navigate(routes.LabDocket);
       case 3:
-        return navigation.reset({
-          index: 0,
-          routes: [{ name: routes.Auth }],
-        });
+        return navigation.navigate(routes.Logout);
     }
   };
   return <MaterialMenu data={popupMenuData} onItemClick={onPopupMenuClick} />;
@@ -334,6 +331,11 @@ export default mainStackNavigator = (isAuthenticated) => (
       options={{ headerShown: false }}
       name={routes.Auth}
       component={AuthNavigator}
+    />
+    <Stack.Screen
+      name={routes.Logout}
+      options={{ headerShown: false, animationEnabled: false }}
+      component={LogoutScreen}
     />
   </Stack.Navigator>
 );

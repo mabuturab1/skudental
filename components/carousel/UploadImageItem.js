@@ -11,7 +11,6 @@ import { routes } from '../../constants/routes';
 import { isAndroid } from '../../helpers/Utils';
 const UploadImageItem = ({ imageObj, navigation, isUploadedToServer }) => {
   const dispatch = useDispatch();
-  console.log('imageobj is', imageObj.imageFile.path);
   const [sendToServer, setSendToServerStatus] = useState(false);
   useEffect(() => {}, []);
   const showImagePreview = () => {

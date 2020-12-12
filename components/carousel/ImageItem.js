@@ -11,7 +11,6 @@ const ImageItem = ({
   isLastItem,
   sendImageData,
 }) => {
-  console.log(isLastItem);
   return (
     <View style={styles.imageItemWrapper}>
       <Image style={styles.singleImage} source={{ uri: imageObj.imagePath }} />

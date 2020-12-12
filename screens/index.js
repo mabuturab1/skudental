@@ -14,6 +14,7 @@ import UserSigninScreen from './user/UserSigninScreen';
 import UserSignupScreen from './user/UserSignupScreen';
 import UpdateUserScreen from './user/UpdateUserScreen';
 import ConfirmPasswordScreen from './user/ConfirmPasswordScreen';
+import LogoutScreen from './user/LogoutScreen';
 import EmailScreen from './user/passwordReset/EmailScreen';
 import PasswordResetScreen from './user/passwordReset/PasswordResetScreen';
 import PinScreen from './user/passwordReset/PinScreen';
@@ -40,4 +41,5 @@ export {
   PreviewCarouselScreen,
   SaveRecordScreen,
   ImagePreviewScreen,
+  LogoutScreen
 };

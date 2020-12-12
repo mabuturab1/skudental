@@ -6,6 +6,9 @@ export const getNewCopy = (uploadingData) =>
 export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
   console.log('payload update for progress', payload);
   const newUploadingData = getNewCopy(uploadingData);
+  if (newUploadingData.length <= payload.recordIndex) {
+    return newUploadingData;
+  }
   const currentItem = newUploadingData[payload.recordIndex];
   if (payload.progress >= 0) {
     currentItem.attachedItems[payload.attachedItemIndex].progress =
@@ -22,6 +25,8 @@ export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
 
 export const removeItemFromUploadingArr = (uploadingArr, index) => {
   let updatedUploadingArr = getNewCopy(uploadingArr);
-  updatedUploadingArr.splice(index, 1);
-  return updatedUploadingArrl;
+  if (updatedUploadingArr.length > index) {
+    updatedUploadingArr.splice(index, 1);
+  }
+  return updatedUploadingArr;
 };

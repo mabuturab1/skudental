@@ -17,6 +17,7 @@ import {
   VERIFY_USER_START,
   VERIFY_USER_SUCCESS,
   VERIFY_USER_FAILED,
+  USER_LOGOUT,
 } from './actions';
 
 const initialState = {
@@ -96,7 +97,7 @@ export default (state = initialState, action) => {
     case FORGOT_PASSWORD_SUCCESS:
       return {
         ...state,
-        user: {email:action.payload},
+        user: { email: action.payload },
         loading: { ...state.loading, forgotPassword: false },
       };
     case FORGOT_PASSWORD_FAILED:
@@ -172,6 +173,8 @@ export default (state = initialState, action) => {
         loading: { ...state.loading, verifyUser: false },
         error: { ...state.error, verifyUser: action.payload },
       };
+    case USER_LOGOUT:
+      return initialState;
   }
   return state;
 };

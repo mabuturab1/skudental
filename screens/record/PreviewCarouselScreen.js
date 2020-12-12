@@ -6,10 +6,16 @@ import { routes } from '../../constants/routes';
 import { StackActions } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { startUploadingData } from '../../store/record/actions';
-const PreviewCarouselScreen = ({ route, recordData = {}, navigation }) => {
+const PreviewCarouselScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
+  const uploadingDataArr = useSelector(
+    ({ record }) => {
+     
+      return record.uploadingDataArr
+    }
+  );
   const windowWidth = Dimensions.get('window').width;
-  const { carouselItems = [] } = route.params;
+  const { carouselItems = [],  recordData = {}, } = route.params;
   const updatedCarouselItems = useRef(carouselItems);
 
   const updateComments = (index, text) => {
@@ -17,16 +23,14 @@ const PreviewCarouselScreen = ({ route, recordData = {}, navigation }) => {
   };
 
   const sendImageData = () => {
-    const uploadingDataArr = useSelector(
-      ({ record }) => record.uploadingDataArr
-    );
+   
     dispatch(
       startUploadingData({
         recordData: recordData,
         attachedItems: updatedCarouselItems.current,
       },uploadingDataArr.length)
     );
-    navigation.navigate(
+    navigation.dispatch(
       StackActions.replace(routes.SaveRecord, {
         currentRecordIndex: uploadingDataArr.length,
       })

@@ -1,38 +1,38 @@
 import axios from 'axios';
 import moment from 'moment';
-import { apiRoutes } from '../../constants/apiRoutes';
+import { apiRoutes, API_URL } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
 import { getAxiosConfig } from '../../helpers/Utils';
-const CREATE_RECORD_START = 'CREATE_RECORD_START';
-const CREATE_RECORD_SUCCESS = 'CREATE_RECORD_SUCCESS';
-const CREATE_RECORD_FAILED = 'CREATE_RECORD_FAILED';
+export const CREATE_RECORD_START = 'CREATE_RECORD_START';
+export const CREATE_RECORD_SUCCESS = 'CREATE_RECORD_SUCCESS';
+export const CREATE_RECORD_FAILED = 'CREATE_RECORD_FAILED';
 
-const UPDATE_RECORD_START = 'UPDATE_RECORD_START';
-const UPDATE_RECORD_SUCCESS = 'UPDATE_RECORD_SUCCESS';
-const UPDATE_RECORD_FAILED = 'UPDATE_RECORD_FAILED';
+export const UPDATE_RECORD_START = 'UPDATE_RECORD_START';
+export const UPDATE_RECORD_SUCCESS = 'UPDATE_RECORD_SUCCESS';
+export const UPDATE_RECORD_FAILED = 'UPDATE_RECORD_FAILED';
 
-const GET_ALL_RECORDS_START = 'GET_ALL_RECORDS_START';
-const GET_ALL_RECORDS_SUCCESS = 'GET_ALL_RECORDS_SUCCESS';
-const GET_ALL_RECORDS_FAILED = 'GET_ALL_RECORDS_FAILED';
+export const GET_ALL_RECORDS_START = 'GET_ALL_RECORDS_START';
+export const GET_ALL_RECORDS_SUCCESS = 'GET_ALL_RECORDS_SUCCESS';
+export const GET_ALL_RECORDS_FAILED = 'GET_ALL_RECORDS_FAILED';
 
-const GET_ALL_RECORDS_WITH_MESSAGES_START =
+export const GET_ALL_RECORDS_WITH_MESSAGES_START =
   'GET_ALL_RECORDS_WITH_MESSAGES_START';
-const GET_ALL_RECORDS_WITH_MESSAGES_SUCCESS =
+export const GET_ALL_RECORDS_WITH_MESSAGES_SUCCESS =
   'GET_ALL_RECORDS_WITH_MESSAGES_SUCCESS';
-const GET_ALL_RECORDS_WITH_MESSAGES_FAILED =
+export const GET_ALL_RECORDS_WITH_MESSAGES_FAILED =
   'GET_ALL_RECORDS_WITH_MESSAGES_FAILED';
 
-const GET_ALL_MESSAGES_START = 'GET_ALL_MESSAGES_START';
-const GET_ALL_MESSAGES_SUCCESS = 'GET_ALL_MESSAGES_SUCCESS';
-const GET_ALL_MESSAGES_FAILED = 'GET_ALL_MESSAGES_FAILED';
+export const GET_ALL_MESSAGES_START = 'GET_ALL_MESSAGES_START';
+export const GET_ALL_MESSAGES_SUCCESS = 'GET_ALL_MESSAGES_SUCCESS';
+export const GET_ALL_MESSAGES_FAILED = 'GET_ALL_MESSAGES_FAILED';
 
-const SEND_RECORD_MESSAGE_START = 'SEND_RECORD_MESSAGE_START';
-const SEND_RECORD_MESSAGE_SUCCESS = 'SEND_RECORD_MESSAGE_SUCCESS';
-const SEND_RECORD_MESSAGE_FAILED = 'SEND_RECORD_MESSAGE_FAILED';
+export const SEND_RECORD_MESSAGE_START = 'SEND_RECORD_MESSAGE_START';
+export const SEND_RECORD_MESSAGE_SUCCESS = 'SEND_RECORD_MESSAGE_SUCCESS';
+export const SEND_RECORD_MESSAGE_FAILED = 'SEND_RECORD_MESSAGE_FAILED';
 
-const DATA_UPLOAD = 'DATA_UPLOAD';
-const UPDATE_UPLOAD_PROGRESS = 'UPDATE_UPLOAD_PROGRESS';
-const CLEAR_UPLOADING_RECORD = 'CLEAR_UPLOADING_RECORD';
+export const DATA_UPLOAD = 'DATA_UPLOAD';
+export const UPDATE_UPLOAD_PROGRESS = 'UPDATE_UPLOAD_PROGRESS';
+export const CLEAR_UPLOADING_RECORD = 'CLEAR_UPLOADING_RECORD';
 
 const createRecordStart = () => ({ type: CREATE_RECORD_START });
 const createRecordSuccess = (payload) => ({
@@ -115,20 +115,24 @@ export const createRecord = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch, getState) => {
     try {
       dispatch(createRecordStart());
+      console.log('start creating record', API_URL + apiRoutes.CREATE_RECORD);
       const response = await axios.post(
-        apiUrl + apiRoutes.CREATE_TRANSPORT_REQUEST,
+        API_URL + apiRoutes.CREATE_RECORD,
         userData,
         { ...getAxiosConfig(getState) }
       );
+      console.log('start creating record success', response);
       if (response && response.data) {
         const result = response?.data?.data;
         dispatch(createRecordSuccess(result));
         isSuccess(true, result);
       } else if (response.error) {
+        console.log(response.error);
         dispatch(createRecordFailed(response.error));
         isSuccess(false, null);
       }
     } catch (error) {
+      console.log('create record failed', error, error.message);
       dispatch(createRecordFailed('An error occurred'));
       isSuccess(false, null);
     }
@@ -136,7 +140,15 @@ export const createRecord = (userData, isSuccess = isSuccessDefault) => {
 };
 const getPhotoFormData = (fileInfo) => {
   let formData = new FormData();
-  formData.append('photo', fileInfo.imageFile);
+  console.log('file upload', fileInfo.imageFile.originalFileName);
+  let photo = {
+    ...fileInfo.imageFile,
+    uri: fileInfo.imageFile.path,
+    type: fileInfo.imageFile.mime,
+    name: fileInfo.imageFile.path?.split('/').pop() || Date.now().toString(),
+  };
+  console.log(fileInfo);
+  formData.append('photo', photo);
   formData.append('additionalComments', fileInfo.additionalComments);
   return formData;
 };
@@ -158,14 +170,15 @@ export const uploadRecordPhoto = (
     try {
       let formData = getPhotoFormData(fileInfo);
       let nextUpdateDue = 0;
-      console.log(
-        'UPLOADING FILE',
-        recordId,
-        fileInfo,
-        currentRecordIndex,
-        itemIndex
-      );
+      console.log('UPLOADING FILE', recordId, currentRecordIndex, itemIndex);
       const fileHeader = { 'Content-Type': 'multipart/form-data' };
+      const url = API_URL + apiRoutes.UPLOAD_RECORD_FILE + `/${recordId}`;
+      console.log(
+        'sneding data to',
+        API_URL + apiRoutes.UPLOAD_RECORD_FILE + `/${recordId}`
+      );
+      var myHeaders = new Headers();
+      myHeaders.append('Content-Type', 'multipart/form-data');
       await axios.post(
         API_URL + apiRoutes.UPLOAD_RECORD_FILE + `/${recordId}`,
         formData,
@@ -197,7 +210,12 @@ export const uploadRecordPhoto = (
       );
     } catch (error) {
       updateProgress(currentRecordIndex, itemIndex, -1, dispatch);
-      console.log('An error occurred while uploading file', error);
+      console.log(
+        'An error occurred while uploading file',
+        error,
+        error.message
+      );
+      dispatch(clearUploadingRecord(currentRecordIndex));
     }
   };
 };
@@ -207,7 +225,7 @@ export const updateRecord = (userData) => {
     try {
       dispatch(updateRecordStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.CREATE_TRANSPORT_REQUEST,
+        API_URL + apiRoutes.UPLOAD_RECORD_FILE,
         userData
       );
       if (response && response.data) {
@@ -223,6 +241,7 @@ export const updateRecord = (userData) => {
 
 export const startUploadingData = (record, newUploadDataIndex) => {
   return async (dispatch, getState) => {
+    console.log('start uploading data called');
     dispatch(uploadData(record));
     dispatch(
       createRecord(record.recordData, (isSuccess, newRecord) => {
@@ -234,7 +253,7 @@ export const startUploadingData = (record, newUploadDataIndex) => {
             newUploadDataIndex,
             dispatch
           );
-        }
+        } else dispatch(clearUploadingRecord(newUploadDataIndex));
       })
     );
   };
@@ -279,7 +298,7 @@ const startUploadingFile = (
   unUploadedItems.forEach((el) => {
     if (uploadingItems.length < allowedUploadLimit) {
       let newIndex = unUploadedItems.find(
-        (el) => !uploadingItems.includes(el) && !uploadedItems.included(el)
+        (el) => !uploadingItems.includes(el) && !uploadedItems.includes(el)
       );
       uploadingItems.push(newIndex);
       unUploadedItems = unUploadedItems.filter((el) => el !== newIndex);
@@ -343,7 +362,7 @@ export const createTransportRequest = (userData) => {
     try {
       dispatch(createTransportRequestStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.CREATE_TRANSPORT_REQUEST,
+        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         userData
       );
       if (response && response.data) {
@@ -362,7 +381,7 @@ export const getAllRecords = (userData) => {
     try {
       dispatch(getAllRecordsStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.CREATE_TRANSPORT_REQUEST,
+        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         userData
       );
       if (response && response.data) {
@@ -381,7 +400,7 @@ export const getAllRecordsWithMessages = (userData) => {
     try {
       dispatch(getAllRecordsWithMessagesStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.CREATE_TRANSPORT_REQUEST,
+        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         userData
       );
       if (response && response.data) {
@@ -400,7 +419,7 @@ export const getAllMessages = (userData) => {
     try {
       dispatch(getAllMessagesStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.CREATE_TRANSPORT_REQUEST,
+        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         userData
       );
       if (response && response.data) {
@@ -419,7 +438,7 @@ export const sendMessages = (userData) => {
     try {
       dispatch(sendMessagesStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.CREATE_TRANSPORT_REQUEST,
+        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         userData
       );
       if (response && response.data) {

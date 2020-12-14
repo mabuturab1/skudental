@@ -2,12 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View, Image, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import PostAudio from './PostAudio';
 import { isAndroid } from '../../helpers/Utils';
-const ImageItem = ({
+const PostItem = ({
   imageObj,
-  index,
+  itemIndex,
   textEditable = true,
   onAddComments = () => {},
+  onAudioUpdate = () => {},
   isLastItem,
   sendImageData,
 }) => {
@@ -21,7 +23,7 @@ const ImageItem = ({
           placeholderTextColor='rgba(255,255,255,0.6)'
           placeholder='Add comments'
           editable={textEditable}
-          onChangeText={(text) => onAddComments(index, text)}
+          onChangeText={(text) => onAddComments(itemIndex, text)}
         />
       </View>
       {isLastItem ? (
@@ -35,6 +37,9 @@ const ImageItem = ({
           </TouchableOpacity>
         </View>
       ) : null}
+      <View style={styles.postAudioWrapper}>
+        <PostAudio itemIndex={itemIndex} onAudioUpdate={ (audio)=> onAudioUpdate(itemIndex, audio)} />
+      </View>
     </View>
   );
 };
@@ -66,5 +71,10 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
+  postAudioWrapper: {
+    position: 'absolute',
+    top: 40,
+    right: 5,
+  },
 });
-export default ImageItem;
+export default PostItem;

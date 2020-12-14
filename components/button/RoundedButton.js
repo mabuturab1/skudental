@@ -2,9 +2,9 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import { ThemeColors } from '../../constants/Colors';
-const CustomButton = ({   style, onPress, title, icon, other }) => (
+const CustomRoundedButton = ({ style, onPress, title, icon, other }) => (
   <Button
-  {...other}
+    {...other}
     mode='contained'
     style={{ ...styles.customButton, ...style }}
     onPress={onPress}
@@ -13,11 +13,9 @@ const CustomButton = ({   style, onPress, title, icon, other }) => (
   </Button>
 );
 
-export default CustomButton;
+export default CustomRoundedButton;
 const styles = StyleSheet.create({
   customButton: {
-    paddingTop: 7,
-    paddingBottom: 7,
     borderRadius: 10000,
     borderWidth: 1,
     borderColor: ThemeColors.primary,
@@ -26,5 +24,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 12,
     fontWeight: 'bold',
+    width: 60,
+    height: 60,
+    justifyContent:'center',
+    alignItems:'center'
   },
 });

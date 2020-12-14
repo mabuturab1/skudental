@@ -1,11 +1,11 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
-import { ImageItem } from '../../components';
+import { PostItem } from '../../components';
 const ImagePreviewScreen = ({ route, navigation }) => {
   const { imageObj } = route.params;
   return (
     <SafeAreaView style={styles.safeAreaWrapper}>
-      <ImageItem index={0} imageObj={imageObj} textEditable={false} />
+      <PostItem itemIndex={0} imageObj={imageObj} textEditable={false} />
     </SafeAreaView>
   );
 };

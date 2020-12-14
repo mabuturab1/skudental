@@ -18,7 +18,7 @@ export const routes = {
   PasswordReset: 'PasswordReset',
   Email: 'Email',
   PreviewCarousel: 'PreviewCarousel',
-  SaveRecord:'SaveRecord',
+  PreviewRecord:'PreviewRecord',
   ImagePreview:"ImagePreview",
   Logout:"Logout"
 };

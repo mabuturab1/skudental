@@ -19,13 +19,17 @@ import {
   SEND_RECORD_MESSAGE_FAILED,
   DATA_UPLOAD,
   UPDATE_UPLOAD_PROGRESS,
-  CLEAR_UPLOADING_RECORD
+  CLEAR_UPLOADING_RECORD,
 } from './actions';
-import { getUpdatedUploadingDataObj, removeItemFromUploadingArr } from './recordUtilsFunctions';
+import {
+  getUpdatedUploadingDataObj,
+  removeItemFromUploadingArr,
+  updateRecordObjInUploadingData,
+} from './recordUtilsFunctions';
 
 const initialState = {
-  user: {},
   uploadingDataArr: [],
+  serverRecordArr: [],
   loading: {
     createRecord: false,
     updateRecord: false,
@@ -44,66 +48,67 @@ const initialState = {
   },
 };
 
-
 export default (state = initialState, action) => {
   switch (action.type) {
     case CREATE_RECORD_START:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, createRecord: true },
         error: { ...state.error, createRecord: '' },
       };
     case CREATE_RECORD_SUCCESS:
       return {
         ...state,
-        user: action.payload,
+        uploadingDataArr: updateRecordObjInUploadingData(
+          state.uploadingDataArr,
+          action.payload
+        ),
         loading: { ...state.loading, createRecord: false },
       };
     case CREATE_RECORD_FAILED:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, createRecord: false },
         error: { ...state.error, createRecord: action.payload },
       };
     case UPDATE_RECORD_START:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, updateRecord: true },
         error: { ...state.error, updateRecord: '' },
       };
     case UPDATE_RECORD_SUCCESS:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, updateRecord: false },
       };
     case UPDATE_RECORD_FAILED:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, updateRecord: false },
         error: { ...state.error, updateRecord: action.payload },
       };
     case GET_ALL_RECORDS_START:
       return {
         ...state,
-        user: {},
+        serverRecordsArr: [],
         loading: { ...state.loading, getAllRecords: true },
         error: { ...state.error, getAllRecords: '' },
       };
     case GET_ALL_RECORDS_SUCCESS:
       return {
         ...state,
-        user: {},
+        serverRecordsArr: action.payload,
         loading: { ...state.loading, getAllRecords: false },
       };
     case GET_ALL_RECORDS_FAILED:
       return {
         ...state,
-        user: {},
         loading: { ...state.loading, getAllRecords: false },
         error: { ...state.error, getAllRecords: action.payload },
       };
@@ -111,20 +116,20 @@ export default (state = initialState, action) => {
     case GET_ALL_RECORD_WITH_MESSAGES_START:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, getAllRecordWithMessages: true },
         error: { ...state.error, getAllRecordWithMessages: '' },
       };
     case GET_ALL_RECORD_WITH_MESSAGES_SUCCESS:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, getAllRecordWithMessages: false },
       };
     case GET_ALL_RECORD_WITH_MESSAGES_FAILED:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, getAllRecordWithMessages: false },
         error: { ...state.error, getAllRecordWithMessages: action.payload },
       };
@@ -132,7 +137,7 @@ export default (state = initialState, action) => {
     case GET_ALL_MESSAGES_START:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, getAllMessages: true },
         error: { ...state.error, getAllMessages: '' },
       };
@@ -145,7 +150,7 @@ export default (state = initialState, action) => {
     case GET_ALL_MESSAGES_FAILED:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, getAllMessages: false },
         error: { ...state.error, getAllMessages: action.payload },
       };
@@ -153,7 +158,7 @@ export default (state = initialState, action) => {
     case SEND_RECORD_MESSAGE_START:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, sendRecordMessage: true },
         error: { ...state.error, sendRecordMessage: '' },
       };
@@ -166,7 +171,7 @@ export default (state = initialState, action) => {
     case SEND_RECORD_MESSAGE_FAILED:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, sendRecordMessage: false },
         error: { ...state.error, sendRecordMessage: action.payload },
       };
@@ -183,6 +188,7 @@ export default (state = initialState, action) => {
           action.payload
         ),
       };
+
     case CLEAR_UPLOADING_RECORD:
       return {
         ...state,

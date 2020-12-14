@@ -10,6 +10,9 @@ export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
     return newUploadingData;
   }
   const currentItem = newUploadingData[payload.recordIndex];
+  if (payload.uploadComplete) {
+    currentItem.attachedItems[payload.attachedItemIndex].uploadComplete = true;
+  }
   if (payload.progress >= 0) {
     currentItem.attachedItems[payload.attachedItemIndex].progress =
       payload.progress;
@@ -19,6 +22,18 @@ export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
       payload.attachedItemIndex
     ].recordUpdateFailed = true;
   }
+  newUploadingData[payload.recordIndex] = currentItem;
+  return newUploadingData;
+};
+
+export const updateRecordObjInUploadingData = (uploadingData, payload) => {
+  console.log('payload update for progress', payload);
+  const newUploadingData = getNewCopy(uploadingData);
+  if (newUploadingData.length <= payload.recordIndex) {
+    return newUploadingData;
+  }
+  const currentItem = newUploadingData[payload.recordIndex];
+  currentItem.recordData = payload.record;
   newUploadingData[payload.recordIndex] = currentItem;
   return newUploadingData;
 };

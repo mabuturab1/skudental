@@ -1,5 +1,5 @@
 import RecordDetailsScreen from './history/RecordDetailsScreen';
-import RecordListScreen from './history/RecordListScreen';
+import RecordListScreen from './record/RecordListScreen';
 import LabDocketScreen from './info/LabDocketScreen';
 import PricingScreen from './info/PricingScreen';
 import SkSalesScreen from './info/SkSalesScreen';
@@ -9,7 +9,7 @@ import PickupListScreen from './pickup/PickupListScreen';
 import CreateRecordScreen from './record/CreateRecordScreen';
 import RecordInquiryScreen from './record/RecordInquiryScreen';
 import PreviewCarouselScreen from './record/PreviewCarouselScreen';
-import SaveRecordScreen from './record/SaveRecordScreen';
+import PreviewRecordScreen from './record/PreviewRecordScreen';
 import UserSigninScreen from './user/UserSigninScreen';
 import UserSignupScreen from './user/UserSignupScreen';
 import UpdateUserScreen from './user/UpdateUserScreen';
@@ -39,7 +39,7 @@ export {
   PasswordResetScreen,
   PinScreen,
   PreviewCarouselScreen,
-  SaveRecordScreen,
+  PreviewRecordScreen,
   ImagePreviewScreen,
   LogoutScreen
 };

@@ -1,18 +1,11 @@
 import React, { useRef } from 'react';
-import {
-  View,
-  SafeAreaView,
-  StyleSheet,
-  FlatList,
-  Dimensions,
-} from 'react-native';
+import { SafeAreaView, StyleSheet, FlatList } from 'react-native';
 import { useSelector } from 'react-redux';
-import { UploadImageItem } from '../../components';
-import { routes } from '../../constants/routes';
-const SaveRecordScreen = ({ route, navigation }) => {
+import { UploadPostItem } from '../../components';
+const PreviewRecordScreen = ({ route, navigation }) => {
   const { currentRecordIndex } = route.params;
- 
-  const uploadingDataArr = useSelector(({ record }) => record.uploadingDataArr) || [];
+  const uploadingDataArr =
+    useSelector(({ record }) => record.uploadingDataArr) || [];
   let attachedItems = [];
   if (uploadingDataArr?.length >= currentRecordIndex + 1) {
     attachedItems = uploadingDataArr[currentRecordIndex].attachedItems;
@@ -21,11 +14,15 @@ const SaveRecordScreen = ({ route, navigation }) => {
     id: index.toString(),
     ...el,
   }));
-  const sendImageData = () => {};
 
   const renderItem = ({ item, index }) => {
     return (
-      <UploadImageItem imageObj={item} index={index} navigation={navigation} />
+      <UploadPostItem
+        currentRecordIndex={currentRecordIndex}
+        imageObj={item}
+        itemIndex={index}
+        navigation={navigation}
+      />
     );
   };
   const carouselRef = useRef();
@@ -40,7 +37,7 @@ const SaveRecordScreen = ({ route, navigation }) => {
     </SafeAreaView>
   );
 };
-export default SaveRecordScreen;
+export default PreviewRecordScreen;
 const styles = StyleSheet.create({
   safeAreaWrapper: {
     flex: 1,

@@ -32,12 +32,13 @@ export const SEND_RECORD_MESSAGE_FAILED = 'SEND_RECORD_MESSAGE_FAILED';
 
 export const DATA_UPLOAD = 'DATA_UPLOAD';
 export const UPDATE_UPLOAD_PROGRESS = 'UPDATE_UPLOAD_PROGRESS';
+
 export const CLEAR_UPLOADING_RECORD = 'CLEAR_UPLOADING_RECORD';
 
 const createRecordStart = () => ({ type: CREATE_RECORD_START });
-const createRecordSuccess = (payload) => ({
+const createRecordSuccess = (record, recordIndex) => ({
   type: CREATE_RECORD_SUCCESS,
-  payload,
+  payload: { record, recordIndex },
 });
 const createRecordFailed = (error = '') => ({
   type: CREATE_RECORD_FAILED,
@@ -111,21 +112,25 @@ const uploadData = (payload) => ({
   payload,
 });
 
-export const createRecord = (userData, isSuccess = isSuccessDefault) => {
+export const createRecord = (
+  recordData,
+  currentRecordIndex,
+  isSuccess = isSuccessDefault
+) => {
   return async (dispatch, getState) => {
     try {
       dispatch(createRecordStart());
       console.log('start creating record', API_URL + apiRoutes.CREATE_RECORD);
       const response = await axios.post(
         API_URL + apiRoutes.CREATE_RECORD,
-        userData,
+        recordData,
         { ...getAxiosConfig(getState) }
       );
       console.log('start creating record success', response);
       if (response && response.data) {
-        const result = response?.data?.data;
-        dispatch(createRecordSuccess(result));
-        isSuccess(true, result);
+        const record = response?.data?.data;
+        dispatch(createRecordSuccess(record, currentRecordIndex));
+        isSuccess(true, record);
       } else if (response.error) {
         console.log(response.error);
         dispatch(createRecordFailed(response.error));
@@ -155,9 +160,22 @@ const getPhotoFormData = (fileInfo) => {
 const getProgress = (progressEvent) =>
   Math.round((progressEvent.loaded * 100) / progressEvent.total);
 
-const updateProgress = (recordIndex, attachedItemIndex, progress, dispatch) => {
+const updateProgress = (
+  recordIndex,
+  attachedItemIndex,
+  progress,
+  dispatch,
+  uploadComplete = false
+) => {
   console.log('update progress', recordIndex, attachedItemIndex, progress);
-  dispatch(updateUploadProgress({ recordIndex, attachedItemIndex, progress }));
+  dispatch(
+    updateUploadProgress({
+      recordIndex,
+      attachedItemIndex,
+      progress,
+      uploadComplete,
+    })
+  );
 };
 export const uploadRecordPhoto = (
   recordId,
@@ -199,7 +217,7 @@ export const uploadRecordPhoto = (
           },
         }
       );
-      updateProgress(currentRecordIndex, itemIndex, 100, dispatch);
+      updateProgress(currentRecordIndex, itemIndex, 100, dispatch, true);
       isSuccess(true);
       console.log(
         'UPLOADING SUCCESS',
@@ -215,18 +233,34 @@ export const uploadRecordPhoto = (
         error,
         error.message
       );
-      dispatch(clearUploadingRecord(currentRecordIndex));
+      // dispatch(clearUploadingRecord(currentRecordIndex));
     }
   };
 };
 
-export const updateRecord = (userData) => {
+export const clearUploadedRecord = (recordData) => {
+  return async (dispatch, getState) => {
+    const { record } = getState();
+    const uploadingDataArr = record.uploadingDataArr;
+    let itemIndex = [];
+    uploadingDataArr.forEach((el, index) => {
+      let isUploadComplete = true;
+      el.attachedItems.forEach((item) => {
+        isUploadComplete = item.uploadComplete && isUploadComplete;
+      });
+      if (isUploadComplete) itemIndex.push(index);
+    });
+    itemIndex.forEach((el) => dispatch(clearUploadingRecord(el)));
+  };
+};
+
+export const updateRecord = (recordData) => {
   return async (dispatch) => {
     try {
       dispatch(updateRecordStart());
       const response = await axios.post(
         API_URL + apiRoutes.UPLOAD_RECORD_FILE,
-        userData
+        recordData
       );
       if (response && response.data) {
         dispatch(updateRecordSuccess(response.data));
@@ -239,29 +273,33 @@ export const updateRecord = (userData) => {
   };
 };
 
-export const startUploadingData = (record, newUploadDataIndex) => {
+export const startUploadingData = (record, currentRecordIndex) => {
   return async (dispatch, getState) => {
     console.log('start uploading data called');
     dispatch(uploadData(record));
     dispatch(
-      createRecord(record.recordData, (isSuccess, newRecord) => {
-        if (isSuccess) {
-          console.log('record created successfully', newRecord);
-          scheduleFileUpload(
-            newRecord._id,
-            record.attachedItems,
-            newUploadDataIndex,
-            dispatch
-          );
-        } else dispatch(clearUploadingRecord(newUploadDataIndex));
-      })
+      createRecord(
+        record.recordData,
+        currentRecordIndex,
+        (isSuccess, newRecord) => {
+          if (isSuccess) {
+            console.log('record created successfully', newRecord);
+            scheduleFileUpload(
+              newRecord._id,
+              record.attachedItems,
+              currentRecordIndex,
+              dispatch
+            );
+          } else dispatch(clearUploadingRecord(currentRecordIndex));
+        }
+      )
     );
   };
 };
 const scheduleFileUpload = (
   recordId,
   attachedItems,
-  currentRecordId,
+  currentRecordIndex,
   dispatch
 ) => {
   let allowedUploadLimit = 5;
@@ -273,7 +311,7 @@ const scheduleFileUpload = (
   startUploadingFile(
     recordId,
     attachedItems,
-    currentRecordId,
+    currentRecordIndex,
     dispatch,
     allItems,
     unUploadedItems,
@@ -286,7 +324,7 @@ const scheduleFileUpload = (
 const startUploadingFile = (
   recordId,
   attachedItems,
-  currentRecordId,
+  currentRecordIndex,
   dispatch,
   allItems,
   unUploadedItems,
@@ -306,7 +344,7 @@ const startUploadingFile = (
         uploadRecordPhoto(
           recordId,
           attachedItems[newIndex],
-          currentRecordId,
+          currentRecordIndex,
           newIndex,
           (isSuccess) => {
             uploadingItems = uploadingItems.filter((el) => el !== newIndex);
@@ -318,14 +356,14 @@ const startUploadingFile = (
               allItems,
               uploadedItems,
               uploadedSuccessful,
-              currentRecordId,
+              currentRecordIndex,
               dispatch
             );
             if (!isAllUploaded) {
               startUploadingFile(
                 recordId,
                 attachedItems,
-                currentRecordId,
+                currentRecordIndex,
                 dispatch,
                 allItems,
                 unUploadedItems,
@@ -351,19 +389,19 @@ const allFilesUploaded = (
   const isAllSuccessful =
     allItems.filter((el) => !success.includes(el)).length == 0;
   if (isAllSuccessful) {
-    dispatch(clearUploadingRecord(recordIndex));
+    // dispatch(clearUploadingRecord(recordIndex));
     return true;
   }
   return allItems.filter((el) => !uploaded.includes(el)).length == 0;
 };
 
-export const createTransportRequest = (userData) => {
+export const createTransportRequest = (recordData) => {
   return async (dispatch) => {
     try {
       dispatch(createTransportRequestStart());
       const response = await axios.post(
         API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
-        userData
+        recordData
       );
       if (response && response.data) {
         dispatch(createTransportRequestSuccess(response.data));
@@ -376,32 +414,35 @@ export const createTransportRequest = (userData) => {
   };
 };
 
-export const getAllRecords = (userData) => {
+export const getAllRecords = (recordData={}) => {
   return async (dispatch) => {
+    console.log('getting all records');
     try {
       dispatch(getAllRecordsStart());
       const response = await axios.post(
-        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
-        userData
+        API_URL + apiRoutes.GET_ALL_RECORDS,
+        recordData
       );
       if (response && response.data) {
-        dispatch(getAllRecordsSuccess(response.data));
+        const record=response?.data?.data;
+        dispatch(getAllRecordsSuccess(record));
       } else if (response.error) {
         dispatch(getAllRecordsFailed(response.error));
       }
     } catch (error) {
+      console.log('error occurred', error);
       dispatch(getAllRecordsFailed('An error occurred'));
     }
   };
 };
 
-export const getAllRecordsWithMessages = (userData) => {
+export const getAllRecordsWithMessages = (recordData) => {
   return async (dispatch) => {
     try {
       dispatch(getAllRecordsWithMessagesStart());
       const response = await axios.post(
         API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
-        userData
+        recordData
       );
       if (response && response.data) {
         dispatch(getAllRecordsWithMessagesSuccess(response.data));
@@ -414,13 +455,13 @@ export const getAllRecordsWithMessages = (userData) => {
   };
 };
 
-export const getAllMessages = (userData) => {
+export const getAllMessages = (recordData) => {
   return async (dispatch) => {
     try {
       dispatch(getAllMessagesStart());
       const response = await axios.post(
         API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
-        userData
+        recordData
       );
       if (response && response.data) {
         dispatch(getAllMessagesSuccess(response.data));
@@ -433,13 +474,13 @@ export const getAllMessages = (userData) => {
   };
 };
 
-export const sendMessages = (userData) => {
+export const sendMessages = (recordData) => {
   return async (dispatch) => {
     try {
       dispatch(sendMessagesStart());
       const response = await axios.post(
         API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
-        userData
+        recordData
       );
       if (response && response.data) {
         dispatch(sendMessagesSuccess(response.data));

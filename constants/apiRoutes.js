@@ -11,6 +11,7 @@ export const apiRoutes = {
   UPDATE_RECORD: '/record/updaterecord',
   SEND_INQUIRY_MESSAGE: '/record/createinquirymessage',
   GET_ALL_RECORDS: '/record/allrecords',
+  GET_ALL_RECORDS_WITH_INQUIRIES: '/record/allrecordswithinquiries',
   GET_ALL_MESSAGES: '/record/allmessages',
   CREATE_TRANSPORT_REQUEST: '/transport/createtransportrequest',
   ALL_TRANSPORT_REQUESTS: '/transport/alltransportrequests',

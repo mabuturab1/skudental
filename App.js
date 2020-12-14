@@ -7,6 +7,7 @@ import { isUserAuthenticated } from './helpers/Utils';
 import { PersistGate } from 'redux-persist/integration/react';
 import * as SplashScreen from 'expo-splash-screen';
 import { store, persistor } from './store/store';
+import 'react-native-get-random-values';
 const MainNavigationScreens = () => {
   const token = useSelector(({ auth }) => auth.token);
   return MainNavigator(isUserAuthenticated(token));

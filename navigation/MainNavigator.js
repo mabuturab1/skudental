@@ -25,7 +25,7 @@ import {
   PinScreen,
   EmailScreen,
   PreviewCarouselScreen,
-  SaveRecordScreen,
+  PreviewRecordScreen,
   ImagePreviewScreen,
   LogoutScreen,
 } from '../screens';
@@ -317,7 +317,7 @@ export default mainStackNavigator = (isAuthenticated) => (
       options={{ headerShown: false }}
       component={PreviewCarouselScreen}
     />
-    <Stack.Screen name={routes.SaveRecord} component={SaveRecordScreen} />
+    <Stack.Screen name={routes.PreviewRecord} component={PreviewRecordScreen} />
     <Stack.Screen
       name={routes.ImagePreview}
       options={{ headerShown: false, animationEnabled: false }}

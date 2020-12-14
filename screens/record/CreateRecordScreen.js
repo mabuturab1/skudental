@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, Button, TextInput } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -17,7 +17,13 @@ import {
 import ImagePicker from 'react-native-image-crop-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { routes } from '../../constants/routes';
+import { clearUploadedRecord } from '../../store/record/actions';
+import { useDispatch } from 'react-redux';
 const CreateRecordScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(clearUploadedRecord());
+  }, [dispatch]);
   const ValidationSchema = Yup.object({
     patientName: Yup.string().trim().required('Kindly enter a patient name'),
     additionalNotes: Yup.string().required('Kindly enter a additional Notes'),
@@ -43,12 +49,13 @@ const CreateRecordScreen = ({ navigation }) => {
         imagePath: el.path,
         imageFile: el,
         additionalComments: '',
-        isLocalItem:true,
-        recordUpdateFailed:false,
+        audioItem:null,
+        uploadComplete: false,
+        recordUpdateFailed: false,
         progress: 0,
       }));
       navigation.navigate(routes.PreviewCarousel, {
-        recordData:values,
+        recordData: values,
         carouselItems: imageList,
       });
     });
@@ -62,7 +69,6 @@ const CreateRecordScreen = ({ navigation }) => {
         initialValues={getInitValues()}
         validationSchema={ValidationSchema}
         onSubmit={(values) => {
-         
           onCreateRecordSubmit(values);
         }}
       >
@@ -75,7 +81,6 @@ const CreateRecordScreen = ({ navigation }) => {
           touched,
         }) => (
           <FormWrapper style={styles.wrapper}>
-          
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
                 name='submissionDate'
@@ -112,13 +117,13 @@ const CreateRecordScreen = ({ navigation }) => {
               <View style={styles.imageList}>
                 <RounedImageList imageList={images} maxImages={2} />
               </View>
-              <View style={styles.imagePicker}>
+              
                 <RoundedButton
-                disabled={errors.patientName}
+                  disabled={errors.patientName}
                   icon={<Ionicons name='images' size={24} color='white' />}
-                  onPress={ ()=> getPhotos(values)}
+                  onPress={() => getPhotos(values)}
                 />
-              </View>
+         
             </View>
             <View style={styles.submitButtonWrapper}>
               <FlatButton onPress={handleSubmit} title='Submit' />

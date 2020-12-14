@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { View, SafeAreaView, StyleSheet, Dimensions } from 'react-native';
-import { ImageItem } from '../../components';
+import { PostItem } from '../../components';
 import Carousel from 'react-native-snap-carousel';
 import { routes } from '../../constants/routes';
 import { StackActions } from '@react-navigation/native';
@@ -8,30 +8,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { startUploadingData } from '../../store/record/actions';
 const PreviewCarouselScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
-  const uploadingDataArr = useSelector(
-    ({ record }) => {
-     
-      return record.uploadingDataArr
-    }
-  );
+  const uploadingDataArr = useSelector(({ record }) => record.uploadingDataArr);
   const windowWidth = Dimensions.get('window').width;
-  const { carouselItems = [],  recordData = {}, } = route.params;
+  const { carouselItems = [], recordData = {} } = route.params;
   const updatedCarouselItems = useRef(carouselItems);
 
   const updateComments = (index, text) => {
     updatedCarouselItems.current[index].additionalComments = text;
   };
+  const updateAudio = (index, audioItem) => {
+    updatedCarouselItems.current[index].audioItem = audioItem;
+  };
 
   const sendImageData = () => {
-   
     dispatch(
-      startUploadingData({
-        recordData: recordData,
-        attachedItems: updatedCarouselItems.current,
-      },uploadingDataArr.length)
+      startUploadingData(
+        {
+          recordData: recordData,
+          attachedItems: updatedCarouselItems.current,
+        },
+        uploadingDataArr.length
+      )
     );
     navigation.dispatch(
-      StackActions.replace(routes.SaveRecord, {
+      StackActions.replace(routes.PreviewRecord, {
         currentRecordIndex: uploadingDataArr.length,
       })
     );
@@ -39,11 +39,12 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
 
   const renderItem = ({ item, index }) => {
     return (
-      <ImageItem
+      <PostItem
         imageObj={item}
-        index={index}
+        itemIndex={index}
         isLastItem={index + 1 === carouselItems.length}
         onAddComments={updateComments}
+        onAudioUpdate={updateAudio}
         sendImageData={sendImageData}
       />
     );

@@ -6,14 +6,11 @@ import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 import moment from 'moment';
 import { useCallback } from 'react';
-const AudioPlayer = ({
-  audioItem,
-  onPlaybackStatusUpdate = () => {},
-}) => {
+const AudioPlayer = ({ audioItem = {}, onPlaybackStatusUpdate = () => {} }) => {
   const [playingSound, setPlayingSound] = useState();
   const [soundPlayStatus, setSoundPlayStatus] = useState(false);
   const [durationMillis, setDurationMillis] = useState(0);
-
+  const [fileDuration, setFileDuration] = useState(0);
   const onPlaybackStatus = (playbackStatus) => {
     if (playbackStatus.isLoaded) {
       if (playbackStatus.isPlaying) {
@@ -27,7 +24,7 @@ const AudioPlayer = ({
       }
       if (playbackStatus.didJustFinish) {
         setSoundPlayStatus(false);
-        setDurationMillis(audioItem.durationMillis);
+        setDurationMillis(fileDuration);
       }
     }
   };
@@ -38,18 +35,20 @@ const AudioPlayer = ({
     }
   }, [audioItem, stopSound, soundPlayStatus]);
   const getFormattedTime = (duration) => {
-   
     return moment(duration).format('mm:ss');
   };
 
   const playSound = async () => {
     console.log('Loading Sound');
+    if (!audioItem.uri) return;
     const { sound } = await Audio.Sound.createAsync(
       { uri: audioItem.uri },
       {},
       onPlaybackStatus,
       true
     );
+    var status = await sound.getStatusAsync();
+    setFileDuration(status.durationMillis);
     setPlayingSound(sound);
     setSoundPlayStatus(true);
 
@@ -78,6 +77,11 @@ const AudioPlayer = ({
 
   return (
     <View style={styles.container}>
+      {durationMillis && fileDuration ? (
+        <Text style={styles.durationMillisText}>{`${getFormattedTime(
+          durationMillis
+        )} / ${getFormattedTime(fileDuration)}`}</Text>
+      ) : null}
       <RoundedButton
         icon={
           <FontAwesome
@@ -88,11 +92,6 @@ const AudioPlayer = ({
         }
         onPress={() => (soundPlayStatus ? stopSound() : playSound())}
       />
-      {durationMillis && audioItem.durationMillis ? (
-        <Text style={styles.durationMillisText}>{`${getFormattedTime(
-          durationMillis
-        )} / ${getFormattedTime(audioItem.durationMillis)}`}</Text>
-      ) : null}
     </View>
   );
 };
@@ -100,9 +99,12 @@ export default AudioPlayer;
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   durationMillisText: {
-    color: 'black',
+    color: 'white',
     fontSize: 12,
+    marginHorizontal: 10,
   },
 });

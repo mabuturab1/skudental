@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Text, Button, TextInput } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -20,17 +20,28 @@ import { routes } from '../../constants/routes';
 import { clearUploadedRecord } from '../../store/record/actions';
 import { useDispatch } from 'react-redux';
 const CreateRecordScreen = ({ navigation }) => {
+  const formikRef = useRef();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(clearUploadedRecord());
   }, [dispatch]);
   const ValidationSchema = Yup.object({
     patientName: Yup.string().trim().required('Kindly enter a patient name'),
-    additionalNotes: Yup.string().required('Kindly enter a additional Notes'),
+    additionalNotes: Yup.string(),
   });
 
   const [images, setImages] = useState([]);
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (formikRef.current) {
+        formikRef.current.resetForm();
+      }
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation, formikRef]);
   const onCreateRecordSubmit = (values) => {
     navigation.navigate(routes.SkSales);
   };
@@ -43,22 +54,26 @@ const CreateRecordScreen = ({ navigation }) => {
     ImagePicker.openPicker({
       multiple: true,
       mediaType: 'photo',
-    }).then((selectedImages) => {
-      setImages(selectedImages);
-      const imageList = selectedImages.map((el) => ({
-        imagePath: el.path,
-        imageFile: el,
-        additionalComments: '',
-        audioItem:null,
-        uploadComplete: false,
-        recordUpdateFailed: false,
-        progress: 0,
-      }));
-      navigation.navigate(routes.PreviewCarousel, {
-        recordData: values,
-        carouselItems: imageList,
+    })
+      .then((selectedImages) => {
+        setImages(selectedImages);
+        const imageList = selectedImages.map((el) => ({
+          imageUrl: el.path,
+          imageFile: el,
+          additionalComments: '',
+          audioItem: null,
+          uploadComplete: false,
+          recordUpdateFailed: false,
+          progress: 0,
+        }));
+        navigation.navigate(routes.PreviewCarousel, {
+          recordData: values,
+          carouselItems: imageList,
+        });
+      })
+      .catch((error) => {
+        console.log('error in file selection', error);
       });
-    });
   };
   const imageSelect = (imageList) => {
     setImages(imageList);
@@ -68,8 +83,9 @@ const CreateRecordScreen = ({ navigation }) => {
       <Formik
         initialValues={getInitValues()}
         validationSchema={ValidationSchema}
+        innerRef={formikRef}
         onSubmit={(values) => {
-          onCreateRecordSubmit(values);
+          getPhotos(values);
         }}
       >
         {({
@@ -117,17 +133,16 @@ const CreateRecordScreen = ({ navigation }) => {
               <View style={styles.imageList}>
                 <RounedImageList imageList={images} maxImages={2} />
               </View>
-              
-                <RoundedButton
-                  disabled={errors.patientName}
-                  icon={<Ionicons name='images' size={24} color='white' />}
-                  onPress={() => getPhotos(values)}
-                />
-         
+
+              <RoundedButton
+                disabled={errors.patientName}
+                icon={<Ionicons name='images' size={24} color='white' />}
+                onPress={handleSubmit}
+              />
             </View>
-            <View style={styles.submitButtonWrapper}>
+            {/* <View style={styles.submitButtonWrapper}>
               <FlatButton onPress={handleSubmit} title='Submit' />
-            </View>
+            </View> */}
           </FormWrapper>
         )}
       </Formik>

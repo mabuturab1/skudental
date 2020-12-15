@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 import moment from 'moment';
+import { isAndroid } from '../../helpers/Utils';
 const AudioRecorder = ({
   audioName,
   onRecordingComplete = () => {},
@@ -53,9 +54,13 @@ const AudioRecorder = ({
       const audioItem = {
         id: uuidv4(),
         recordDate: moment().format(),
-        title: audioName || 'Recorded audio',
+        name:
+          uri?.split('/').pop() || Date.now().toString() + isAndroid()
+            ? '.m4a'
+            : '.caf',
         uri,
         durationMillis: status.durationMillis,
+        type: 'audio/mp4',
       };
       onRecordingComplete(audioItem);
       setRecording(undefined);

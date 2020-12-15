@@ -8,9 +8,9 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { RecordDetailItem } from '../../components';
+import { LoadingIndicator, RecordDetailItem } from '../../components';
 import { clearUploadedRecord, getAllRecords } from '../../store/record/actions';
-const RecordListScreen = (props) => {
+const RecordListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const {
     uploadingDataArr = [],
@@ -21,7 +21,7 @@ const RecordListScreen = (props) => {
     serverRecordsArr: record.serverRecordsArr,
     dataLoading: record.loading.getAllRecords,
   }));
-  console.log('server records are', serverRecordsArr)
+  console.log('server records are', serverRecordsArr);
   useEffect(() => {
     dispatch(clearUploadedRecord());
     console.log('dispatching get all records');
@@ -30,6 +30,7 @@ const RecordListScreen = (props) => {
   const renderItem = ({ item, index }) => {
     return (
       <RecordDetailItem
+        navigation={navigation}
         currentRecordIndex={index}
         record={item}
         isServerRecord={true}
@@ -54,9 +55,13 @@ const RecordListScreen = (props) => {
         />
       ) : (
         <View style={styles.noDataWrapper}>
-          <Text style={styles.noDataText}>
-            No Record found. Kindly pull down  to refresh data
-          </Text>
+          {dataLoading ? (
+            <LoadingIndicator />
+          ) : (
+            <Text style={styles.noDataText}>
+              No Record found. Kindly pull down to refresh data
+            </Text>
+          )}
         </View>
       )}
     </SafeAreaView>

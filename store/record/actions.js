@@ -3,6 +3,7 @@ import moment from 'moment';
 import { apiRoutes, API_URL } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
 import { getAxiosConfig } from '../../helpers/Utils';
+import { addApiUrlInRecordArr } from './recordUtilsFunctions';
 export const CREATE_RECORD_START = 'CREATE_RECORD_START';
 export const CREATE_RECORD_SUCCESS = 'CREATE_RECORD_SUCCESS';
 export const CREATE_RECORD_FAILED = 'CREATE_RECORD_FAILED';
@@ -154,6 +155,9 @@ const getPhotoFormData = (fileInfo) => {
   };
   console.log(fileInfo);
   formData.append('photo', photo);
+  if (fileInfo.audioItem) {
+    formData.append('audio', fileInfo.audioItem);
+  }
   formData.append('additionalComments', fileInfo.additionalComments);
   return formData;
 };
@@ -338,6 +342,7 @@ const startUploadingFile = (
       let newIndex = unUploadedItems.find(
         (el) => !uploadingItems.includes(el) && !uploadedItems.includes(el)
       );
+      if (!newIndex) return;
       uploadingItems.push(newIndex);
       unUploadedItems = unUploadedItems.filter((el) => el !== newIndex);
       dispatch(
@@ -414,7 +419,7 @@ export const createTransportRequest = (recordData) => {
   };
 };
 
-export const getAllRecords = (recordData={}) => {
+export const getAllRecords = (recordData = {}) => {
   return async (dispatch) => {
     console.log('getting all records');
     try {
@@ -424,8 +429,11 @@ export const getAllRecords = (recordData={}) => {
         recordData
       );
       if (response && response.data) {
-        const record=response?.data?.data;
-        dispatch(getAllRecordsSuccess(record));
+        let record = response?.data?.data;
+        let updatedRecord = addApiUrlInRecordArr(record);
+        console.log('get all records', record);
+        console.log('get all updatedRecords', updatedRecord);
+        dispatch(getAllRecordsSuccess(updatedRecord));
       } else if (response.error) {
         dispatch(getAllRecordsFailed(response.error));
       }

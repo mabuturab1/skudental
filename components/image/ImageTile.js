@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Image, StyleSheet, Dimensions } from 'react-native';
-const ImageTile = ({ path, overlayText, showOverlayText }) => (
+import { View, Image, StyleSheet, Dimensions, Text } from 'react-native';
+// import Image from 'react-native-fast-image'
+const ImageTile = ({ imageUrl, overlayText, showOverlayText }) => (
   <View style={styles.imageWrapper}>
-    <Image style={styles.image} source={{ uri: path }} />
-    <View style={styles.overlayTextWrapper}>
-      {overlayText && showOverlayText ? (
-        <Text style={styles.countText}>{` +${overlayText}`}</Text>
-      ) : null}
-    </View>
+    <Image style={styles.image} source={{ uri: imageUrl }} />
+    {overlayText && showOverlayText ? (
+      <View style={styles.overlayTextWrapper}>
+        <Text style={styles.overlayTextStyles}>{` +${overlayText}`}</Text>
+      </View>
+    ) : null}
   </View>
 );
 export default ImageTile;
@@ -19,20 +20,21 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   image: {
-    height: singleImageDimension,
-    width: singleImageDimension,
+    height: singleImageDimension - 1,
+    width: singleImageDimension - 1,
+    zIndex: 10,
   },
   overlayTextWrapper: {
     position: 'absolute',
     width: '100%',
     height: '100%',
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.1)',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    zIndex: 1000,
   },
   overlayTextStyles: {
-    fontSize: 18,
+    fontSize: 28,
     color: 'white',
   },
 });

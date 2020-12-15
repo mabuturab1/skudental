@@ -40,7 +40,7 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
   const renderItem = ({ item, index }) => {
     return (
       <PostItem
-        imageObj={item}
+        postObj={item}
         itemIndex={index}
         isLastItem={index + 1 === carouselItems.length}
         onAddComments={updateComments}

@@ -10,7 +10,7 @@ const RoundedImageList = ({ imageList, maxImages }) => {
     <View style={styles.imageListWrapper}>
       {imageToBeShown.map((el, index) => (
         <View key={index} style={styles.imageTile}>
-          <RounedImage path={el.path} />
+          <RounedImage imageUrl={el.path} />
         </View>
       ))}
       {lengthDiff ? (

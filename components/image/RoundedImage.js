@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
-const RoundedImage = ({path}) => (
+import { View,  StyleSheet } from 'react-native';
+import Image from 'react-native-fast-image'
+const RoundedImage = ({imageUrl}) => (
   <View style={styles.imageWrapper}>
-    <Image style={styles.image} source={{ uri: path }} />
+    <Image style={styles.image} source={{ uri: imageUrl }} />
   </View>
 );
 export default RoundedImage;

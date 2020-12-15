@@ -3,12 +3,21 @@ import { SafeAreaView, StyleSheet, FlatList } from 'react-native';
 import { useSelector } from 'react-redux';
 import { UploadPostItem } from '../../components';
 const PreviewRecordScreen = ({ route, navigation }) => {
-  const { currentRecordIndex } = route.params;
-  const uploadingDataArr =
-    useSelector(({ record }) => record.uploadingDataArr) || [];
+  const { currentRecordIndex, isServerRecord } = route.params;
+  const { uploadingDataArr = [], serverRecordsArr = [] } = useSelector(
+    ({ record }) => ({
+      uploadingDataArr: record.uploadingDataArr,
+      serverRecordsArr: record.serverRecordsArr,
+    })
+  );
   let attachedItems = [];
-  if (uploadingDataArr?.length >= currentRecordIndex + 1) {
+  if (uploadingDataArr?.length >= currentRecordIndex + 1 && !isServerRecord) {
     attachedItems = uploadingDataArr[currentRecordIndex].attachedItems;
+  } else if (
+    serverRecordsArr?.length >= currentRecordIndex + 1 &&
+    isServerRecord
+  ) {
+    attachedItems = serverRecordsArr[currentRecordIndex].attachedPosts;
   }
   const carouselItemsList = attachedItems.map((el, index) => ({
     id: index.toString(),
@@ -19,7 +28,7 @@ const PreviewRecordScreen = ({ route, navigation }) => {
     return (
       <UploadPostItem
         currentRecordIndex={currentRecordIndex}
-        imageObj={item}
+        postObj={item}
         itemIndex={index}
         navigation={navigation}
       />

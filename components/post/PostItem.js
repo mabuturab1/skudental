@@ -5,24 +5,31 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import PostAudio from './PostAudio';
 import { isAndroid } from '../../helpers/Utils';
 const PostItem = ({
-  imageObj,
+  postObj,
   itemIndex,
-  textEditable = true,
+  isEditAllowed = true,
   onAddComments = () => {},
   onAudioUpdate = () => {},
   isLastItem,
   sendImageData,
 }) => {
+  console.log('image uri', postObj);
   return (
     <View style={styles.imageItemWrapper}>
-      <Image style={styles.singleImage} source={{ uri: imageObj.imagePath }} />
+      <Image
+        onError={({ nativeEvent: { error } }) => console.log(error)}
+        style={styles.singleImage}
+        source={{
+          uri: postObj.imageUrl,
+        }}
+      />
       <View>
         <TextInput
           style={styles.textInput}
-          defaultValue={imageObj.additionalComments || ''}
+          defaultValue={postObj.additionalComments || ''}
           placeholderTextColor='rgba(255,255,255,0.6)'
-          placeholder='Add comments'
-          editable={textEditable}
+          placeholder={isEditAllowed ? 'Add comments' : ''}
+          editable={isEditAllowed}
           onChangeText={(text) => onAddComments(itemIndex, text)}
         />
       </View>
@@ -38,7 +45,12 @@ const PostItem = ({
         </View>
       ) : null}
       <View style={styles.postAudioWrapper}>
-        <PostAudio itemIndex={itemIndex} onAudioUpdate={ (audio)=> onAudioUpdate(itemIndex, audio)} />
+        <PostAudio
+          isEditAllowed={isEditAllowed}
+          initUrl={postObj.audioUrl}
+          itemIndex={itemIndex}
+          onAudioUpdate={(audio) => onAudioUpdate(itemIndex, audio)}
+        />
       </View>
     </View>
   );

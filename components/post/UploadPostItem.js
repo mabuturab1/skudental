@@ -11,8 +11,9 @@ import { ThemeColors } from '../../constants/Colors';
 import { routes } from '../../constants/routes';
 import { isAndroid } from '../../helpers/Utils';
 import { uploadRecordPhoto } from '../../store/record/actions';
+import AudioPlayer from '../audio/AudioPlayer';
 const UploadPostItem = ({
-  imageObj,
+  postObj,
   navigation,
   currentRecordIndex,
   itemIndex,
@@ -20,10 +21,11 @@ const UploadPostItem = ({
   const dispatch = useDispatch();
   const [sendToServer, setSendToServerStatus] = useState(false);
   const uploadingDataArr = useSelector(({ record }) => record.uploadingDataArr);
+  console.log(postObj);
   useEffect(() => {}, []);
   const showImagePreview = () => {
     navigation.navigate(routes.ImagePreview, {
-      imageObj,
+      postObj,
     });
   };
   const reUploadData = () => {
@@ -32,7 +34,7 @@ const UploadPostItem = ({
       dispatch(
         uploadRecordPhoto(
           record._id,
-          imageObj,
+          postObj,
           currentRecordIndex,
           itemIndex,
           (isSuccess) => {}
@@ -43,8 +45,8 @@ const UploadPostItem = ({
   return (
     <View style={styles.wrapper}>
       <View style={styles.iconWrapper}>
-        {imageObj.additionalComments != null ? (
-          <Text style={styles.commentsText}>{imageObj.additionalComments}</Text>
+        {postObj.additionalComments != null ? (
+          <Text style={styles.commentsText}>{postObj.additionalComments}</Text>
         ) : null}
 
         <View style={styles.singleIconWrapper}>
@@ -56,26 +58,28 @@ const UploadPostItem = ({
         <View style={styles.coverPhotoWrapper}>
           <Image
             style={styles.coverPhoto}
-            source={{ uri: imageObj.imagePath }}
+            source={{ uri: postObj.imageUrl }}
           />
-          <View style={styles.postAudioWrapper}>
-            <PostAudio itemIndex={itemIndex} isServerFile={false} />
-          </View>
+          {postObj.audioItem !== null ? (
+            <View style={styles.postAudioWrapper}>
+              <AudioPlayer audioItem={postObj.audioItem} />
+            </View>
+          ) : null}
         </View>
       </TouchableWithoutFeedback>
       <View style={styles.iconWrapper}>
         <View></View>
         <View style={styles.singleIconWrapper}>
-          {imageObj.recordUpdateFailed ? (
+          {postObj.recordUpdateFailed ? (
             <TouchableOpacity onPress={reUploadData}>
               <Ionicons
-                name={isAndroid() ? 'md-checkmark-done' : 'ios-checkmark-done'}
+                name={isAndroid() ? 'md-refresh-circle' : 'ios-refresh-circle'}
                 color={ThemeColors.primary}
                 size={24}
               />
             </TouchableOpacity>
-          ) : imageObj.progress != null && !imageObj.uploadComplete ? (
-            <CircularProgressbar progress={imageObj.progress} />
+          ) : postObj.progress != null && !postObj.uploadComplete ? (
+            <CircularProgressbar progress={postObj.progress} />
           ) : (
             <Ionicons
               name={isAndroid() ? 'md-checkmark-done' : 'ios-checkmark-done'}
@@ -127,7 +131,7 @@ const styles = StyleSheet.create({
   postAudioWrapper: {
     position: 'absolute',
     top: 50,
-    right: 20,
+    right: 10,
   },
 });
 export default UploadPostItem;

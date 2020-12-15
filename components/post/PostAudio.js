@@ -5,8 +5,13 @@ import AudioPlayer from '../audio/AudioPlayer';
 import AudioRecorder from '../audio/AudioRecorder';
 import { MaterialIcons } from '@expo/vector-icons';
 
-const Audio = ({ itemIndex, onAudioUpdate = () => {} }) => {
-  const [audioItem, setAudioItem] = useState(null);
+const Audio = ({
+  itemIndex,
+  onAudioUpdate = () => {},
+  initUrl = null,
+  isEditAllowed = true,
+}) => {
+  const [audioItem, setAudioItem] = useState(initUrl ? { uri: initUrl } : null);
   const deleteAudioItem = () => {
     setAudioItem(null);
   };
@@ -21,14 +26,16 @@ const Audio = ({ itemIndex, onAudioUpdate = () => {} }) => {
           <AudioPlayer audioItem={audioItem} />
         </View>
       )}
-      <View style={styles.audioRecorder}>
-        <AudioRecorder
-          onRecordingStart={() => updateAudioItem(null)}
-          audioName={`Record ${itemIndex}`}
-          onRecordingComplete={(item) => updateAudioItem(item)}
-        />
-      </View>
-      {audioItem && (
+      {isEditAllowed && (
+        <View style={styles.audioRecorder}>
+          <AudioRecorder
+            onRecordingStart={() => updateAudioItem(null)}
+            audioName={`Record ${itemIndex}`}
+            onRecordingComplete={(item) => updateAudioItem(item)}
+          />
+        </View>
+      )}
+      {audioItem && isEditAllowed && (
         <View style={styles.audioRecorder}>
           <RoundedButton
             icon={<MaterialIcons name={'delete'} size={24} color='white' />}

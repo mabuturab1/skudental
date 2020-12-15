@@ -1,3 +1,5 @@
+import { API_URL } from '../../constants/apiRoutes';
+
 export const getNewCopy = (uploadingData) =>
   uploadingData.map((el) => ({
     ...el,
@@ -44,4 +46,24 @@ export const removeItemFromUploadingArr = (uploadingArr, index) => {
     updatedUploadingArr.splice(index, 1);
   }
   return updatedUploadingArr;
+};
+
+export const addApiUrlInRecordArr = (record) => {
+  let updatedRecordArr = [];
+  if (record && record.length) {
+    record.forEach((el) => {
+      updatedRecordArr.push({
+        ...el,
+        createdAt: el.createdAt
+          ? moment(el.createdAt).format('dd MM YYY')
+          : undefined,
+        attachedPosts: el.attachedPosts?.map((item) => ({
+          ...item,
+          imageUrl: API_URL + '/' + item.photoUrl,
+          audioUrl: item.audioUrl ? API_URL + '/' + item.audioUrl : null,
+        })),
+      });
+    });
+  }
+  return updatedRecordArr;
 };

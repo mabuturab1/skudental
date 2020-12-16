@@ -6,7 +6,13 @@ import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 import moment from 'moment';
 import { useCallback } from 'react';
-const AudioPlayer = ({ audioItem = {}, onPlaybackStatusUpdate = () => {} }) => {
+const AudioPlayer = ({
+  audioItem = {},
+  onPlaybackStatusUpdate = () => {},
+  isSmallAudioPlayerButton = false,
+  durationOnRight = false,
+  textColor = 'white',
+}) => {
   const [playingSound, setPlayingSound] = useState();
   const [soundPlayStatus, setSoundPlayStatus] = useState(false);
   const [durationMillis, setDurationMillis] = useState(0);
@@ -29,7 +35,6 @@ const AudioPlayer = ({ audioItem = {}, onPlaybackStatusUpdate = () => {} }) => {
     }
   };
   useEffect(() => {
-    console.log('calling use effect sound play status');
     if (!audioItem && soundPlayStatus) {
       stopSound();
     }
@@ -39,7 +44,6 @@ const AudioPlayer = ({ audioItem = {}, onPlaybackStatusUpdate = () => {} }) => {
   };
 
   const playSound = async () => {
-    console.log('Loading Sound');
     if (!audioItem.uri) return;
     const { sound } = await Audio.Sound.createAsync(
       { uri: audioItem.uri },
@@ -52,12 +56,10 @@ const AudioPlayer = ({ audioItem = {}, onPlaybackStatusUpdate = () => {} }) => {
     setPlayingSound(sound);
     setSoundPlayStatus(true);
 
-    console.log('Playing Sound');
     await sound.setProgressUpdateIntervalAsync(50);
     await sound.playAsync();
   };
   const stopSound = useCallback(async () => {
-    console.log('Loading Sound');
     try {
       await playingSound.stopAsync();
       setSoundPlayStatus(false);
@@ -76,21 +78,31 @@ const AudioPlayer = ({ audioItem = {}, onPlaybackStatusUpdate = () => {} }) => {
   }, [playingSound]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        ...styles.container,
+        flexDirection: durationOnRight ? 'row-reverse' : 'row',
+      }}
+    >
       {durationMillis && fileDuration ? (
-        <Text style={styles.durationMillisText}>{`${getFormattedTime(
-          durationMillis
-        )} / ${getFormattedTime(fileDuration)}`}</Text>
+        <Text
+          style={{ ...styles.durationMillisText, color: textColor }}
+        >{`${getFormattedTime(durationMillis)} / ${getFormattedTime(
+          fileDuration
+        )}`}</Text>
       ) : null}
       <RoundedButton
         icon={
           <FontAwesome
             name={soundPlayStatus ? 'stop' : 'play'}
-            size={24}
+            size={isSmallAudioPlayerButton ? 12 : 24}
             color='white'
           />
         }
-        onPress={() => (soundPlayStatus ? stopSound() : playSound())}
+        style={isSmallAudioPlayerButton ? { width: 30, height: 30 } : {}}
+        onPress={(event) =>
+          soundPlayStatus ? stopSound(event) : playSound(event)
+        }
       />
     </View>
   );

@@ -15,10 +15,9 @@ const AudioRecorder = ({
 
   async function startRecording() {
     try {
-      console.log('Requesting permissions..');
       await Audio.requestPermissionsAsync();
       await Audio.setAudioModeAsync(getAudioModeConfigs(true));
-      console.log('Starting recording..');
+
       const recording = new Audio.Recording();
       await recording.prepareToRecordAsync(
         Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
@@ -26,7 +25,6 @@ const AudioRecorder = ({
       await recording.startAsync();
       onRecordingStart(true);
       setRecording(recording);
-      console.log('Recording started');
     } catch (err) {
       console.error('Failed to start recording', err);
     }
@@ -45,7 +43,6 @@ const AudioRecorder = ({
     };
   }, [recording]);
   async function stopRecording() {
-    console.log('Stopping recording..');
     try {
       await recording.stopAndUnloadAsync();
       await Audio.setAudioModeAsync(getAudioModeConfigs(false));
@@ -81,7 +78,9 @@ const AudioRecorder = ({
             color='white'
           />
         }
-        onPress={() => (recording ? stopRecording() : startRecording())}
+        onPress={(event) =>
+          recording ? stopRecording(event) : startRecording(event)
+        }
       />
     </View>
   );

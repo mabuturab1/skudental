@@ -13,7 +13,6 @@ const PostItem = ({
   isLastItem,
   sendImageData,
 }) => {
-  console.log('image uri', postObj);
   return (
     <View style={styles.imageItemWrapper}>
       <Image

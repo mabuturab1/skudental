@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import React, { Fragment, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,9 +7,12 @@ import {
   SafeAreaView,
   FlatList,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { LoadingIndicator, RecordDetailItem } from '../../components';
+import { ThemeColors } from '../../constants/Colors';
+import { isAndroid } from '../../helpers/Utils';
 import { clearUploadedRecord, getAllRecords } from '../../store/record/actions';
 const RecordListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -24,7 +28,6 @@ const RecordListScreen = ({ navigation }) => {
   console.log('server records are', serverRecordsArr);
   useEffect(() => {
     dispatch(clearUploadedRecord());
-    console.log('dispatching get all records');
     dispatch(getAllRecords());
   }, [dispatch]);
   const renderItem = ({ item, index }) => {
@@ -58,9 +61,20 @@ const RecordListScreen = ({ navigation }) => {
           {dataLoading ? (
             <LoadingIndicator />
           ) : (
-            <Text style={styles.noDataText}>
-              No Record found. Kindly pull down to refresh data
-            </Text>
+            <Fragment>
+              <Text style={styles.noDataText}>
+                No Record found. Kindly pull down to refresh data
+              </Text>
+              <TouchableOpacity onPress={refreshData}>
+                <Ionicons
+                  name={
+                    isAndroid() ? 'md-refresh-circle' : 'ios-refresh-circle'
+                  }
+                  color={ThemeColors.primary}
+                  size={30}
+                />
+              </TouchableOpacity>
+            </Fragment>
           )}
         </View>
       )}

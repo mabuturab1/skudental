@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CircularProgressbar from '../progressbar/CircularProgressbar';
 import { ThemeColors } from '../../constants/Colors';
 import { routes } from '../../constants/routes';
-import { isAndroid } from '../../helpers/Utils';
+import { isAndroid, isValidValue } from '../../helpers/Utils';
 import { uploadRecordPhoto } from '../../store/record/actions';
 import AudioPlayer from '../audio/AudioPlayer';
 const UploadPostItem = ({
@@ -19,9 +19,8 @@ const UploadPostItem = ({
   itemIndex,
 }) => {
   const dispatch = useDispatch();
-  const [sendToServer, setSendToServerStatus] = useState(false);
+  console.log('post obj is', postObj.audioItem, postObj.audioItem !== null);
   const uploadingDataArr = useSelector(({ record }) => record.uploadingDataArr);
-  console.log(postObj);
   useEffect(() => {}, []);
   const showImagePreview = () => {
     navigation.navigate(routes.ImagePreview, {
@@ -53,20 +52,21 @@ const UploadPostItem = ({
           <MaterialIcons name={'delete'} size={24} color='black' />
         </View>
       </View>
-
       <TouchableWithoutFeedback onPress={showImagePreview}>
         <View style={styles.coverPhotoWrapper}>
-          <Image
-            style={styles.coverPhoto}
-            source={{ uri: postObj.imageUrl }}
-          />
-          {postObj.audioItem !== null ? (
-            <View style={styles.postAudioWrapper}>
-              <AudioPlayer audioItem={postObj.audioItem} />
-            </View>
-          ) : null}
+          <Image style={styles.coverPhoto} source={{ uri: postObj.imageUrl }} />
         </View>
       </TouchableWithoutFeedback>
+      {isValidValue(postObj.audioItem) ? (
+        <View style={styles.postAudioWrapper}>
+          <AudioPlayer
+            audioItem={postObj.audioItem}
+            isSmallAudioPlayerButton={true}
+            durationOnRight={true}
+            textColor="black"
+          />
+        </View>
+      ) : null}
       <View style={styles.iconWrapper}>
         <View></View>
         <View style={styles.singleIconWrapper}>
@@ -94,6 +94,7 @@ const UploadPostItem = ({
 };
 const styles = StyleSheet.create({
   wrapper: {
+    width: Dimensions.get('screen').width,
     flex: 1,
     height: 500,
     alignItems: 'center',
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   coverPhoto: {
-    width: Dimensions.get('window').width,
+    width: Dimensions.get('screen').width,
     height: 420,
     resizeMode: 'cover',
   },
@@ -129,9 +130,11 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   postAudioWrapper: {
-    position: 'absolute',
-    top: 50,
-    right: 10,
+    width: '100%',
+    paddingHorizontal: 50,
+    marginVertical:5,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
 });
 export default UploadPostItem;

@@ -19,7 +19,7 @@ const RecordDetailItem = ({
         <ImageTileList
           navigation={navigation}
           currentRecordIndex={currentRecordIndex}
-          imageList={record?.attachedPosts}
+          attachedPosts={record?.attachedPosts}
           maxImages={3}
           isServerRecord={isServerRecord}
         />

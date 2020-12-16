@@ -1,9 +1,14 @@
 import React from 'react';
 import { View, Image, StyleSheet, Dimensions, Text } from 'react-native';
-// import Image from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
 const ImageTile = ({ imageUrl, overlayText, showOverlayText }) => (
   <View style={styles.imageWrapper}>
-    <Image style={styles.image} source={{ uri: imageUrl }} />
+    <Image
+      onError={(error) => console.log('Cannot load image')}
+      style={styles.image}
+      source={{ uri: imageUrl }}
+      // resizeMode={FastImage.resizeMode.contain}
+    />
     {overlayText && showOverlayText ? (
       <View style={styles.overlayTextWrapper}>
         <Text style={styles.overlayTextStyles}>{` +${overlayText}`}</Text>

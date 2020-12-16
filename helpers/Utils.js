@@ -25,3 +25,5 @@ export const getImageComments = (itemsList = []) => {
   );
   return itemsList;
 };
+
+export const isValidValue=(val)=>val!==null&&val!==undefined

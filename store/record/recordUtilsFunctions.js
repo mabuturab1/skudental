@@ -6,7 +6,6 @@ export const getNewCopy = (uploadingData) =>
     attachedItems: el.attachedItems.map((item) => ({ ...item })),
   }));
 export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
-  console.log('payload update for progress', payload);
   const newUploadingData = getNewCopy(uploadingData);
   if (newUploadingData.length <= payload.recordIndex) {
     return newUploadingData;
@@ -14,10 +13,16 @@ export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
   const currentItem = newUploadingData[payload.recordIndex];
   if (payload.uploadComplete) {
     currentItem.attachedItems[payload.attachedItemIndex].uploadComplete = true;
+    currentItem.attachedItems[
+      payload.attachedItemIndex
+    ].recordUpdateFailed = false;
   }
   if (payload.progress >= 0) {
     currentItem.attachedItems[payload.attachedItemIndex].progress =
       payload.progress;
+    currentItem.attachedItems[
+      payload.attachedItemIndex
+    ].recordUpdateFailed = false;
   } else {
     currentItem.attachedItems[payload.attachedItemIndex].progress = 0;
     currentItem.attachedItems[
@@ -29,7 +34,6 @@ export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
 };
 
 export const updateRecordObjInUploadingData = (uploadingData, payload) => {
-  console.log('payload update for progress', payload);
   const newUploadingData = getNewCopy(uploadingData);
   if (newUploadingData.length <= payload.recordIndex) {
     return newUploadingData;
@@ -59,8 +63,12 @@ export const addApiUrlInRecordArr = (record) => {
           : undefined,
         attachedPosts: el.attachedPosts?.map((item) => ({
           ...item,
-          imageUrl: API_URL + '/' + item.photoUrl,
+          imageUrl: API_URL + '/' + (item.compressedPhotoUrl || item.photoUrl),
+          originalImageUrl: API_URL + '/' + item.photoUrl,
           audioUrl: item.audioUrl ? API_URL + '/' + item.audioUrl : null,
+          audioItem: item.audioUrl
+            ? { uri: API_URL + '/' + item.audioUrl }
+            : null,
         })),
       });
     });

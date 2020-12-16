@@ -95,7 +95,7 @@ export const userLogout = () => ({ type: USER_LOGOUT });
 export const userSignup = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
-      console.log('signup user data', userData);
+      
       dispatch(userSignupStart());
 
       const response = await axios.post(
@@ -106,7 +106,7 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
         const result = response?.data?.data;
 
         dispatch(userSignupSuccess(result));
-        console.log('signup user data', result);
+      
 
         isSuccess(true);
       } else if (response.error) {

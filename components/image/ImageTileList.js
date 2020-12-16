@@ -3,16 +3,17 @@ import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native';
 import { routes } from '../../constants/routes';
 import ImageTile from './ImageTile';
 const ImageTileList = ({
-  imageList=[],
+  attachedPosts=[],
   maxImages,
   currentRecordIndex,
   isServerRecord = true,
   navigation
 }) => {
-  let imageToBeShown = imageList;
-  if (maxImages && maxImages < imageList?.length)
+  let imageToBeShown = attachedPosts;
+ 
+  if (maxImages && maxImages < attachedPosts?.length)
     imageToBeShown = imageToBeShown.slice(0, maxImages);
-  const lengthDiff = imageList?.length - imageToBeShown?.length;
+  const lengthDiff = attachedPosts?.length - imageToBeShown?.length;
   const showImagePreview = (postObj, showOverlayText) => {
     if (showOverlayText) {
       navigation.navigate(routes.PreviewRecord, {

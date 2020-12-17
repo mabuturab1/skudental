@@ -19,6 +19,8 @@ import EmailScreen from './user/passwordReset/EmailScreen';
 import PasswordResetScreen from './user/passwordReset/PasswordResetScreen';
 import PinScreen from './user/passwordReset/PinScreen';
 import ImagePreviewScreen from './record/ImagePreviewScreen';
+import RoomScreen from './chatRoom/RoomScreen';
+import ChatRoomListScreen from './chatRoom/ChatRoomListScreen';
 
 export {
   RecordDetailsScreen,
@@ -41,5 +43,7 @@ export {
   PreviewCarouselScreen,
   PreviewRecordScreen,
   ImagePreviewScreen,
-  LogoutScreen
+  LogoutScreen,
+  RoomScreen,
+  ChatRoomListScreen
 };

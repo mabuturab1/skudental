@@ -14,20 +14,18 @@ import {
 } from './actions';
 
 const initialState = {
-  user: {},
+  allTransportRequests: [],
   loading: {
     createTransportRequest: false,
     sendTransportMessage: false,
     getAllTransports: false,
     getAllTransportMessages: false,
-    verifyUser: false,
   },
   error: {
     createTransportRequest: '',
     sendTransportMessage: '',
     getAllTransports: '',
     getAllTransportMessages: '',
-    verifyUser: '',
   },
 };
 
@@ -36,54 +34,54 @@ export default (state = initialState, action) => {
     case CREATE_TRANSPORT_REQUEST_START:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, createTransportRequest: true },
         error: { ...state.error, createTransportRequest: '' },
       };
     case CREATE_TRANSPORT_REQUEST_SUCCESS:
       return {
         ...state,
-        user: action.payload,
+        allTransportRequests: state.allTransportRequests.concat(action.payload),
         loading: { ...state.loading, createTransportRequest: false },
       };
     case CREATE_TRANSPORT_REQUEST_FAILED:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, createTransportRequest: false },
         error: { ...state.error, createTransportRequest: action.payload },
       };
     case SEND_TRANSPORT_MESSAGE_START:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, sendTransportMessage: true },
         error: { ...state.error, sendTransportMessage: '' },
       };
     case SEND_TRANSPORT_MESSAGE_SUCCESS:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, sendTransportMessage: false },
       };
     case SEND_TRANSPORT_MESSAGE_FAILED:
       return {
         ...state,
-        user: {},
+
         loading: { ...state.loading, sendTransportMessage: false },
         error: { ...state.error, sendTransportMessage: action.payload },
       };
     case GET_ALL_TRANSPORTS_START:
       return {
         ...state,
-        user: {},
+        allTransportRequests: [],
         loading: { ...state.loading, getAllTransports: true },
         error: { ...state.error, getAllTransports: '' },
       };
     case GET_ALL_TRANSPORTS_SUCCESS:
       return {
         ...state,
-        user: {},
+        allTransportRequests: action.payload,
         loading: { ...state.loading, getAllTransports: false },
       };
     case GET_ALL_TRANSPORTS_FAILED:
@@ -115,5 +113,5 @@ export default (state = initialState, action) => {
         error: { ...state.error, getAllTransportMessages: action.payload },
       };
   }
-  return state
+  return state;
 };

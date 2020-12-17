@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import RoundedButton from '../button/RoundedButton';
-import { v4 as uuidv4 } from 'uuid';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 import moment from 'moment';

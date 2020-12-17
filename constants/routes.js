@@ -20,5 +20,7 @@ export const routes = {
   PreviewCarousel: 'PreviewCarousel',
   PreviewRecord:'PreviewRecord',
   ImagePreview:"ImagePreview",
-  Logout:"Logout"
+  Logout:"Logout",
+  ChatRoomList:"ChatRoomList",
+  ChatRoom:"ChatRoom"
 };

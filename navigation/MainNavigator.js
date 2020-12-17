@@ -28,6 +28,8 @@ import {
   PreviewRecordScreen,
   ImagePreviewScreen,
   LogoutScreen,
+  RoomScreen,
+  ChatRoomListScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -162,9 +164,9 @@ const tabData = [
     wrapStackNavigator: false,
   },
   {
-    navigatorName: routes.RecordInquriy,
-    component: RecordInquiryScreen,
-    componentName: 'Record Inquiry',
+    navigatorName: routes.ChatRoomList,
+    component: ChatRoomListScreen,
+    componentName: 'ChatRoomList',
     wrapStackNavigator: false,
   },
 ];
@@ -180,7 +182,7 @@ const getTabIcon = (routeName, focused) => {
       return prefix + (focused ? 'add-circle' : 'add-circle-outline');
     case routes.ArrangePickup:
       return prefix + (focused ? 'bus' : 'bus-outline');
-    case routes.RecordInquriy:
+    case routes.ChatRoomList:
       return (
         prefix +
         (focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline')
@@ -331,6 +333,11 @@ export default mainStackNavigator = (isAuthenticated) => (
       options={{ headerShown: false }}
       name={routes.Auth}
       component={AuthNavigator}
+    />
+    <Stack.Screen
+      name={routes.ChatRoom}
+      options={{ title: 'Chat Room' }}
+      component={RoomScreen}
     />
     <Stack.Screen
       name={routes.Logout}

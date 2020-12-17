@@ -18,7 +18,9 @@ import UserSigninForm from './forms/UserSigninForm';
 import PostItem from './post/PostItem';
 import UploadPostItem from './post/UploadPostItem';
 import CircularProgressbar from './progressbar/CircularProgressbar';
-import PostAudio from './post/PostAudio'
+import PostAudio from './post/PostAudio';
+import SingleChatView from './chat/SingleChatView';
+
 import {
   FormWrapper,
   FormInputWrapper,
@@ -51,5 +53,6 @@ export {
   ImageTileList,
   AudioPlayer,
   AudioRecorder,
-  PostAudio
+  PostAudio,
+  SingleChatView,
 };

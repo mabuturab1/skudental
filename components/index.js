@@ -1,6 +1,7 @@
 import HeaderButton from './header/HeaderButton';
 import LoadingIndicator from './loader/LoadingIndicator';
 import RecordDetailItem from './recordDetailItem/RecordDetailItem';
+import SocialFeedItem from './recordDetailItem/SocialFeedItem';
 import MaterialMenu from './menu/Menu';
 import FlatButton from './button/FlatButton';
 import RoundedButton from './button/RoundedButton';
@@ -20,6 +21,7 @@ import UploadPostItem from './post/UploadPostItem';
 import CircularProgressbar from './progressbar/CircularProgressbar';
 import PostAudio from './post/PostAudio';
 import SingleChatView from './chat/SingleChatView';
+import ProgressUploadStatus from './progressUploadStatus/ProgressUploadStatus';
 
 import {
   FormWrapper,
@@ -32,6 +34,7 @@ export {
   HeaderButton,
   LoadingIndicator,
   RecordDetailItem,
+  SocialFeedItem,
   MaterialMenu,
   FlatButton,
   Dropdown,
@@ -55,4 +58,5 @@ export {
   AudioRecorder,
   PostAudio,
   SingleChatView,
+  ProgressUploadStatus,
 };

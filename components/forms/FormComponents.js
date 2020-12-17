@@ -9,7 +9,7 @@ export const FormInputWrapper = ({ children, style }) => (
 );
 
 export const FormTextInput = (props) => (
-  <TextInput {...props}  style={{ ...styles.textInput, ...props.style }} />
+  <TextInput  {...props} style={{ ...styles.textInput, ...props.style }} />
 );
 
 const styles = StyleSheet.create({
@@ -19,14 +19,15 @@ const styles = StyleSheet.create({
     paddingTop: 100,
   },
   singleFormFieldWrapper: {
-    marginTop: 10,
-    marginBottom: 10,
+    marginVertical: 10,
   },
 
   textInput: {
     width: '100%',
-    marginBottom: 10,
-    borderBottomColor: ThemeColors.listItemBorder,
-    borderBottomWidth: 1,
+    borderColor: ThemeColors.listItemBorder,
+    borderWidth: 2,
+    padding: 10,
+    borderRadius: 10,
+    fontFamily:'RobotoMedium'
   },
 });

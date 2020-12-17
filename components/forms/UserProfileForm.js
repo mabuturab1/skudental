@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { View, StyleSheet, Text, TextInput } from 'react-native';
+import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Dropdown from '../dropdown/Dropdown';
@@ -17,6 +17,8 @@ const UserProfileForm = ({
   onSubmit,
   isSignup = true,
 }) => {
+
+
   const getValidationSchema = () => {
     const signupObj = {
       password: Yup.string()
@@ -41,7 +43,6 @@ const UserProfileForm = ({
         .min(5, 'Password should be atleast 5 characters')
         .required('Kindly enter a valid password')
         .oneOf([Yup.ref('password'), null], 'Passwords must match'),
-      role: Yup.number().required('Kindly select a role'),
     };
     const mergeObj = isSignup ? signupObj : updateUserObj;
     schemaObj = { ...schemaObj, ...mergeObj };
@@ -56,7 +57,6 @@ const UserProfileForm = ({
     currentPassword: !isSignup ? '' : undefined,
     confirmPassword: '',
     email: initValues['email'] || '',
-    role: initValues['role'] || Role.Doctor,
   });
   const roleData = [
     { label: 'Doctor', value: Role.Doctor },
@@ -145,29 +145,24 @@ const UserProfileForm = ({
                 name='confirmPassword'
               />
             </FormInputWrapper>
-            <FormInputWrapper style={styles.singleFormFieldWrapper}>
-              <Dropdown
-                placeholder='Role'
-                value={values.role}
-                data={roleData}
-                enabled={isSignup}
-                onChange={(value) => setFieldValue('role', value)}
-              />
-            </FormInputWrapper>
 
-            <View style={styles.signUpButtonWrapper}>
-              <FlatButton
-                title={isSignup ? 'Sign Up' : 'Update User'}
-                onPress={handleSubmit}
-              />
-            </View>
+            <FlatButton
+              style={styles.signupButton}
+              title={isSignup ? 'Sign Up' : 'Update User'}
+              onPress={handleSubmit}
+            />
+
             {isSignup ? (
               <View style={styles.loginButtonWrapper}>
-                <FlatButton
-                  style={styles.loginButton}
-                  title='Login'
+                <Text style={styles.loginButtonText}>
+                  Already have an account?
+                </Text>
+                <TouchableOpacity
+                  activeOpacity={0.85}
                   onPress={() => navigation.navigate(routes.UserSignIn)}
-                />
+                >
+                  <Text style={styles.signinText}>Sign In</Text>
+                </TouchableOpacity>
               </View>
             ) : null}
           </FormWrapper>
@@ -197,18 +192,25 @@ const styles = StyleSheet.create({
     borderBottomColor: ThemeColors.listItemBorder,
     borderBottomWidth: 1,
   },
-  signUpButtonWrapper: {
-    alignSelf: 'flex-end',
-    marginTop: 10,
-    paddingRight: 10,
+  signupButton: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   loginButtonWrapper: {
-    alignSelf: 'center',
-    margin: 25,
+    marginTop: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
-  loginButton: {
-    width: 150,
+  loginButtonText: {
+    fontFamily: 'RobotoLight',
+  },
+  signinText: {
+    fontFamily: 'RobotoRegular',
+    color: ThemeColors.primary,
+    paddingLeft: 5,
   },
 });
 export default UserProfileForm;

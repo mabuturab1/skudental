@@ -43,7 +43,7 @@ const CreateRecordScreen = ({ navigation }) => {
     return unsubscribe;
   }, [navigation, formikRef]);
   const onCreateRecordSubmit = (values) => {
-    navigation.navigate(routes.SkSales);
+    navigation.navigate(routes.HomeFeed);
   };
   const getInitValues = () => ({
     submissionDate: getCurrentDate(),

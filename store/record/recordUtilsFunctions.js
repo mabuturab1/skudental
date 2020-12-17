@@ -1,5 +1,5 @@
 import { API_URL } from '../../constants/apiRoutes';
-
+import moment from 'moment';
 export const getNewCopy = (uploadingData) =>
   uploadingData.map((el) => ({
     ...el,
@@ -59,12 +59,23 @@ export const addApiUrlInRecordArr = (record) => {
       updatedRecordArr.push({
         ...el,
         createdAt: el.createdAt
-          ? moment(el.createdAt).format('dd MM YYY')
+          ? moment(el.createdAt).format('DD/MM/YYYY')
           : undefined,
         attachedPosts: el.attachedPosts?.map((item) => ({
           ...item,
-          imageUrl: API_URL + '/' + (item.compressedPhotoUrl || item.photoUrl),
-          originalImageUrl: API_URL + '/' + item.photoUrl,
+          photo: {
+            ...item.photo,
+            photoUrl: API_URL + '/' + item.photo.photoUrl,
+          },
+          compressedPhoto: {
+            ...item.compressedPhoto,
+            photoUrl: API_URL + '/' + item.compressedPhoto.photoUrl,
+          },
+          imageUrl:
+            API_URL +
+            '/' +
+            (item.compressedPhoto?.compressedPhotoUrl || item.photo?.photoUrl),
+          originalImageUrl: API_URL + '/' + item.photo?.photoUrl,
           audioUrl: item.audioUrl ? API_URL + '/' + item.audioUrl : null,
           audioItem: item.audioUrl
             ? { uri: API_URL + '/' + item.audioUrl }

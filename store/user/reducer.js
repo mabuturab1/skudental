@@ -19,6 +19,7 @@ import {
   VERIFY_USER_FAILED,
   USER_LOGOUT,
 } from './actions';
+import { addApiUrlInUserObj } from './userUtilsFunctions';
 
 const initialState = {
   user: {},
@@ -74,7 +75,7 @@ export default (state = initialState, action) => {
     case USER_SIGNIN_SUCCESS:
       return {
         ...state,
-        user: action.payload.user,
+        user: addApiUrlInUserObj(action.payload.user),
         token: action.payload.token,
         loading: { ...state.loading, userSignin: false },
       };
@@ -135,20 +136,18 @@ export default (state = initialState, action) => {
     case UPDATE_USER_START:
       return {
         ...state,
-        user: {},
         loading: { ...state.loading, updateUser: true },
         error: { ...state.error, updateUser: '' },
       };
     case UPDATE_USER_SUCCESS:
       return {
         ...state,
-        user: action.payload,
+        user: addApiUrlInUserObj(action.payload),
         loading: { ...state.loading, updateUser: false },
       };
     case UPDATE_USER_FAILED:
       return {
         ...state,
-        user: {},
         loading: { ...state.loading, updateUser: false },
         error: { ...state.error, updateUser: action.payload },
       };
@@ -156,7 +155,6 @@ export default (state = initialState, action) => {
     case VERIFY_USER_START:
       return {
         ...state,
-        user: {},
         loading: { ...state.loading, verifyUser: true },
         error: { ...state.error, verifyUser: '' },
       };

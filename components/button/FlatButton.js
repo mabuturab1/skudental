@@ -1,29 +1,36 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Button } from 'react-native-paper';
 import { ThemeColors } from '../../constants/Colors';
 const CustomButton = ({ style, onPress, title, icon }) => (
-  <Button
-    mode='contained'
+  <TouchableOpacity
+    activeOpacity={0.7}
     style={{ ...styles.customButton, ...style }}
     onPress={onPress}
   >
-    {title || icon}
-  </Button>
+    {title != null ? <Text style={styles.titleStyle}>{title}</Text> : icon}
+  </TouchableOpacity>
 );
 
 export default CustomButton;
 const styles = StyleSheet.create({
   customButton: {
-    paddingTop: 5,
-    paddingBottom: 5,
+    padding: 11,
+
     borderRadius: 10,
     borderWidth: 1,
     borderColor: ThemeColors.primary,
     backgroundColor: ThemeColors.primary,
+    textTransform: 'capitalize',
     color: '#fff',
     textAlign: 'center',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontFamily: 'RobotoRegular',
+  },
+  titleStyle: {
+    color: 'white',
+    fontFamily: 'RobotoBold',
+    fontSize: 16,
+    
   },
 });

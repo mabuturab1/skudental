@@ -1,22 +1,26 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import ImageTileList from '../image/ImageTileList';
-import { API_URL } from '../../constants/apiRoutes';
 import { ThemeColors } from '../../constants/Colors';
+import { useSelector } from 'react-redux';
 const RecordDetailItem = ({
   navigation,
   record,
   currentRecordIndex,
   isServerRecord,
 }) => {
+  const user = useSelector(({ auth }) => auth.user);
   return (
     <View style={styles.cardWrapper}>
-      {/* <View style={styles.recordNameWrapper}>
-        <Text style={styles.ownerNameText}>{record?.recordOwner?.name}</Text>
-        <Text style={styles.creationDateText}>{record?.createdAt}</Text>
-      </View> */}
       <View style={styles.infoContainer}>
-        <Image source={{ uri: '' }} style={styles.avatarImage} />
+        <Image
+          source={
+            user?.profileImageUrl
+              ? { uri: user?.profileImage }
+              : require('../../assets/defaultImage.png')
+          }
+          style={styles.avatarImage}
+        />
         <View style={styles.usernameContainer}>
           <Text> {record?.recordOwner?.name} </Text>
           {record?.createdAt ? (
@@ -43,7 +47,7 @@ const styles = StyleSheet.create({
     marginVertical: 25,
     marginHorizontal: 15,
   },
-  infoContainer: { flexDirection: 'row', height: 45, alignSelf: 'stretch' },
+  infoContainer: { flexDirection: 'row', height: 50, alignSelf: 'stretch' },
   avatarImage: {
     borderRadius: 20,
     width: 40,

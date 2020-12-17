@@ -95,7 +95,6 @@ export const userLogout = () => ({ type: USER_LOGOUT });
 export const userSignup = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
-      
       dispatch(userSignupStart());
 
       const response = await axios.post(
@@ -106,7 +105,6 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
         const result = response?.data?.data;
 
         dispatch(userSignupSuccess(result));
-      
 
         isSuccess(true);
       } else if (response.error) {
@@ -191,6 +189,48 @@ export const updateUser = (userData, isSuccess = isSuccessDefault) => {
         isSuccess(false);
       }
     } catch (error) {
+      dispatch(updateUserFailed('An error occurred'));
+      isSuccess(false);
+    }
+  };
+};
+const getUserImageFormData = (image) => {
+  let formData = new FormData();
+  let photo = {
+    ...image,
+    uri: image.path,
+    type: image.mime,
+    name: image.path?.split('/').pop() || Date.now().toString() + image.mime,
+  };
+  formData.append('photo', photo);
+  return formData;
+};
+export const updateUserPhoto = (
+  image,
+  isSuccess = isSuccessDefault,
+  uploadProgressUpdate = () => {}
+) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch(updateUserStart());
+      const response = await axios.post(
+        API_URL + apiRoutes.UPLOAD_PHOTO,
+        getUserImageFormData(image),
+        {
+          ...getAxiosConfig(getState),
+          onUploadProgress: uploadProgressUpdate,
+        }
+      );
+      if (response && response.data) {
+        const result = response?.data?.data;
+        dispatch(updateUserSuccess(result));
+        isSuccess(true);
+      } else if (response.error) {
+        dispatch(updateUserFailed(response.error));
+        isSuccess(false);
+      }
+    } catch (error) {
+      console.log('error uploading photo', error);
       dispatch(updateUserFailed('An error occurred'));
       isSuccess(false);
     }

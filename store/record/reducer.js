@@ -22,6 +22,7 @@ import {
   CLEAR_UPLOADING_RECORD,
 } from './actions';
 import {
+  addApiUrlInRecordArr,
   getUpdatedUploadingDataObj,
   removeItemFromUploadingArr,
   updateRecordObjInUploadingData,
@@ -103,7 +104,7 @@ export default (state = initialState, action) => {
     case GET_ALL_RECORDS_SUCCESS:
       return {
         ...state,
-        serverRecordsArr: action.payload,
+        serverRecordsArr: addApiUrlInRecordArr(action.payload),
         loading: { ...state.loading, getAllRecords: false },
       };
     case GET_ALL_RECORDS_FAILED:

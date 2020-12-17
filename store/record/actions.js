@@ -3,7 +3,6 @@ import moment from 'moment';
 import { apiRoutes, API_URL } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
 import { getAxiosConfig } from '../../helpers/Utils';
-import { addApiUrlInRecordArr } from './recordUtilsFunctions';
 export const CREATE_RECORD_START = 'CREATE_RECORD_START';
 export const CREATE_RECORD_SUCCESS = 'CREATE_RECORD_SUCCESS';
 export const CREATE_RECORD_FAILED = 'CREATE_RECORD_FAILED';
@@ -421,9 +420,9 @@ export const getAllRecords = (recordData = {}) => {
       );
       if (response && response.data) {
         let record = response?.data?.data;
-        let updatedRecord = addApiUrlInRecordArr(record);
+       
 
-        dispatch(getAllRecordsSuccess(updatedRecord));
+        dispatch(getAllRecordsSuccess(record));
       } else if (response.error) {
         dispatch(getAllRecordsFailed(response.error));
       }

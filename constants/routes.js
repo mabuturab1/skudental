@@ -1,6 +1,6 @@
 export const routes = {
   Home: 'Home',
-  SkSales: 'SkSales',
+  HomeFeed: 'HomeFeed',
   Pricing: 'Pricing',
   LabDocket: 'LabDocket',
   RecordList: 'Patient Record',
@@ -18,9 +18,10 @@ export const routes = {
   PasswordReset: 'PasswordReset',
   Email: 'Email',
   PreviewCarousel: 'PreviewCarousel',
-  PreviewRecord:'PreviewRecord',
-  ImagePreview:"ImagePreview",
-  Logout:"Logout",
-  ChatRoomList:"ChatRoomList",
-  ChatRoom:"ChatRoom"
+  PreviewRecord: 'PreviewRecord',
+  ImagePreview: 'ImagePreview',
+  Logout: 'Logout',
+  ChatRoomList: 'ChatRoomList',
+  ChatRoom: 'ChatRoom',
+  UploadPhoto: 'UploadPhoto',
 };

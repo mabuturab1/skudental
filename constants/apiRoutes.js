@@ -5,6 +5,7 @@ export const apiRoutes = {
   UPDATE_USER: '/user/updateuser',
   VERIFY_EMAIL: '/user/verfiyEmail',
   VERIFY_ADMIN: '/user/verfiyAdmin',
+  UPLOAD_PHOTO: '/user/updateuserphoto',
   FORGORT_PASSWORD: '/user/forgotpassword',
   VERIFY_PIN: '/user/verifypin',
   CREATE_RECORD: '/record/createrecord',

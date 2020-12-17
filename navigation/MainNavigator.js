@@ -11,7 +11,7 @@ import {
   RecordListScreen,
   LabDocketScreen,
   PricingScreen,
-  SkSalesScreen,
+  HomeFeedScreen,
   ArrangePickupScreen,
   PickupRequestDetailsScreen,
   CreateRecordScreen,
@@ -30,15 +30,20 @@ import {
   LogoutScreen,
   RoomScreen,
   ChatRoomListScreen,
+  UploadPhotoScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
 import { routes } from '../constants/routes';
 const screenOptions = {
   headerStyle: {
-    backgroundColor: isAndroid() ? ThemeColors.primary : '',
+    backgroundColor: isAndroid() ? '#fafafa' : '',
   },
-  headerTitleStyle: { alignSelf: 'flex-start' },
+  headerTitleStyle: {
+    alignSelf: 'flex-start',
+    color: 'black',
+    fontFamily: 'RobotoBoldItalic',
+  },
 
   headerTintColor: isAndroid() ? '#fff' : ThemeColors.primary,
 };
@@ -83,8 +88,8 @@ const AuthNavigator = (props) =>
 
 const drawerData = [
   {
-    navigatorName: routes.SkSales,
-    component: SkSalesScreen,
+    navigatorName: routes.HomeFeed,
+    component: HomeFeedScreen,
     componentName: 'SkDental Lab',
     wrapStackNavigator: true,
   },
@@ -140,8 +145,8 @@ const drawerData = [
 
 const tabData = [
   {
-    navigatorName: routes.SkSales,
-    component: SkSalesScreen,
+    navigatorName: routes.HomeFeed,
+    component: HomeFeedScreen,
     componentName: 'SkDental Lab',
     wrapStackNavigator: false,
   },
@@ -174,7 +179,7 @@ const tabData = [
 const getTabIcon = (routeName, focused) => {
   const prefix = isAndroid() ? 'md-' : 'ios-';
   switch (routeName) {
-    case routes.SkSales:
+    case routes.HomeFeed:
       return prefix + (focused ? 'home' : 'home-outline');
     case routes.RecordList:
       return prefix + (focused ? 'receipt' : 'receipt-outline');
@@ -211,19 +216,22 @@ const menuButton = (navigation) => {
 
 const popupMenu = (navigation) => {
   const popupMenuData = [
-    { label: 'Update User', id: 1 },
-    { label: 'Lab Docket', id: 2 },
-    { label: 'Logout', id: 3 },
+    { label: 'Update Photo', id: 1 },
+    { label: 'Update User', id: 2 },
+    { label: 'Lab Docket', id: 3 },
+    { label: 'Logout', id: 4 },
   ];
   const onPopupMenuClick = (id) => {
     switch (id) {
       case 1:
+        return navigation.navigate(routes.UploadPhoto);
+      case 2:
         return navigation.navigate(routes.ConfirmPassword, {
           routeToNavigate: routes.UpdateUser,
         });
-      case 2:
-        return navigation.navigate(routes.LabDocket);
       case 3:
+        return navigation.navigate(routes.LabDocket);
+      case 4:
         return navigation.navigate(routes.Logout);
     }
   };
@@ -306,7 +314,7 @@ export default mainStackNavigator = (isAuthenticated) => (
     <Stack.Screen
       options={({ navigation }) => ({
         ...getCommonOptions(navigation),
-        title: 'Skdental Lab',
+        title: 'SK',
         headerLeft: null,
       })}
       name={routes.Home}
@@ -333,6 +341,11 @@ export default mainStackNavigator = (isAuthenticated) => (
       options={{ headerShown: false }}
       name={routes.Auth}
       component={AuthNavigator}
+    />
+    <Stack.Screen
+      options={{ headerShown: false }}
+      name={routes.UploadPhoto}
+      component={UploadPhotoScreen}
     />
     <Stack.Screen
       name={routes.ChatRoom}

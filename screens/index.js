@@ -2,7 +2,7 @@ import RecordDetailsScreen from './history/RecordDetailsScreen';
 import RecordListScreen from './record/RecordListScreen';
 import LabDocketScreen from './info/LabDocketScreen';
 import PricingScreen from './info/PricingScreen';
-import SkSalesScreen from './info/SkSalesScreen';
+import HomeFeedScreen from './info/HomeFeedScreen';
 import ArrangePickupScreen from './pickup/ArrangePickupScreen';
 import PickupRequestDetailsScreen from './pickup/PickupDetailsScreen';
 import PickupListScreen from './pickup/PickupListScreen';
@@ -14,6 +14,7 @@ import UserSigninScreen from './user/UserSigninScreen';
 import UserSignupScreen from './user/UserSignupScreen';
 import UpdateUserScreen from './user/UpdateUserScreen';
 import ConfirmPasswordScreen from './user/ConfirmPasswordScreen';
+import UploadPhotoScreen from './user/UploadPhotoScreen';
 import LogoutScreen from './user/LogoutScreen';
 import EmailScreen from './user/passwordReset/EmailScreen';
 import PasswordResetScreen from './user/passwordReset/PasswordResetScreen';
@@ -27,7 +28,7 @@ export {
   RecordListScreen,
   LabDocketScreen,
   PricingScreen,
-  SkSalesScreen,
+  HomeFeedScreen,
   ArrangePickupScreen,
   PickupRequestDetailsScreen,
   CreateRecordScreen,
@@ -45,5 +46,6 @@ export {
   ImagePreviewScreen,
   LogoutScreen,
   RoomScreen,
-  ChatRoomListScreen
+  ChatRoomListScreen,
+  UploadPhotoScreen
 };

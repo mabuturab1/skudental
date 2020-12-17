@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -9,14 +9,14 @@ import ScrollWrapper from '../scrollWrapper/ScrollWrapper';
 import ErrorText from './ErrorText';
 import { routes } from '../../constants/routes';
 import { useDispatch } from 'react-redux';
-import { FormInputWrapper, FormTextInput, FormWrapper } from './FormComponents';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FormInputWrapper, FormTextInput, FormWrapper, } from './FormComponents';
+import { ThemeColors } from '../../constants/Colors';
 const UserSignInScreen = ({
   navigation,
   isLogin = true,
   email,
   onSubmit,
-  loginButtonText = 'Login',
+  loginButtonText = 'Log In',
 }) => {
   const dispatch = useDispatch();
   const ValidationSchema = Yup.object({
@@ -48,7 +48,7 @@ const UserSignInScreen = ({
         }) => (
           <FormWrapper style={styles.wrapper}>
             <LogoBox />
-            <FormInputWrapper style={styles.singleFormFieldWrapper}>
+            <FormInputWrapper>
               <FormTextInput
                 placeholder='Email address'
                 value={values.email}
@@ -58,7 +58,7 @@ const UserSignInScreen = ({
               />
               <ErrorText errors={errors} touched={touched} name='email' />
             </FormInputWrapper>
-            <FormInputWrapper style={styles.singleFormFieldWrapper}>
+            <FormInputWrapper>
               <FormTextInput
                 placeholder='Password'
                 value={values.password}
@@ -68,25 +68,34 @@ const UserSignInScreen = ({
               />
               <ErrorText errors={errors} touched={touched} name='password' />
             </FormInputWrapper>
+
+            <FlatButton
+              style={styles.loginButton}
+              title={loginButtonText}
+              onPress={handleSubmit}
+            />
+
             {isLogin ? (
-              <FormInputWrapper>
+              <View style={styles.forgotPasswordWrapper}>
                 <TouchableOpacity
+                  activeOpacity={0.95}
                   onPress={() => navigation.navigate(routes.Email)}
                 >
-                  <Text>Forgot Password</Text>
+                  <Text style={styles.forgotPassword}>Forgot password?</Text>
                 </TouchableOpacity>
-              </FormInputWrapper>
+              </View>
             ) : null}
-            <View style={styles.loginButtonWrapper}>
-              <FlatButton title={loginButtonText} onPress={handleSubmit} />
-            </View>
             {isLogin ? (
               <View style={styles.registerButtonWrapper}>
-                <FlatButton
-                  style={styles.registerButton}
-                  title='Register'
+                <Text style={styles.registerButtonText}>
+                  Dont't have an account?
+                </Text>
+                <TouchableOpacity
+                  activeOpacity={0.85}
                   onPress={() => navigation.navigate(routes.UserSignUp)}
-                />
+                >
+                  <Text style={styles.signupText}>Sign up</Text>
+                </TouchableOpacity>
               </View>
             ) : null}
           </FormWrapper>
@@ -97,15 +106,35 @@ const UserSignInScreen = ({
 };
 const styles = StyleSheet.create({
   loginButtonWrapper: {
-    alignSelf: 'flex-end',
-    margin: 10,
+    width: '100%',
+  },
+  forgotPasswordWrapper: {
+    marginTop: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  loginButton: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   registerButtonWrapper: {
-    alignSelf: 'center',
-    margin: 25,
+    marginTop: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
-  registerButton: {
-    width: 150,
+  registerButtonText: {
+    fontFamily: 'RobotoLight',
+  },
+  signupText: {
+    fontFamily: 'RobotoRegular',
+    color: ThemeColors.primary,
+    paddingLeft: 5,
+  },
+  forgotPassword: {
+    fontFamily: 'RobotoLight',
+    color: ThemeColors.lightBlack,
   },
 });
 export default UserSignInScreen;

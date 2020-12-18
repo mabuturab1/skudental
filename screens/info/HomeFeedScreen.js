@@ -25,7 +25,6 @@ const RecordListScreen = ({ navigation }) => {
     serverRecordsArr: record.serverRecordsArr,
     dataLoading: record.loading.getAllRecords,
   }));
-  console.log('server records are', serverRecordsArr);
   useEffect(() => {
     dispatch(clearUploadedRecord());
     dispatch(getAllRecords());

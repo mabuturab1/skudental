@@ -9,7 +9,12 @@ import {
 import Carousel from 'react-native-snap-carousel';
 import { routes } from '../../constants/routes';
 import CarouselItem from './Carouseltem';
-const CarouselItems = ({ route, navigation, carouselItems = [] }) => {
+const CarouselItems = ({
+  route,
+  navigation,
+  carouselItems = [],
+  onSnapToItem,
+}) => {
   const windowWidth = Dimensions.get('window').width;
 
   const showImagePreview = (postObj) => {
@@ -23,7 +28,7 @@ const CarouselItems = ({ route, navigation, carouselItems = [] }) => {
         key={index}
         onPress={() => showImagePreview(item)}
       >
-        <View>
+        <View style={{ justifyContent: 'center' }}>
           <CarouselItem postObj={item} />
         </View>
       </TouchableWithoutFeedback>
@@ -41,6 +46,8 @@ const CarouselItems = ({ route, navigation, carouselItems = [] }) => {
           sliderWidth={windowWidth}
           itemWidth={windowWidth}
           renderItem={renderItem}
+          onSnapToItem={onSnapToItem}
+          slideStyle={{ flexDirection: 'column', justifyContent: 'center' }}
         />
       </View>
     </SafeAreaView>
@@ -51,5 +58,9 @@ const styles = StyleSheet.create({
   safeAreaWrapper: {
     backgroundColor: 'white',
   },
-  carouselWrapper: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+  carouselWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent:'center'
+  },
 });

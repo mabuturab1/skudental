@@ -9,12 +9,12 @@ export const isUserAuthenticated = (token) => {
   return false;
 };
 
-export const getAxiosConfig = (getState, additionalHeader={}) => {
-  const {auth}=getState();
+export const getAxiosConfig = (getState, additionalHeader = {}) => {
+  const { auth } = getState();
   return {
     headers: {
       Authorization: `Bearer ${auth.token}`,
-      ...additionalHeader
+      ...additionalHeader,
     },
   };
 };
@@ -26,4 +26,16 @@ export const getImageComments = (itemsList = []) => {
   return itemsList;
 };
 
-export const isValidValue=(val)=>val!==null&&val!==undefined
+export const isValidValue = (val) => val !== null && val !== undefined;
+
+const isString = (val) => {
+  return typeof val === 'string';
+};
+export const getErrorMessage = (error) => {
+  if (isValidValue(error) && isString(error)) return `(${error})`;
+  if (isValidValue(error.data) && isString(error.data))
+    return `(${error.data})`;
+  if (isValidValue(error.message) && isString(error.message))
+    return `(${error.message})`;
+  return '';
+};

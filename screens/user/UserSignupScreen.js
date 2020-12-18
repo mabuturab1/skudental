@@ -2,12 +2,13 @@ import React from 'react';
 
 import { UserProfileForm } from '../../components';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { userSignin, userSignup, sendEmail } from '../../store/actions';
 import { routes } from '../../constants/routes';
 
 const UserSignUpScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+  const loading = useSelector(({ auth }) => auth.loading.userSignup);
   const autoSignIn = (values) => {
     dispatch(
       userSignin(
@@ -34,7 +35,7 @@ const UserSignUpScreen = ({ navigation }) => {
     );
   };
 
-  return <UserProfileForm navigation={navigation} onSubmit={onSignupSubmit} />;
+  return <UserProfileForm loading={loading} navigation={navigation} onSubmit={onSignupSubmit} />;
 };
 
 export default UserSignUpScreen;

@@ -22,7 +22,7 @@ import CircularProgressbar from './progressbar/CircularProgressbar';
 import PostAudio from './post/PostAudio';
 import SingleChatView from './chat/SingleChatView';
 import ProgressUploadStatus from './progressUploadStatus/ProgressUploadStatus';
-
+import ShowAlert from './alert/ShowAlert';
 import {
   FormWrapper,
   FormInputWrapper,
@@ -59,4 +59,5 @@ export {
   PostAudio,
   SingleChatView,
   ProgressUploadStatus,
+  ShowAlert,
 };

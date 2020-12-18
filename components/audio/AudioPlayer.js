@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import RoundedButton from '../button/RoundedButton';
 import { Audio } from 'expo-av';
-import { FontAwesome } from '@expo/vector-icons';
+import { Feather, FontAwesome } from '@expo/vector-icons';
 import moment from 'moment';
 import { useCallback } from 'react';
+import { ThemeColors } from '../../constants/Colors';
 const AudioPlayer = ({
   audioItem = {},
   onPlaybackStatusUpdate = () => {},
   isSmallAudioPlayerButton = false,
   durationOnRight = false,
   textColor = 'white',
+  onlyIcon = false,
+  color = 'white',
 }) => {
   const [playingSound, setPlayingSound] = useState();
   const [soundPlayStatus, setSoundPlayStatus] = useState(false);
   const [durationMillis, setDurationMillis] = useState(0);
   const [fileDuration, setFileDuration] = useState(0);
+  const currentPlayingItem = useRef(audioItem);
   const onPlaybackStatus = (playbackStatus) => {
     if (playbackStatus.isLoaded) {
       if (playbackStatus.isPlaying) {
@@ -57,6 +61,7 @@ const AudioPlayer = ({
 
     await sound.setProgressUpdateIntervalAsync(50);
     await sound.playAsync();
+    currentPlayingItem.current = audioItem;
   };
   const stopSound = useCallback(async () => {
     try {
@@ -90,19 +95,35 @@ const AudioPlayer = ({
           fileDuration
         )}`}</Text>
       ) : null}
-      <RoundedButton
-        icon={
-          <FontAwesome
-            name={soundPlayStatus ? 'stop' : 'play'}
-            size={isSmallAudioPlayerButton ? 12 : 24}
-            color='white'
-          />
-        }
-        style={isSmallAudioPlayerButton ? { width: 30, height: 30 } : {}}
-        onPress={(event) =>
-          soundPlayStatus ? stopSound(event) : playSound(event)
-        }
-      />
+      {onlyIcon ? (
+        <TouchableOpacity
+          onPress={(event) =>
+            soundPlayStatus ? stopSound(event) : playSound(event)
+          }
+        >
+          <View style={{ ...styles.iconWrapper }}>
+            <Feather
+              name={soundPlayStatus ? 'stop-circle' : 'play'}
+              size={isSmallAudioPlayerButton ? 12 : 24}
+              color={color}
+            />
+          </View>
+        </TouchableOpacity>
+      ) : (
+        <RoundedButton
+          icon={
+            <FontAwesome
+              name={soundPlayStatus ? 'stop' : 'play'}
+              size={isSmallAudioPlayerButton ? 12 : 24}
+              color={color}
+            />
+          }
+          style={isSmallAudioPlayerButton ? { width: 30, height: 30 } : {}}
+          onPress={(event) =>
+            soundPlayStatus ? stopSound(event) : playSound(event)
+          }
+        />
+      )}
     </View>
   );
 };
@@ -117,5 +138,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
     marginHorizontal: 10,
+  },
+  iconWrapper: {
+    padding: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

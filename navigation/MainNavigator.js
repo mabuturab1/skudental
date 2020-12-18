@@ -45,7 +45,7 @@ const screenOptions = {
     fontFamily: 'RobotoBoldItalic',
   },
 
-  headerTintColor: isAndroid() ? '#fff' : ThemeColors.primary,
+  headerTintColor: 'black',
 };
 
 const getCommonOptions = (drawerNavigation) => ({

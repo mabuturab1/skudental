@@ -57,18 +57,18 @@ const UploadPostItem = ({
           <Image style={styles.coverPhoto} source={{ uri: postObj.imageUrl }} />
         </View>
       </TouchableWithoutFeedback>
-      {isValidValue(postObj.audioItem) ? (
-        <View style={styles.postAudioWrapper}>
-          <AudioPlayer
-            audioItem={postObj.audioItem}
-            isSmallAudioPlayerButton={true}
-            durationOnRight={true}
-            textColor="black"
-          />
-        </View>
-      ) : null}
       <View style={styles.iconWrapper}>
-        <View></View>
+        <View style={styles.postAudioWrapper}>
+          {isValidValue(postObj.audioItem) ? (
+            <AudioPlayer
+              audioItem={postObj.audioItem}
+              isSmallAudioPlayerButton={true}
+              durationOnRight={true}
+              textColor='black'
+            />
+          ) : null}
+        </View>
+
         <View style={styles.singleIconWrapper}>
           {postObj.recordUpdateFailed ? (
             <TouchableOpacity onPress={reUploadData}>
@@ -130,9 +130,8 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   postAudioWrapper: {
-    width: '100%',
     paddingHorizontal: 50,
-    marginVertical:5,
+    marginVertical: 5,
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },

@@ -3,6 +3,7 @@ import moment from 'moment';
 import { apiRoutes, API_URL } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
 import { getAxiosConfig } from '../../helpers/Utils';
+import { showAlert } from '../alert/actions';
 export const CREATE_RECORD_START = 'CREATE_RECORD_START';
 export const CREATE_RECORD_SUCCESS = 'CREATE_RECORD_SUCCESS';
 export const CREATE_RECORD_FAILED = 'CREATE_RECORD_FAILED';
@@ -140,6 +141,12 @@ export const createRecord = (
       console.log('create record failed', error, error.message);
       dispatch(createRecordFailed('An error occurred'));
       isSuccess(false, null);
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot create record' + getErrorMessage(error)
+        )
+      );
     }
   };
 };
@@ -226,6 +233,7 @@ export const uploadRecordPhoto = (
         error,
         error.message
       );
+      
       // dispatch(clearUploadingRecord(currentRecordIndex));
     }
   };
@@ -262,6 +270,12 @@ export const updateRecord = (recordData) => {
       }
     } catch (error) {
       dispatch(updateRecordFailed('An error occurred'));
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot update record' + getErrorMessage(error)
+        )
+      );
     }
   };
 };
@@ -429,6 +443,12 @@ export const getAllRecords = (recordData = {}) => {
     } catch (error) {
       console.log('error occurred', error);
       dispatch(getAllRecordsFailed('An error occurred'));
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot get records' + getErrorMessage(error)
+        )
+      );
     }
   };
 };

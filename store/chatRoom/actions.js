@@ -1,9 +1,14 @@
 import axios from 'axios';
-import { apiRoutes } from '../../constants/apiRoutes';
+import { apiRoutes, API_URL, BASE_URL, BASE_URL_IP } from '../../constants/apiRoutes';
 import { getAxiosConfig } from '../../helpers/Utils';
-export const GET_ALL_CHAT_ROOM_MESSAGES_START = 'GET_ALL_CHAT_ROOM_MESSAGES_START';
-export const GET_ALL_CHAT_ROOM_MESSAGES_SUCCESS = 'GET_ALL_CHAT_ROOM_MESSAGES_SUCCESS';
-export const GET_ALL_CHAT_ROOM_MESSAGES_FAILED = 'GET_ALL_CHAT_ROOM_MESSAGES_FAILED';
+import { io } from 'socket.io-client';
+let socket;
+export const GET_ALL_CHAT_ROOM_MESSAGES_START =
+  'GET_ALL_CHAT_ROOM_MESSAGES_START';
+export const GET_ALL_CHAT_ROOM_MESSAGES_SUCCESS =
+  'GET_ALL_CHAT_ROOM_MESSAGES_SUCCESS';
+export const GET_ALL_CHAT_ROOM_MESSAGES_FAILED =
+  'GET_ALL_CHAT_ROOM_MESSAGES_FAILED';
 export const GET_ALL_CHAT_ROOMS_START = 'GET_ALL_CHAT_ROOMS_START';
 export const GET_ALL_CHAT_ROOMS_SUCCESS = 'GET_ALL_CHAT_ROOMS_SUCCESS';
 export const GET_ALL_CHAT_ROOMS_FAILED = 'GET_ALL_CHAT_ROOMS_FAILED';
@@ -51,6 +56,16 @@ const addNewMessage = (payload) => ({
   payload,
 });
 
+export const connectSocketIo = (token) => {
+  console.log('starting connection with sokcket io');
+  socket = io(BASE_URL_IP, {
+    extraHeaders: {  Authorization: `Bearer ${token}`, },
+  });
+  socket.on('connect',()=>{
+    console.log('socket connected', socket.id);
+  })
+};
+
 export const getAllChatRoomMessages = (id) => {
   return async (dispatch, getState) => {
     try {
@@ -71,7 +86,6 @@ export const getAllChatRoomMessages = (id) => {
     }
   };
 };
-
 
 export const getAllChatRooms = (id) => {
   return async (dispatch, getState) => {

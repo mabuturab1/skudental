@@ -2,20 +2,27 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Button } from 'react-native-paper';
 import { ThemeColors } from '../../constants/Colors';
-const CustomButton = ({ style, onPress, title, icon }) => (
+import LoadingIndicator from '../loader/LoadingIndicator';
+const CustomButton = ({ style, onPress, title, icon, loading }) => (
   <TouchableOpacity
     activeOpacity={0.7}
     style={{ ...styles.customButton, ...style }}
     onPress={onPress}
   >
-    {title != null ? <Text style={styles.titleStyle}>{title}</Text> : icon}
+    {loading ? (
+      <LoadingIndicator alignCenter={false} color={'white'} />
+    ) : title != null ? (
+      <Text style={styles.titleStyle}>{title}</Text>
+    ) : (
+      icon
+    )}
   </TouchableOpacity>
 );
 
 export default CustomButton;
 const styles = StyleSheet.create({
   customButton: {
-    padding: 11,
+    height:42,
 
     borderRadius: 10,
     borderWidth: 1,
@@ -31,6 +38,5 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'RobotoBold',
     fontSize: 16,
-    
   },
 });

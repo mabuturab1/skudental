@@ -1,5 +1,11 @@
 import React, { Fragment } from 'react';
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Dropdown from '../dropdown/Dropdown';
@@ -16,9 +22,8 @@ const UserProfileForm = ({
   initValues = {},
   onSubmit,
   isSignup = true,
+  loading = false,
 }) => {
-
-
   const getValidationSchema = () => {
     const signupObj = {
       password: Yup.string()
@@ -147,6 +152,7 @@ const UserProfileForm = ({
             </FormInputWrapper>
 
             <FlatButton
+              loading={loading}
               style={styles.signupButton}
               title={isSignup ? 'Sign Up' : 'Update User'}
               onPress={handleSubmit}

@@ -14,6 +14,7 @@ import { ThemeColors } from '../../constants/Colors';
 const UserSignInScreen = ({
   navigation,
   isLogin = true,
+  loading=false,
   email,
   onSubmit,
   loginButtonText = 'Log In',
@@ -73,6 +74,7 @@ const UserSignInScreen = ({
               style={styles.loginButton}
               title={loginButtonText}
               onPress={handleSubmit}
+              loading={loading}
             />
 
             {isLogin ? (

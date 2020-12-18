@@ -2,8 +2,10 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL, apiRoutes } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
-import { getAxiosConfig } from '../../helpers/Utils';
+import { getAxiosConfig, getErrorMessage } from '../../helpers/Utils';
 import { auth } from '../../helpers/firebase/Firebase';
+import { showAlert } from '../alert/actions';
+import { connectSocketIo } from '../chatRoom/actions';
 export const USER_SIGNUP_START = 'USER_SIGNUP_START';
 export const USER_SIGNUP_SUCCESS = 'USER_SIGNUP_SUCCESS';
 export const USER_SIGNUP_FAILED = 'USER_SIGNUP_FAILED';
@@ -105,6 +107,7 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
         const result = response?.data?.data;
 
         dispatch(userSignupSuccess(result));
+       
 
         isSuccess(true);
       } else if (response.error) {
@@ -114,6 +117,12 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
     } catch (error) {
       console.log('signup error', error);
       dispatch(userSignupFailed('An error occurred'));
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot Sign up' + getErrorMessage(error)
+        )
+      );
     }
   };
 };
@@ -156,6 +165,7 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
 
         const token = result.token;
         await AsyncStorage.setItem('token', token);
+        connectSocketIo(token);
         isSuccess(true);
       } else if (response.error) {
         dispatch(userSigninFailed(response.error));
@@ -165,6 +175,12 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
       console.log('user signin failed', error, error.message);
       dispatch(userSigninFailed('An error occurred'));
       isSuccess(false);
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot Sign in' + getErrorMessage(error)
+        )
+      );
     }
   };
 };
@@ -191,6 +207,12 @@ export const updateUser = (userData, isSuccess = isSuccessDefault) => {
     } catch (error) {
       dispatch(updateUserFailed('An error occurred'));
       isSuccess(false);
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot update user' + getErrorMessage(error)
+        )
+      );
     }
   };
 };
@@ -232,6 +254,12 @@ export const updateUserPhoto = (
     } catch (error) {
       console.log('error uploading photo', error);
       dispatch(updateUserFailed('An error occurred'));
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot update user profile photo' + getErrorMessage(error)
+        )
+      );
       isSuccess(false);
     }
   };
@@ -252,6 +280,12 @@ export const firebaseResetPassword = (
     } catch (error) {
       dispatch(forgotPasswordFailed('An error occurred'));
       isSuccess(false);
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot reset password' + getErrorMessage(error)
+        )
+      );
     }
   };
 };

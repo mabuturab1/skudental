@@ -9,6 +9,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { store, persistor } from './store/store';
 import { useFonts } from 'expo-font';
 import 'react-native-get-random-values';
+import { ShowAlert } from './components';
+import { connectSocketIo } from './store/actions';
 const getFontsConfig = () => ({
   // OpenSansBold: require('./assets/fonts/OpenSans-Bold.ttf'),
   // OpenSansBoldItalic: require('./assets/fonts/OpenSans-BoldItalic.ttf'),
@@ -35,6 +37,7 @@ const getFontsConfig = () => ({
 });
 const MainNavigationScreens = () => {
   const token = useSelector(({ auth }) => auth.token);
+  if (isUserAuthenticated(token)) connectSocketIo(token);
   return MainNavigator(isUserAuthenticated(token));
 };
 export default function App() {
@@ -65,6 +68,7 @@ export default function App() {
       <PersistGate loading={null} persistor={persistor} onBeforeLift={showApp}>
         <NavigationContainer>
           <MainNavigationScreens />
+          <ShowAlert />
         </NavigationContainer>
       </PersistGate>
     </Provider>

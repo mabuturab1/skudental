@@ -180,18 +180,32 @@ const getTabIcon = (routeName, focused) => {
   const prefix = isAndroid() ? 'md-' : 'ios-';
   switch (routeName) {
     case routes.HomeFeed:
-      return prefix + (focused ? 'home' : 'home-outline');
+      return {
+        name: prefix + (focused ? 'home' : 'home-outline'),
+        Icon: Ionicons,
+      };
     case routes.RecordList:
-      return prefix + (focused ? 'receipt' : 'receipt-outline');
+      return {
+        name: prefix + (focused ? 'receipt' : 'receipt-outline'),
+        Icon: Ionicons,
+      };
     case routes.CreateRecord:
-      return prefix + (focused ? 'add-circle' : 'add-circle-outline');
+      return {
+        name: prefix + (focused ? 'add-circle' : 'add-circle-outline'),
+        Icon: Ionicons,
+      };
     case routes.ArrangePickup:
-      return prefix + (focused ? 'bus' : 'bus-outline');
+      return {
+        name: prefix + (focused ? 'airplane' : 'airplane-outline'),
+        Icon: Ionicons,
+      };
     case routes.ChatRoomList:
-      return (
-        prefix +
-        (focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline')
-      );
+      return {
+        name:
+          prefix +
+          (focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline'),
+        Icon: Ionicons,
+      };
   }
 };
 
@@ -284,9 +298,9 @@ const tabNavigator = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
-        let iconName = getTabIcon(route.name, focused);
+        let { Icon, name } = getTabIcon(route.name, focused);
         // You can return any component that you like here!
-        return <Ionicons name={iconName} size={size} color={color} />;
+        return <Icon name={name} size={size} color={color} />;
       },
     })}
     tabBarOptions={{

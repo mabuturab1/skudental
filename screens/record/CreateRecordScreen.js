@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, Button, TextInput } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
-import { ThemeColors } from '../../constants/Colors';
+import { v4 as uuidv4 } from 'uuid';
 import {
   ErrorText,
-  FlatButton,
   FormTextInput,
   FormWrapper,
   FormInputWrapper,
@@ -15,13 +14,19 @@ import {
   ScrollWrapper,
 } from '../../components';
 import ImagePicker from 'react-native-image-crop-picker';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { routes } from '../../constants/routes';
-import { clearUploadedRecord } from '../../store/record/actions';
-import { useDispatch } from 'react-redux';
+import {
+  clearUploadedRecord,
+  updateCurrentRecord,
+} from '../../store/record/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { isAndroid } from '../../helpers/Utils';
 const CreateRecordScreen = ({ navigation }) => {
   const formikRef = useRef();
   const dispatch = useDispatch();
+  const currentRecord = useSelector(({ record }) => record.currentRecord);
+  const recordData = currentRecord.recordData || {};
   useEffect(() => {
     dispatch(clearUploadedRecord());
   }, [dispatch]);
@@ -29,26 +34,41 @@ const CreateRecordScreen = ({ navigation }) => {
     patientName: Yup.string().trim().required('Kindly enter a patient name'),
     additionalNotes: Yup.string(),
   });
-
-  const [images, setImages] = useState([]);
+  const getAttachedImages = (record) => {
+    let updatedImages = [];
+    if (record.attachedPosts) {
+      updatedImages = record.attachedPosts.map((el) => ({
+        ...el.imageFile,
+        path: el.path,
+      }));
+    }
+    return updatedImages;
+  };
+  const [images, setImages] = useState(getAttachedImages(currentRecord));
   const getCurrentDate = () => moment().format('dd MM YYYY hh:mm:ss');
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      if (formikRef.current) {
-        formikRef.current.resetForm();
-      }
-    });
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     if (formikRef.current) {
+  //       formikRef.current.resetForm();
+  //     }
+  //   });
 
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    return unsubscribe;
-  }, [navigation, formikRef]);
+  //   // Return the function to unsubscribe from the event so it gets removed on unmount
+  //   return unsubscribe;
+  // }, [navigation, formikRef]);
   const onCreateRecordSubmit = (values) => {
     navigation.navigate(routes.HomeFeed);
   };
+  const showPreviewOfRecord = () => {
+    navigation.navigate(routes.PreviewRecord, {
+      showCurrentReduxRecord: true,
+      editMode: true,
+    });
+  };
   const getInitValues = () => ({
     submissionDate: getCurrentDate(),
-    patientName: '',
-    additionalNotes: '',
+    patientName: recordData.patientName || '',
+    additionalNotes: recordData.additionalNotes || '',
   });
   const getPhotos = (values) => {
     ImagePicker.openPicker({
@@ -57,7 +77,8 @@ const CreateRecordScreen = ({ navigation }) => {
     })
       .then((selectedImages) => {
         setImages(selectedImages);
-        const imageList = selectedImages.map((el) => ({
+        const postItems = selectedImages.map((el) => ({
+          _id: uuidv4(),
           imageUrl: el.path,
           imageFile: el,
           additionalComments: '',
@@ -66,10 +87,13 @@ const CreateRecordScreen = ({ navigation }) => {
           recordUpdateFailed: false,
           progress: 0,
         }));
-        navigation.navigate(routes.PreviewCarousel, {
+        const newRecord = {
+          _id: uuidv4(),
           recordData: values,
-          carouselItems: imageList,
-        });
+          attachedPosts: postItems,
+        };
+        dispatch(updateCurrentRecord(newRecord));
+        navigation.navigate(routes.PreviewCarousel, newRecord);
       })
       .catch((error) => {
         console.log('error in file selection', error);
@@ -133,13 +157,19 @@ const CreateRecordScreen = ({ navigation }) => {
               <View style={styles.imageList}>
                 <RounedImageList imageList={images} maxImages={2} />
               </View>
-
-              <RoundedButton
-                disabled={errors.patientName}
-                icon={<Ionicons name='images' size={24} color='white' />}
-                onPress={handleSubmit}
-              />
+              <View>
+                <TouchableOpacity onPress={showPreviewOfRecord}>
+                  <View>
+                    <FontAwesome name={'edit'} size={24} />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
+            <RoundedButton
+              disabled={errors.patientName}
+              icon={<Ionicons name='images' size={24} color='white' />}
+              onPress={handleSubmit}
+            />
             {/* <View style={styles.submitButtonWrapper}>
               <FlatButton onPress={handleSubmit} title='Submit' />
             </View> */}

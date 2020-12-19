@@ -13,7 +13,7 @@ import { getAllChatRoomMessages } from '../../store/actions';
 const RoomScreen = ({ route }) => {
   const { userId, chatRoomMessages=[] } = useSelector(({ auth, chatRoom }) => ({
     userId: auth.user?._id,
-    chatRoomMessages: chatRoom.chatRoomsArr[route.params.chatRoomId],
+    chatRoomMessages: chatRoom.chatRoomsArr,
   }));
   const dispatch=useDispatch()
   useEffect(() => {

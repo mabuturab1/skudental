@@ -3,7 +3,7 @@ import moment from 'moment';
 export const getNewCopy = (uploadingData) =>
   uploadingData.map((el) => ({
     ...el,
-    attachedItems: el.attachedItems.map((item) => ({ ...item })),
+    attachedPosts: el.attachedPosts.map((item) => ({ ...item })),
   }));
 export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
   const newUploadingData = getNewCopy(uploadingData);
@@ -12,20 +12,25 @@ export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
   }
   const currentItem = newUploadingData[payload.recordIndex];
   if (payload.uploadComplete) {
-    currentItem.attachedItems[payload.attachedItemIndex].uploadComplete = true;
-    currentItem.attachedItems[
+    const serverResult = payload.serverResult || {};
+    currentItem.attachedPosts[payload.attachedItemIndex].uploadComplete = true;
+    currentItem.attachedPosts[
       payload.attachedItemIndex
     ].recordUpdateFailed = false;
+    currentItem.attachedPosts[payload.attachedItemIndex] = {
+      ...serverResult,
+      ...currentItem.attachedItemIndex[payload.attachedItemIndex],
+    };
   }
   if (payload.progress >= 0) {
-    currentItem.attachedItems[payload.attachedItemIndex].progress =
+    currentItem.attachedPosts[payload.attachedItemIndex].progress =
       payload.progress;
-    currentItem.attachedItems[
+    currentItem.attachedPosts[
       payload.attachedItemIndex
     ].recordUpdateFailed = false;
   } else {
-    currentItem.attachedItems[payload.attachedItemIndex].progress = 0;
-    currentItem.attachedItems[
+    currentItem.attachedPosts[payload.attachedItemIndex].progress = 0;
+    currentItem.attachedPosts[
       payload.attachedItemIndex
     ].recordUpdateFailed = true;
   }
@@ -50,6 +55,21 @@ export const removeItemFromUploadingArr = (uploadingArr, index) => {
     updatedUploadingArr.splice(index, 1);
   }
   return updatedUploadingArr;
+};
+export const removeAttachedPostFromRecordsArrItem = (recordsArr, payload) => {
+  let updatedRecordsArr = getNewCopy(recordsArr);
+  if (updatedRecordsArr.length > payload.index) {
+    if (
+      updatedRecordsArr[payload.index].attachedPosts.length >
+      payload.attachedItemIndex
+    ) {
+      updatedRecordsArr[payload.index].attachedPosts.splice(
+        payload.attachedItemIndex,
+        1
+      );
+    }
+  }
+  return updatedRecordsArr;
 };
 
 export const addApiUrlInRecordArr = (record) => {

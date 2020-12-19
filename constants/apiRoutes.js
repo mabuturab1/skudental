@@ -11,6 +11,8 @@ export const apiRoutes = {
   FORGORT_PASSWORD: '/user/forgotpassword',
   VERIFY_PIN: '/user/verifypin',
   CREATE_RECORD: '/record/createrecord',
+  DELETE_RECORD: '/record/deleterecord',
+  DELETE_RECORD_POST: '/record/deleterecordpost',
   UPDATE_RECORD: '/record/updaterecord',
   SEND_INQUIRY_MESSAGE: '/record/createinquirymessage',
   GET_ALL_RECORDS: '/record/allrecords',

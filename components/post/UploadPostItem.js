@@ -1,10 +1,15 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Image, Text, Dimensions } from 'react-native';
 import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  Dimensions,
   TouchableOpacity,
   TouchableWithoutFeedback,
-} from 'react-native-gesture-handler';
+} from 'react-native';
+
 import { useDispatch, useSelector } from 'react-redux';
 import CircularProgressbar from '../progressbar/CircularProgressbar';
 import { ThemeColors } from '../../constants/Colors';
@@ -17,6 +22,7 @@ const UploadPostItem = ({
   navigation,
   currentRecordIndex,
   itemIndex,
+  deleteItem = () => {},
 }) => {
   const dispatch = useDispatch();
   console.log('post obj is', postObj.audioItem, postObj.audioItem !== null);
@@ -47,10 +53,11 @@ const UploadPostItem = ({
         {postObj.additionalComments != null ? (
           <Text style={styles.commentsText}>{postObj.additionalComments}</Text>
         ) : null}
-
-        <View style={styles.singleIconWrapper}>
-          <MaterialIcons name={'delete'} size={24} color='black' />
-        </View>
+        <TouchableOpacity onPress={() => deleteItem(itemIndex)}>
+          <View style={styles.singleIconWrapper}>
+            <MaterialIcons name={'delete'} size={24} color='black' />
+          </View>
+        </TouchableOpacity>
       </View>
       <TouchableWithoutFeedback onPress={showImagePreview}>
         <View style={styles.coverPhotoWrapper}>

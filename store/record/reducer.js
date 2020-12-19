@@ -2,6 +2,12 @@ import {
   CREATE_RECORD_START,
   CREATE_RECORD_SUCCESS,
   CREATE_RECORD_FAILED,
+  DELETE_RECORD_START,
+  DELETE_RECORD_SUCCESS,
+  DELETE_RECORD_FAILED,
+  DELETE_RECORD_POST_START,
+  DELETE_RECORD_POST_SUCCESS,
+  DELETE_RECORD_POST_FAILED,
   UPDATE_RECORD_START,
   UPDATE_RECORD_SUCCESS,
   UPDATE_RECORD_FAILED,
@@ -20,17 +26,21 @@ import {
   DATA_UPLOAD,
   UPDATE_UPLOAD_PROGRESS,
   CLEAR_UPLOADING_RECORD,
+  UPDATE_CURRENT_RECORD,
+  CLEAR_UPLOADING_RECORD_POST,
 } from './actions';
 import {
   addApiUrlInRecordArr,
   getUpdatedUploadingDataObj,
+  removeAttachedPostFromRecordsArrItem,
   removeItemFromUploadingArr,
   updateRecordObjInUploadingData,
 } from './recordUtilsFunctions';
 
 const initialState = {
   uploadingDataArr: [],
-  serverRecordArr: [],
+  serverRecordsArr: [],
+  currentRecord: {},
   loading: {
     createRecord: false,
     updateRecord: false,
@@ -197,6 +207,30 @@ export default (state = initialState, action) => {
           state.uploadingDataArr,
           action.payload
         ),
+      };
+    case CLEAR_UPLOADING_RECORD_POST:
+      return {
+        ...state,
+        uploadingDataArr: !action.payload?.isServerRecord
+          ? removeAttachedPostFromRecordsArrItem(
+              state.uploadingDataArr,
+              action.payload
+            )
+          : state.uploadingDataArr,
+        serverRecordsArr: action.payload.isServerRecord
+          ? removeAttachedPostFromRecordsArrItem(
+              state.serverRecordsArr,
+              acton.payload
+            )
+          : state.serverRecordsArr,
+      };
+    case UPDATE_CURRENT_RECORD:
+      return {
+        ...state,
+        currentRecord: {
+          ...state.currentRecord,
+          ...action.payload,
+        },
       };
   }
   return state;

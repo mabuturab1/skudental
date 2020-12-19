@@ -4,9 +4,17 @@ import { apiRoutes, API_URL } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
 import { getAxiosConfig } from '../../helpers/Utils';
 import { showAlert } from '../alert/actions';
+
 export const CREATE_RECORD_START = 'CREATE_RECORD_START';
 export const CREATE_RECORD_SUCCESS = 'CREATE_RECORD_SUCCESS';
 export const CREATE_RECORD_FAILED = 'CREATE_RECORD_FAILED';
+export const DELETE_RECORD_START = 'DELETE_RECORD_START';
+export const DELETE_RECORD_SUCCESS = 'DELETE_RECORD_SUCCESS';
+export const DELETE_RECORD_FAILED = 'DELETE_RECORD_FAILED';
+
+export const DELETE_RECORD_POST_START = 'DELETE_RECORD_POST_START';
+export const DELETE_RECORD_POST_SUCCESS = 'DELETE_RECORD_POST_SUCCESS';
+export const DELETE_RECORD_POST_FAILED = 'DELETE_RECORD_POST_FAILED';
 
 export const UPDATE_RECORD_START = 'UPDATE_RECORD_START';
 export const UPDATE_RECORD_SUCCESS = 'UPDATE_RECORD_SUCCESS';
@@ -35,6 +43,8 @@ export const DATA_UPLOAD = 'DATA_UPLOAD';
 export const UPDATE_UPLOAD_PROGRESS = 'UPDATE_UPLOAD_PROGRESS';
 
 export const CLEAR_UPLOADING_RECORD = 'CLEAR_UPLOADING_RECORD';
+export const UPDATE_CURRENT_RECORD = 'UPDATE_CURRENT_RECORD';
+export const CLEAR_UPLOADING_RECORD_POST = 'CLEAR_UPLOADING_RECORD_POST';
 
 const createRecordStart = () => ({ type: CREATE_RECORD_START });
 const createRecordSuccess = (record, recordIndex) => ({
@@ -86,6 +96,30 @@ const getAllMessagesFailed = (error) => ({
   error,
 });
 
+const deleteRecordStart = () => ({
+  type: DELETE_RECORD_START,
+});
+const deleteRecordSuccess = (payload) => ({
+  type: DELETE_RECORD_SUCCESS,
+  payload,
+});
+const deleteRecordFailed = (error) => ({
+  type: DELETE_RECORD_FAILED,
+  error,
+});
+
+const deleteRecordPostStart = () => ({
+  type: DELETE_RECORD_POST_START,
+});
+const deleteRecordPostSuccess = (payload) => ({
+  type: DELETE_RECORD_POST_SUCCESS,
+  payload,
+});
+const deleteRecordPostFailed = (error) => ({
+  type: DELETE_RECORD_POST_FAILED,
+  error,
+});
+
 const sendMessageStart = () => ({
   type: SEND_RECORD_MESSAGE_START,
 });
@@ -103,6 +137,11 @@ const clearUploadingRecord = (payload) => ({
   payload,
 });
 
+export const clearUploadingRecordPost = (payload) => ({
+  type: CLEAR_UPLOADING_RECORD_POST,
+  payload,
+});
+
 const updateUploadProgress = (payload) => ({
   type: UPDATE_UPLOAD_PROGRESS,
   payload,
@@ -110,6 +149,11 @@ const updateUploadProgress = (payload) => ({
 
 const uploadData = (payload) => ({
   type: DATA_UPLOAD,
+  payload,
+});
+
+export const updateCurrentRecord = (payload) => ({
+  type: UPDATE_CURRENT_RECORD,
   payload,
 });
 
@@ -150,6 +194,102 @@ export const createRecord = (
     }
   };
 };
+
+export const deleteRecord = (id, isSuccess = isSuccessDefault) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch(deleteRecordStart());
+      const response = await axios.delete(
+        API_URL + apiRoutes.DELETE_RECORD + '/' + id,
+
+        { ...getAxiosConfig(getState) }
+      );
+
+      if (response && response.data) {
+        const record = response?.data?.data;
+        dispatch(deleteRecordSuccess(record));
+        isSuccess(true);
+      } else if (response.error) {
+        console.log(response.error);
+        isSuccess(false);
+      }
+    } catch (error) {
+      console.log('create record failed', error, error.message);
+      dispatch(deleteRecordFailed('An error occurred'));
+      isSuccess(false);
+      dispatch(deleteRecordFailed('An error occurred'));
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot delete record' + getErrorMessage(error)
+        )
+      );
+    }
+  };
+};
+
+export const deleteRecord = (id, isSuccess = isSuccessDefault) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch(deleteRecordPostStart());
+      const response = await axios.delete(
+        API_URL + apiRoutes.DELETE_RECORD_POST + '/' + id,
+
+        { ...getAxiosConfig(getState) }
+      );
+
+      if (response && response.data) {
+        const record = response?.data?.data;
+        dispatch(deleteRecordPostSuccess(record));
+        isSuccess(true);
+      } else if (response.error) {
+        console.log(response.error);
+        dispatch(deleteRecordPostFailed('An error occurred'));
+        isSuccess(false);
+      }
+    } catch (error) {
+      console.log('create record failed', error, error.message);
+      isSuccess(false);
+      dispatch(deleteRecordPostFailed('An error occurred'));
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot delete record post' + getErrorMessage(error)
+        )
+      );
+    }
+  };
+};
+
+export const deleteRecordPost = (id, isSuccess = isSuccessDefault) => {
+  return async (dispatch, getState) => {
+    try {
+      const response = await axios.delete(
+        API_URL + apiRoutes.DELETE_RECORD_POST + '/' + id,
+
+        { ...getAxiosConfig(getState) }
+      );
+
+      if (response && response.data) {
+        const record = response?.data?.data;
+        isSuccess(true);
+      } else if (response.error) {
+        console.log(response.error);
+        isSuccess(false);
+      }
+    } catch (error) {
+      console.log('create record failed', error, error.message);
+      isSuccess(false);
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot delete record post' + getErrorMessage(error)
+        )
+      );
+    }
+  };
+};
+
 const getPhotoFormData = (fileInfo) => {
   let formData = new FormData();
 
@@ -175,7 +315,8 @@ const updateProgress = (
   attachedItemIndex,
   progress,
   dispatch,
-  uploadComplete = false
+  uploadComplete = false,
+  serverResult=null
 ) => {
   console.log(recordIndex, attachedItemIndex, progress);
   dispatch(
@@ -184,6 +325,7 @@ const updateProgress = (
       attachedItemIndex,
       progress,
       uploadComplete,
+      serverResult
     })
   );
 };
@@ -201,10 +343,10 @@ export const uploadRecordPhoto = (
 
       const fileHeader = { 'Content-Type': 'multipart/form-data' };
       const url = API_URL + apiRoutes.UPLOAD_RECORD_FILE + `/${recordId}`;
-      
+
       var myHeaders = new Headers();
       myHeaders.append('Content-Type', 'multipart/form-data');
-      await axios.post(
+     const respons= await axios.post(
         API_URL + apiRoutes.UPLOAD_RECORD_FILE + `/${recordId}`,
         formData,
         {
@@ -224,16 +366,26 @@ export const uploadRecordPhoto = (
           },
         }
       );
-      updateProgress(currentRecordIndex, itemIndex, 100, dispatch, true);
-      isSuccess(true);
+      if(response.data?.data){
+        const result=response?.data?.data;
+        isSuccess(true);
+        updateProgress(currentRecordIndex, itemIndex, 100, dispatch, true, result);
+      }
+      else if(response.error){
+        updateProgress(currentRecordIndex, itemIndex, -1, dispatch);
+        isSuccess(false);
+      }
+      
+    
     } catch (error) {
       updateProgress(currentRecordIndex, itemIndex, -1, dispatch);
+      isSuccess(false);
       console.log(
         'An error occurred while uploading file',
         error,
         error.message
       );
-      
+
       // dispatch(clearUploadingRecord(currentRecordIndex));
     }
   };
@@ -246,7 +398,7 @@ export const clearUploadedRecord = (recordData) => {
     let itemIndex = [];
     uploadingDataArr.forEach((el, index) => {
       let isUploadComplete = true;
-      el.attachedItems.forEach((item) => {
+      el.attachedPosts.forEach((item) => {
         isUploadComplete = item.uploadComplete && isUploadComplete;
       });
       if (isUploadComplete) itemIndex.push(index);
@@ -291,7 +443,7 @@ export const startUploadingData = (record, currentRecordIndex) => {
           if (isSuccess) {
             scheduleFileUpload(
               newRecord._id,
-              record.attachedItems,
+              record.attachedPosts,
               currentRecordIndex,
               dispatch
             );
@@ -303,20 +455,20 @@ export const startUploadingData = (record, currentRecordIndex) => {
 };
 const scheduleFileUpload = (
   recordId,
-  attachedItems,
+  attachedPosts,
   currentRecordIndex,
   dispatch
 ) => {
   let allowedUploadLimit = 5;
-  let allItems = [...Array(attachedItems.length).keys()];
-  let unUploadedItems = [...Array(attachedItems.length).keys()];
+  let allItems = [...Array(attachedPosts.length).keys()];
+  let unUploadedItems = [...Array(attachedPosts.length).keys()];
   let uploadingItems = [];
   let uploadedItems = [];
   let uploadedSuccessful = [];
- 
+
   startUploadingFile(
     recordId,
-    attachedItems,
+    attachedPosts,
     currentRecordIndex,
     dispatch,
     allItems,
@@ -329,7 +481,7 @@ const scheduleFileUpload = (
 };
 const startUploadingFile = (
   recordId,
-  attachedItems,
+  attachedPosts,
   currentRecordIndex,
   dispatch,
   allItems,
@@ -339,21 +491,20 @@ const startUploadingFile = (
   uploadedSuccessful,
   allowedUploadLimit
 ) => {
-
   unUploadedItems.forEach((el) => {
     if (uploadingItems.length < allowedUploadLimit) {
       let newIndex = unUploadedItems.find(
         (el) => !uploadingItems.includes(el) && !uploadedItems.includes(el)
       );
-     
+
       if (newIndex === null || newIndex === undefined) return;
-    
+
       uploadingItems.push(newIndex);
       unUploadedItems = unUploadedItems.filter((el) => el !== newIndex);
       dispatch(
         uploadRecordPhoto(
           recordId,
-          attachedItems[newIndex],
+          attachedPosts[newIndex],
           currentRecordIndex,
           newIndex,
           (isSuccess) => {
@@ -372,7 +523,7 @@ const startUploadingFile = (
             if (!isAllUploaded) {
               startUploadingFile(
                 recordId,
-                attachedItems,
+                attachedPosts,
                 currentRecordIndex,
                 dispatch,
                 allItems,
@@ -434,7 +585,6 @@ export const getAllRecords = (recordData = {}) => {
       );
       if (response && response.data) {
         let record = response?.data?.data;
-       
 
         dispatch(getAllRecordsSuccess(record));
       } else if (response.error) {

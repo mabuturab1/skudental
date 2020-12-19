@@ -10,14 +10,14 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const uploadingDataArr = useSelector(({ record }) => record.uploadingDataArr);
   const windowWidth = Dimensions.get('window').width;
-  const { carouselItems = [], recordData = {} } = route.params;
-  const updatedCarouselItems = useRef(carouselItems);
+  const { attachedPosts = [], recordData = {} } = route.params;
+  const updatedAttachedPosts = useRef(attachedPosts);
 
   const updateComments = (index, text) => {
-    updatedCarouselItems.current[index].additionalComments = text;
+    updatedAttachedPosts.current[index].additionalComments = text;
   };
   const updateAudio = (index, audioItem) => {
-    updatedCarouselItems.current[index].audioItem = audioItem;
+    updatedAttachedPosts.current[index].audioItem = audioItem;
   };
 
   const sendImageData = () => {
@@ -25,7 +25,7 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
       startUploadingData(
         {
           recordData: recordData,
-          attachedItems: updatedCarouselItems.current,
+          attachedPosts: updatedAttachedPosts.current,
         },
         uploadingDataArr.length
       )
@@ -42,7 +42,7 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
       <PostItem
         postObj={item}
         itemIndex={index}
-        isLastItem={index + 1 === carouselItems.length}
+        isLastItem={index + 1 === attachedPosts.length}
         onAddComments={updateComments}
         onAudioUpdate={updateAudio}
         sendImageData={sendImageData}
@@ -57,7 +57,7 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
         <Carousel
           layout={'default'}
           ref={carouselRef}
-          data={carouselItems}
+          data={attachedPosts}
           sliderWidth={windowWidth}
           itemWidth={windowWidth}
           renderItem={renderItem}

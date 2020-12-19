@@ -32,17 +32,17 @@ const PostItem = ({
           onChangeText={(text) => onAddComments(itemIndex, text)}
         />
       </View>
-      {isLastItem ? (
-        <View style={styles.sendButton}>
-          <TouchableOpacity onPress={sendImageData}>
-            <Ionicons
-              name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
-              size={24}
-              color={'white'}
-            />
-          </TouchableOpacity>
-        </View>
-      ) : null}
+
+      <View style={styles.sendButton}>
+        <TouchableOpacity onPress={sendImageData}>
+          <Ionicons
+            name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
+            size={24}
+            color={'white'}
+          />
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.postAudioWrapper}>
         <PostAudio
           isEditAllowed={isEditAllowed}

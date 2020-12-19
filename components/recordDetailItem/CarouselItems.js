@@ -14,19 +14,26 @@ const CarouselItems = ({
   navigation,
   carouselItems = [],
   onSnapToItem,
+  currentRecordIndex,
+  isServerRecord=true,
+  isCurrentReduxRecord=false
 }) => {
   const windowWidth = Dimensions.get('window').width;
 
-  const showImagePreview = (postObj) => {
+  const showImagePreview = (postObj, itemIndex) => {
     navigation.navigate(routes.ImagePreview, {
       postObj,
+      currentRecordIndex,
+      itemIndex,
+      isServerRecord,
+      isCurrentReduxRecord
     });
   };
   const renderItem = ({ item, index }) => {
     return (
       <TouchableWithoutFeedback
         key={index}
-        onPress={() => showImagePreview(item)}
+        onPress={() => showImagePreview(item, index)}
       >
         <View style={{ justifyContent: 'center' }}>
           <CarouselItem postObj={item} />

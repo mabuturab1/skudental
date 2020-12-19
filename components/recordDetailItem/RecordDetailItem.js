@@ -36,6 +36,7 @@ const RecordDetailItem = ({
           attachedPosts={record?.attachedPosts}
           maxImages={3}
           isServerRecord={isServerRecord}
+          isCurrentReduxRecord={false}
         />
       </View>
     </View>

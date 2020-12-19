@@ -41,6 +41,8 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
           navigation={navigation}
           currentRecordIndex={currentRecordIndex}
           carouselItems={record?.attachedPosts}
+          isServerRecord={true}
+          isCurrentReduxRecord={false}
           onSnapToItem={(index) => setActiveCarouselItem(index)}
         />
       </View>

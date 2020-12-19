@@ -20,7 +20,6 @@ const ShowAlert = (props) => {
     []
   );
   useEffect(() => {
-    console.log('running alert useeffect')
     if (alertArr.length) {
       createAlert(alertArr[0]);
     }

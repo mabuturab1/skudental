@@ -51,7 +51,6 @@ export default function App() {
     }
   }, []);
   if (fontsLoaded && persistorLoaded.current) {
-    console.log('fonts loaded', fontsLoaded);
     SplashScreen.hideAsync();
     persistorLoaded.current = false;
   }

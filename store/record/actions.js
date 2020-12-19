@@ -2,7 +2,13 @@ import axios from 'axios';
 import moment from 'moment';
 import { apiRoutes, API_URL } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
-import { getAxiosConfig } from '../../helpers/Utils';
+import {
+  getAxiosConfig,
+  getErrorMessage,
+  getServerResponseData,
+  isValidServerResponse,
+  isValidValue,
+} from '../../helpers/Utils';
 import { showAlert } from '../alert/actions';
 
 export const CREATE_RECORD_START = 'CREATE_RECORD_START';
@@ -172,8 +178,8 @@ export const createRecord = (
         { ...getAxiosConfig(getState) }
       );
 
-      if (response && response.data) {
-        const record = response?.data?.data;
+      if (isValidServerResponse(response)) {
+        const record = getServerResponseData(response);
         dispatch(createRecordSuccess(record, currentRecordIndex));
         isSuccess(true, record);
       } else if (response.error) {
@@ -195,6 +201,52 @@ export const createRecord = (
   };
 };
 
+export const proceedForPostDeletion = (
+  id,
+  isCurrentReduxRecord,
+  currentRecordIndex = null,
+  itemIndex = null,
+  isServerRecord = null,
+  isSuccess = isSuccessDefault
+) => {
+  return async (dispatch, getState) => {
+    const { record } = getState();
+    if (isValidValue(isCurrentReduxRecord) && isValidValue(itemIndex)) {
+      let attachedPosts = (
+        record?.currentRecord?.attachedPosts || []
+      ).map((el) => ({ ...el }));
+      if (attachedPosts.length) {
+        console.log('item index is', itemIndex)
+        attachedPosts.splice(itemIndex, 1);
+        dispatch(updateCurrentRecord({ attachedPosts }));
+        return;
+      }
+    }
+    if (
+      isValidValue(id) &&
+      isValidValue(currentRecordIndex) &&
+      isValidValue(itemIndex) &&
+      isValidValue(isServerRecord)
+    ) {
+      dispatch(
+        deleteRecordPost(id, (recordDeleted) => {
+          isSuccess(recordDeleted);
+
+          if (recordDeleted) {
+            dispatch(
+              clearUploadingRecordPost({
+                index: currentRecordIndex,
+                attachedItemIndex: itemIndex,
+                isServerRecord,
+              })
+            );
+          }
+        })
+      );
+    }
+  };
+};
+
 export const deleteRecord = (id, isSuccess = isSuccessDefault) => {
   return async (dispatch, getState) => {
     try {
@@ -205,8 +257,8 @@ export const deleteRecord = (id, isSuccess = isSuccessDefault) => {
         { ...getAxiosConfig(getState) }
       );
 
-      if (response && response.data) {
-        const record = response?.data?.data;
+      if (isValidServerResponse(response)) {
+        const record = getServerResponseData(response);
         dispatch(deleteRecordSuccess(record));
         isSuccess(true);
       } else if (response.error) {
@@ -228,18 +280,17 @@ export const deleteRecord = (id, isSuccess = isSuccessDefault) => {
   };
 };
 
-export const deleteRecord = (id, isSuccess = isSuccessDefault) => {
+export const deleteRecordPost = (id, isSuccess = isSuccessDefault) => {
   return async (dispatch, getState) => {
     try {
       dispatch(deleteRecordPostStart());
       const response = await axios.delete(
         API_URL + apiRoutes.DELETE_RECORD_POST + '/' + id,
-
         { ...getAxiosConfig(getState) }
       );
 
-      if (response && response.data) {
-        const record = response?.data?.data;
+      if (isValidServerResponse(response)) {
+        const record = getServerResponseData(response);
         dispatch(deleteRecordPostSuccess(record));
         isSuccess(true);
       } else if (response.error) {
@@ -251,35 +302,6 @@ export const deleteRecord = (id, isSuccess = isSuccessDefault) => {
       console.log('create record failed', error, error.message);
       isSuccess(false);
       dispatch(deleteRecordPostFailed('An error occurred'));
-      dispatch(
-        showAlert(
-          'An error occurred',
-          'Cannot delete record post' + getErrorMessage(error)
-        )
-      );
-    }
-  };
-};
-
-export const deleteRecordPost = (id, isSuccess = isSuccessDefault) => {
-  return async (dispatch, getState) => {
-    try {
-      const response = await axios.delete(
-        API_URL + apiRoutes.DELETE_RECORD_POST + '/' + id,
-
-        { ...getAxiosConfig(getState) }
-      );
-
-      if (response && response.data) {
-        const record = response?.data?.data;
-        isSuccess(true);
-      } else if (response.error) {
-        console.log(response.error);
-        isSuccess(false);
-      }
-    } catch (error) {
-      console.log('create record failed', error, error.message);
-      isSuccess(false);
       dispatch(
         showAlert(
           'An error occurred',
@@ -316,16 +338,15 @@ const updateProgress = (
   progress,
   dispatch,
   uploadComplete = false,
-  serverResult=null
+  serverResult = null
 ) => {
-  console.log(recordIndex, attachedItemIndex, progress);
   dispatch(
     updateUploadProgress({
       recordIndex,
       attachedItemIndex,
       progress,
       uploadComplete,
-      serverResult
+      serverResult,
     })
   );
 };
@@ -346,7 +367,7 @@ export const uploadRecordPhoto = (
 
       var myHeaders = new Headers();
       myHeaders.append('Content-Type', 'multipart/form-data');
-     const respons= await axios.post(
+      const response = await axios.post(
         API_URL + apiRoutes.UPLOAD_RECORD_FILE + `/${recordId}`,
         formData,
         {
@@ -366,17 +387,21 @@ export const uploadRecordPhoto = (
           },
         }
       );
-      if(response.data?.data){
-        const result=response?.data?.data;
+      if (isValidServerResponse(response)) {
+        const result = getServerResponseData(response);
         isSuccess(true);
-        updateProgress(currentRecordIndex, itemIndex, 100, dispatch, true, result);
-      }
-      else if(response.error){
+        updateProgress(
+          currentRecordIndex,
+          itemIndex,
+          100,
+          dispatch,
+          true,
+          result
+        );
+      } else if (response.error) {
         updateProgress(currentRecordIndex, itemIndex, -1, dispatch);
         isSuccess(false);
       }
-      
-    
     } catch (error) {
       updateProgress(currentRecordIndex, itemIndex, -1, dispatch);
       isSuccess(false);
@@ -391,8 +416,9 @@ export const uploadRecordPhoto = (
   };
 };
 
-export const clearUploadedRecord = (recordData) => {
+export const clearUploadedRecord = () => {
   return async (dispatch, getState) => {
+   
     const { record } = getState();
     const uploadingDataArr = record.uploadingDataArr;
     let itemIndex = [];
@@ -415,8 +441,8 @@ export const updateRecord = (recordData) => {
         API_URL + apiRoutes.UPLOAD_RECORD_FILE,
         recordData
       );
-      if (response && response.data) {
-        dispatch(updateRecordSuccess(response.data));
+      if (isValidServerResponse(response)) {
+        dispatch(updateRecordSuccess(getServerResponseData(response)));
       } else if (response.error) {
         dispatch(updateRecordFailed(response.error));
       }
@@ -564,8 +590,10 @@ export const createTransportRequest = (recordData) => {
         API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         recordData
       );
-      if (response && response.data) {
-        dispatch(createTransportRequestSuccess(response.data));
+      if (isValidServerResponse(response)) {
+        dispatch(
+          createTransportRequestSuccess(getServerResponseData(response))
+        );
       } else if (response.error) {
         dispatch(createTransportRequestFailed(response.error));
       }
@@ -583,8 +611,8 @@ export const getAllRecords = (recordData = {}) => {
         API_URL + apiRoutes.GET_ALL_RECORDS,
         recordData
       );
-      if (response && response.data) {
-        let record = response?.data?.data;
+      if (isValidServerResponse(response)) {
+        let record = getServerResponseData(response);
 
         dispatch(getAllRecordsSuccess(record));
       } else if (response.error) {
@@ -611,8 +639,10 @@ export const getAllRecordsWithMessages = (recordData) => {
         API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         recordData
       );
-      if (response && response.data) {
-        dispatch(getAllRecordsWithMessagesSuccess(response.data));
+      if (isValidServerResponse(response)) {
+        dispatch(
+          getAllRecordsWithMessagesSuccess(getServerResponseData(response))
+        );
       } else if (response.error) {
         dispatch(getAllRecordsWithMessagesFailed(response.error));
       }
@@ -630,8 +660,8 @@ export const getAllMessages = (recordData) => {
         API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         recordData
       );
-      if (response && response.data) {
-        dispatch(getAllMessagesSuccess(response.data));
+      if (isValidServerResponse(response)) {
+        dispatch(getAllMessagesSuccess(getServerResponseData(response)));
       } else if (response.error) {
         dispatch(getAllMessagesFailed(response.error));
       }
@@ -649,8 +679,8 @@ export const sendMessages = (recordData) => {
         API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         recordData
       );
-      if (response && response.data) {
-        dispatch(sendMessagesSuccess(response.data));
+      if (isValidServerResponse(response)) {
+        dispatch(sendMessagesSuccess(getServerResponseData(response)));
       } else if (response.error) {
         dispatch(sendMessagesFailed(response.error));
       }

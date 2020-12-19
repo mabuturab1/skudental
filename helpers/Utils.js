@@ -39,3 +39,6 @@ export const getErrorMessage = (error) => {
     return `(${error.message})`;
   return '';
 };
+export const isValidServerResponse = (response) =>
+  response && response?.data?.data;
+export const getServerResponseData = (response) => response?.data?.data;

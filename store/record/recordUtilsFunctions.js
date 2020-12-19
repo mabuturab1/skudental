@@ -19,7 +19,7 @@ export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
     ].recordUpdateFailed = false;
     currentItem.attachedPosts[payload.attachedItemIndex] = {
       ...serverResult,
-      ...currentItem.attachedItemIndex[payload.attachedItemIndex],
+      ...currentItem.attachedPosts[payload.attachedItemIndex],
     };
   }
   if (payload.progress >= 0) {
@@ -58,6 +58,7 @@ export const removeItemFromUploadingArr = (uploadingArr, index) => {
 };
 export const removeAttachedPostFromRecordsArrItem = (recordsArr, payload) => {
   let updatedRecordsArr = getNewCopy(recordsArr);
+ 
   if (updatedRecordsArr.length > payload.index) {
     if (
       updatedRecordsArr[payload.index].attachedPosts.length >

@@ -1,16 +1,22 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ThemeColors } from '../../constants/Colors';
-const CustomRoundedButton = ({ style, onPress, title, icon, other }) => (
-  <Button
-    {...other}
-    mode='contained'
-    style={{ ...styles.customButton, ...style }}
-    onPress={onPress}
-  >
-    {title || icon}
-  </Button>
+const CustomRoundedButton = ({ style, onPress, title, icon, other, loading=false }) => (
+ 
+   <TouchableOpacity
+   activeOpacity={0.7}
+   style={{ ...styles.customButton, ...style }}
+   onPress={onPress}
+ >
+   {loading ? (
+     <LoadingIndicator alignCenter={false} color={'white'} />
+   ) : title != null ? (
+     <Text style={styles.titleStyle}>{title}</Text>
+   ) : (
+     icon
+   )}
+ </TouchableOpacity>
 );
 
 export default CustomRoundedButton;

@@ -6,6 +6,7 @@ const ImageTileList = ({
   attachedPosts=[],
   maxImages,
   currentRecordIndex,
+  isCurrentReduxRecord=false,
   isServerRecord = true,
   navigation
 }) => {
@@ -14,15 +15,20 @@ const ImageTileList = ({
   if (maxImages && maxImages < attachedPosts?.length)
     imageToBeShown = imageToBeShown.slice(0, maxImages);
   const lengthDiff = attachedPosts?.length - imageToBeShown?.length;
-  const showImagePreview = (postObj, showOverlayText) => {
+  const showImagePreview = (postObj,itemIndex, showOverlayText) => {
     if (showOverlayText) {
       navigation.navigate(routes.PreviewRecord, {
         currentRecordIndex,
         isServerRecord,
+        isCurrentReduxRecord,
       });
     } else
       navigation.navigate(routes.ImagePreview, {
         postObj,
+        currentRecordIndex,
+        isServerRecord,
+        itemIndex,
+        isCurrentReduxRecord,
       });
   };
   return (
@@ -31,7 +37,7 @@ const ImageTileList = ({
         <TouchableWithoutFeedback
         key={index}
           onPress={() =>
-            showImagePreview(el, lengthDiff && index + 1 === maxImages)
+            showImagePreview(el,index, lengthDiff && index + 1 === maxImages)
           }
         >
           <View  style={styles.imageTile}>

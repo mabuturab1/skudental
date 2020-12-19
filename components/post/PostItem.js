@@ -1,20 +1,33 @@
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, View, Image, TextInput } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {
+  StyleSheet,
+  View,
+  Image,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import PostAudio from './PostAudio';
 import { isAndroid } from '../../helpers/Utils';
+import RoundedButton from '../button/RoundedButton';
 const PostItem = ({
   postObj,
   itemIndex,
   isEditAllowed = true,
   onAddComments = () => {},
   onAudioUpdate = () => {},
+  onDelete = () => {},
   isLastItem,
   sendImageData,
 }) => {
   return (
     <View style={styles.imageItemWrapper}>
+      <View style={styles.iconContainer}>
+        <TouchableOpacity onPress={onDelete}>
+          <AntDesign name='delete' size={24} color='white' />
+        </TouchableOpacity>
+      </View>
+
       <Image
         onError={({ nativeEvent: { error } }) => console.log(error)}
         style={styles.singleImage}
@@ -34,13 +47,16 @@ const PostItem = ({
       </View>
 
       <View style={styles.sendButton}>
-        <TouchableOpacity onPress={sendImageData}>
-          <Ionicons
-            name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
-            size={24}
-            color={'white'}
-          />
-        </TouchableOpacity>
+        <RoundedButton
+          onPress={sendImageData}
+          icon={
+            <Ionicons
+              name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
+              size={24}
+              color={'white'}
+            />
+          }
+        />
       </View>
 
       <View style={styles.postAudioWrapper}>
@@ -77,15 +93,20 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     position: 'absolute',
-    bottom: 50,
-    right: 20,
-    width: 20,
-    height: 20,
+    bottom: 140,
+    right: 10,
+    zIndex: 1000,
   },
   postAudioWrapper: {
     position: 'absolute',
     top: 40,
     right: 5,
+  },
+  iconContainer: {
+    position: 'absolute',
+    top: 40,
+    left: 5,
+    zIndex: 1000,
   },
 });
 export default PostItem;

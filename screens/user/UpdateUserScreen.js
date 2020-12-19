@@ -8,7 +8,6 @@ import { updateUser } from '../../store/actions';
 const UpdateUserScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector(({ auth }) => auth.user);
-  console.log('user init values are', user);
   const onUpdateUser = (values) => {
     delete values.confirmPassword;
     values = { ...values, email: values.email.trim().toLowerCase() };

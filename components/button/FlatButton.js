@@ -22,8 +22,11 @@ const CustomButton = ({ style, onPress, title, icon, loading }) => (
 export default CustomButton;
 const styles = StyleSheet.create({
   customButton: {
-    height:42,
-
+    height: 42,
+    paddingHorizontal:10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: ThemeColors.primary,

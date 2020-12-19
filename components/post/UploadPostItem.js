@@ -22,15 +22,21 @@ const UploadPostItem = ({
   navigation,
   currentRecordIndex,
   itemIndex,
+  isServerRecord=true,
+  isCurrentReduxRecord,
   deleteItem = () => {},
 }) => {
   const dispatch = useDispatch();
-  console.log('post obj is', postObj.audioItem, postObj.audioItem !== null);
   const uploadingDataArr = useSelector(({ record }) => record.uploadingDataArr);
   useEffect(() => {}, []);
   const showImagePreview = () => {
     navigation.navigate(routes.ImagePreview, {
       postObj,
+      currentRecordIndex,
+      isServerRecord,
+      itemIndex,
+      isCurrentReduxRecord
+      
     });
   };
   const reUploadData = () => {

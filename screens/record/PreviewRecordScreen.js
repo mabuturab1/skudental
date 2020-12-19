@@ -1,8 +1,12 @@
 import React, { useRef } from 'react';
-import { SafeAreaView, StyleSheet, FlatList } from 'react-native';
+import { SafeAreaView, StyleSheet, FlatList, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { UploadPostItem } from '../../components';
-import { updateCurrentRecord } from '../../store/actions';
+import {
+  deleteRecordPost,
+  proceedForPostDeletion,
+  updateCurrentRecord,
+} from '../../store/actions';
 const PreviewRecordScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const {
@@ -39,50 +43,49 @@ const PreviewRecordScreen = ({ route, navigation }) => {
     ...el,
   }));
   const deleteRecord = (itemIndex) => {
-    if (showCurrentReduxRecord) {
-      attachedPosts = attachedPosts.map((el) => ({ ...el }));
-      attachedPosts.splice(index, 1);
-      dispatch(updateCurrentRecord({ attachedPosts }));
-    } else if (attachedPost[itemIndex]._id && !isServerRecord) {
-      console.log(
-        'deleting server record',
-        isServerRecord,
-        attachedPosts[itemIndex]._id
+    if (attachedPosts[itemIndex]._id) {
+      Alert.alert(
+        'Delete record post',
+        'Are you sure you want to delete this post',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => {
+              return;
+            },
+          },
+          {
+            text: 'Confirm',
+            onPress: () => deleteRecordItem(itemIndex),
+          },
+        ],
+        { cancelable: false }
       );
-      dispatch(deleteRecordPost(attachedPost[itemIndex]._id), (isSuccess) => {
-        if (isSuccess) {
-          clearUploadingRecordPost({
-            index: currentRecordIndex,
-            attachedItemIndex: itemIndex,
-          });
-        }
-      });
-    } else if (attachedPost[itemIndex]._id && isServerRecord) {
-      console.log(
-        'deleting server record',
-        isServerRecord,
-        attachedPosts[itemIndex]._id
-      );
-      dispatch(deleteRecordPost(attachedPost[itemIndex]._id), (isSuccess) => {
-        if (isSuccess) {
-          clearUploadingRecordPost({
-            index: currentRecordIndex,
-            attachedItemIndex: itemIndex,
-            isServerRecord: true,
-          });
-        }
-      });
-    }
+    } else deleteRecordItem(itemIndex);
+  };
+
+  const deleteRecordItem = (itemIndex) => {
+    dispatch(
+      proceedForPostDeletion(
+        attachedPosts[itemIndex]._id,
+        showCurrentReduxRecord,
+        currentRecordIndex,
+        itemIndex,
+        isServerRecord
+      )
+    );
   };
 
   const renderItem = ({ item, index }) => {
     return (
       <UploadPostItem
-        currentRecordIndex={currentRecordIndex}
         postObj={item}
         itemIndex={index}
         navigation={navigation}
         deleteItem={deleteRecord}
+        isCurrentReduxRecord={showCurrentReduxRecord}
+        isServerRecord={isServerRecord}
+        currentRecordIndex={currentRecordIndex}
       />
     );
   };

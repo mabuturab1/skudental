@@ -57,13 +57,13 @@ const addNewMessage = (payload) => ({
 });
 
 export const connectSocketIo = (token) => {
-  console.log('starting connection with sokcket io');
-  socket = io(BASE_URL_IP, {
-    extraHeaders: {  Authorization: `Bearer ${token}`, },
-  });
-  socket.on('connect',()=>{
-    console.log('socket connected', socket.id);
-  })
+  // console.log('starting connection with sokcket io');
+  // socket = io(BASE_URL_IP, {
+  //   extraHeaders: {  Authorization: `Bearer ${token}`, },
+  // });
+  // socket.on('connect',()=>{
+  //   console.log('socket connected', socket.id);
+  // })
 };
 
 export const getAllChatRoomMessages = (id) => {

@@ -220,7 +220,7 @@ export default (state = initialState, action) => {
         serverRecordsArr: action.payload.isServerRecord
           ? removeAttachedPostFromRecordsArrItem(
               state.serverRecordsArr,
-              acton.payload
+              action.payload
             )
           : state.serverRecordsArr,
       };

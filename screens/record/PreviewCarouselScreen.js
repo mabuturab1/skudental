@@ -5,12 +5,17 @@ import Carousel from 'react-native-snap-carousel';
 import { routes } from '../../constants/routes';
 import { StackActions } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { startUploadingData } from '../../store/record/actions';
+import {
+  proceedForPostDeletion,
+  startUploadingData,
+  updateCurrentRecord,
+} from '../../store/record/actions';
 const PreviewCarouselScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
-  const uploadingDataArr = useSelector(({ record }) => record.uploadingDataArr);
   const windowWidth = Dimensions.get('window').width;
-  const { attachedPosts = [], recordData = {} } = route.params;
+  const { attachedPosts = [], recordData = {} } = useSelector(
+    ({ record }) => record.currentRecord
+  );
   const updatedAttachedPosts = useRef(attachedPosts);
 
   const updateComments = (index, text) => {
@@ -21,20 +26,33 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
   };
 
   const sendImageData = () => {
+    console.log('send image data is');
+    // dispatch(
+    //   startUploadingData(
+    //     {
+    //       recordData: recordData,
+    //       attachedPosts: updatedAttachedPosts.current,
+    //     },
+    //     uploadingDataArr.length
+    //   )
+    // );
+    // navigation.dispatch(
+    //   StackActions.replace(routes.PreviewRecord, {
+    //     currentRecordIndex: uploadingDataArr.length,
+    //   })
+    // );
     dispatch(
-      startUploadingData(
-        {
-          recordData: recordData,
-          attachedPosts: updatedAttachedPosts.current,
-        },
-        uploadingDataArr.length
-      )
-    );
-    navigation.dispatch(
-      StackActions.replace(routes.PreviewRecord, {
-        currentRecordIndex: uploadingDataArr.length,
+      updateCurrentRecord({
+        recordData,
+        attachedPosts: updatedAttachedPosts.current,
       })
     );
+    navigation.goBack();
+  };
+  const deletePost = (item, index) => {
+    console.log('item is',  index)
+    updatedAttachedPosts.current.splice(index, 1);
+    dispatch(proceedForPostDeletion(item._id, true, null, index, false));
   };
 
   const renderItem = ({ item, index }) => {
@@ -46,6 +64,7 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
         onAddComments={updateComments}
         onAudioUpdate={updateAudio}
         sendImageData={sendImageData}
+        onDelete={() => deletePost(item, index)}
       />
     );
   };

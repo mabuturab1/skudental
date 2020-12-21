@@ -49,6 +49,19 @@ export const updateRecordObjInUploadingData = (uploadingData, payload) => {
   return newUploadingData;
 };
 
+export const updatePostObjInRecordsArr = (uploadingData, payload) => {
+  const newUploadingData = getNewCopy(uploadingData);
+  if (newUploadingData.length <= payload.currentRecordIndex) {
+    return newUploadingData;
+  }
+  let attachedPosts = newUploadingData[payload.itemIndex].attachedPosts;
+  if (attachedPosts.length <= payload.itemIndex) return newUploadingData;
+  attachedPosts[payload.itemIndex] = getTransformedPost(payload.updatedPostObj);
+  console.log('updated post is', attachedPosts[payload.itemIndex]);
+  newUploadingData[payload.itemIndex].attachedPosts = attachedPosts;
+  return newUploadingData;
+};
+
 export const removeItemFromUploadingArr = (uploadingArr, index) => {
   let updatedUploadingArr = getNewCopy(uploadingArr);
   if (updatedUploadingArr.length > index) {
@@ -58,7 +71,7 @@ export const removeItemFromUploadingArr = (uploadingArr, index) => {
 };
 export const removeAttachedPostFromRecordsArrItem = (recordsArr, payload) => {
   let updatedRecordsArr = getNewCopy(recordsArr);
- 
+
   if (updatedRecordsArr.length > payload.index) {
     if (
       updatedRecordsArr[payload.index].attachedPosts.length >
@@ -72,37 +85,46 @@ export const removeAttachedPostFromRecordsArrItem = (recordsArr, payload) => {
   }
   return updatedRecordsArr;
 };
-
+const getTransformedPost = (item) => ({
+  ...item,
+  photo: {
+    ...item.photo,
+    photoUrl: API_URL + '/' + item.photo.photoUrl,
+  },
+  compressedPhoto: {
+    ...item.compressedPhoto,
+    photoUrl: API_URL + '/' + item.compressedPhoto.photoUrl,
+  },
+  imageUrl:
+    API_URL +
+    '/' +
+    (item.compressedPhoto?.compressedPhotoUrl || item.photo?.photoUrl),
+  originalImageUrl: API_URL + '/' + item.photo?.photoUrl,
+  audioUrl: item.audioUrl ? API_URL + '/' + item.audioUrl : null,
+  audioItem: item.audioUrl ? { uri: API_URL + '/' + item.audioUrl } : null,
+});
+const getTransformedRecord = (serverPost) => {
+  return {
+    ...serverPost,
+    recordOwner: {
+      ...serverPost.recordOwner,
+      profileImageUrl: serverPost.recordOwner?.profileImageUrl
+        ? API_URL + '/' + serverPost?.recordOwner?.profileImageUrl
+        : undefined,
+    },
+    createdAt: serverPost.createdAt
+      ? moment(serverPost.createdAt).format('DD/MM/YYYY')
+      : undefined,
+    attachedPosts: serverPost.attachedPosts?.map((item) =>
+      getTransformedPost(item)
+    ),
+  };
+};
 export const addApiUrlInRecordArr = (record) => {
   let updatedRecordArr = [];
   if (record && record.length) {
     record.forEach((el) => {
-      updatedRecordArr.push({
-        ...el,
-        createdAt: el.createdAt
-          ? moment(el.createdAt).format('DD/MM/YYYY')
-          : undefined,
-        attachedPosts: el.attachedPosts?.map((item) => ({
-          ...item,
-          photo: {
-            ...item.photo,
-            photoUrl: API_URL + '/' + item.photo.photoUrl,
-          },
-          compressedPhoto: {
-            ...item.compressedPhoto,
-            photoUrl: API_URL + '/' + item.compressedPhoto.photoUrl,
-          },
-          imageUrl:
-            API_URL +
-            '/' +
-            (item.compressedPhoto?.compressedPhotoUrl || item.photo?.photoUrl),
-          originalImageUrl: API_URL + '/' + item.photo?.photoUrl,
-          audioUrl: item.audioUrl ? API_URL + '/' + item.audioUrl : null,
-          audioItem: item.audioUrl
-            ? { uri: API_URL + '/' + item.audioUrl }
-            : null,
-        })),
-      });
+      updatedRecordArr.push(getTransformedRecord(el));
     });
   }
   return updatedRecordArr;

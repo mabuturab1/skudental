@@ -8,6 +8,12 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case SHOW_ALERT_MESSAGE:
+      const errorIndex = state.alertArr.findIndex(
+        (el) =>
+          el.title === action.payload.tile &&
+          el.message !== action.payload.message
+      );
+      if (state.alertArr.length > 0 && errorIndex >= 0) return state;
       return {
         ...state,
         alertCount: state.alertCount + 1,

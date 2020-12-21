@@ -67,7 +67,7 @@ const CreateRecordScreen = ({ navigation }) => {
   };
   const showPreviewOfRecord = () => {
     navigation.navigate(routes.PreviewRecord, {
-      showCurrentReduxRecord: true,
+      isCurrentReduxRecord: true,
       editMode: true,
     });
   };
@@ -171,9 +171,11 @@ const CreateRecordScreen = ({ navigation }) => {
               </View>
               <View>
                 <View>
-                  <TouchableOpacity onPress={showPreviewOfRecord}>
-                    <FontAwesome name={'edit'} size={24} />
-                  </TouchableOpacity>
+                  {images.length ? (
+                    <TouchableOpacity onPress={showPreviewOfRecord}>
+                      <FontAwesome name={'edit'} size={24} />
+                    </TouchableOpacity>
+                  ) : null}
                 </View>
               </View>
             </View>
@@ -203,6 +205,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginTop: 20,
     paddingRight: 10,
   },

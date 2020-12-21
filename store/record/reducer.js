@@ -28,12 +28,16 @@ import {
   CLEAR_UPLOADING_RECORD,
   UPDATE_CURRENT_RECORD,
   CLEAR_UPLOADING_RECORD_POST,
+  UPDATE_RECORD_POST_START,
+  UPDATE_RECORD_POST_SUCCESS,
+  UPDATE_RECORD_POST_FAILED
 } from './actions';
 import {
   addApiUrlInRecordArr,
   getUpdatedUploadingDataObj,
   removeAttachedPostFromRecordsArrItem,
   removeItemFromUploadingArr,
+  updatePostObjInRecordsArr,
   updateRecordObjInUploadingData,
 } from './recordUtilsFunctions';
 
@@ -224,6 +228,22 @@ export default (state = initialState, action) => {
             )
           : state.serverRecordsArr,
       };
+      case UPDATE_RECORD_POST_SUCCESS:
+        return {
+          ...state,
+          uploadingDataArr: !action.payload?.isServerRecord
+            ? updatePostObjInRecordsArr(
+                state.uploadingDataArr,
+                action.payload
+              )
+            : state.uploadingDataArr,
+          serverRecordsArr: action.payload.isServerRecord
+            ? updatePostObjInRecordsArr(
+                state.serverRecordsArr,
+                action.payload
+              )
+            : state.serverRecordsArr,
+        };
     case UPDATE_CURRENT_RECORD:
       return {
         ...state,

@@ -8,6 +8,7 @@ import {
   getServerResponseData,
   isValidServerResponse,
   isValidValue,
+  isAllValuesValid,
 } from '../../helpers/Utils';
 import { showAlert } from '../alert/actions';
 
@@ -21,6 +22,10 @@ export const DELETE_RECORD_FAILED = 'DELETE_RECORD_FAILED';
 export const DELETE_RECORD_POST_START = 'DELETE_RECORD_POST_START';
 export const DELETE_RECORD_POST_SUCCESS = 'DELETE_RECORD_POST_SUCCESS';
 export const DELETE_RECORD_POST_FAILED = 'DELETE_RECORD_POST_FAILED';
+
+export const UPDATE_RECORD_POST_START = 'UPDATE_RECORD_POST_START';
+export const UPDATE_RECORD_POST_SUCCESS = 'UPDATE_RECORD_POST_SUCCESS';
+export const UPDATE_RECORD_POST_FAILED = 'UPDATE_RECORD_POST_FAILED';
 
 export const UPDATE_RECORD_START = 'UPDATE_RECORD_START';
 export const UPDATE_RECORD_SUCCESS = 'UPDATE_RECORD_SUCCESS';
@@ -126,6 +131,18 @@ const deleteRecordPostFailed = (error) => ({
   error,
 });
 
+const updateRecordPostStart = () => ({
+  type: UPDATE_RECORD_POST_START,
+});
+const updateRecordPostSuccess = (payload) => ({
+  type: UPDATE_RECORD_POST_SUCCESS,
+  payload,
+});
+const updateRecordPostFailed = (error) => ({
+  type: UPDATE_RECORD_POST_FAILED,
+  error,
+});
+
 const sendMessageStart = () => ({
   type: SEND_RECORD_MESSAGE_START,
 });
@@ -216,7 +233,7 @@ export const proceedForPostDeletion = (
         record?.currentRecord?.attachedPosts || []
       ).map((el) => ({ ...el }));
       if (attachedPosts.length) {
-        console.log('item index is', itemIndex)
+        console.log('item index is', itemIndex);
         attachedPosts.splice(itemIndex, 1);
         dispatch(updateCurrentRecord({ attachedPosts }));
         return;
@@ -329,6 +346,18 @@ const getPhotoFormData = (fileInfo) => {
   formData.append('additionalComments', fileInfo.additionalComments);
   return formData;
 };
+const getUpdatePhotoFormData = (fileInfo) => {
+  let formData = new FormData();
+  if (fileInfo.updateAudioItem && fileInfo.audioItem) {
+    formData.append('audio', fileInfo.audioItem);
+    formData.append('additionalComments', fileInfo.additionalComments);
+    return formData;
+  }
+  return {
+    additionalComments: fileInfo.additionalComments,
+    deleteAudioItem: fileInfo.updateAudioItem && fileInfo.audioItem === null,
+  };
+};
 const getProgress = (progressEvent) =>
   Math.round((progressEvent.loaded * 100) / progressEvent.total);
 
@@ -418,7 +447,6 @@ export const uploadRecordPhoto = (
 
 export const clearUploadedRecord = () => {
   return async (dispatch, getState) => {
-   
     const { record } = getState();
     const uploadingDataArr = record.uploadingDataArr;
     let itemIndex = [];
@@ -433,13 +461,130 @@ export const clearUploadedRecord = () => {
   };
 };
 
+export const proceedForPostUpdate = (
+  id,
+  updatedRecord,
+  isCurrentReduxRecord,
+  currentRecordIndex = null,
+  itemIndex = null,
+  isServerRecord = null,
+  uploadProgressUpdate,
+  isSuccess = isSuccessDefault
+) => {
+  return async (dispatch, getState) => {
+    const { record } = getState();
+    console.log('iscurrent redux record', isCurrentReduxRecord, itemIndex);
+    if (
+      isAllValuesValid([isCurrentReduxRecord, itemIndex]) &&
+      isCurrentReduxRecord
+    ) {
+      let attachedPosts = (
+        record?.currentRecord?.attachedPosts || []
+      ).map((el) => ({ ...el }));
+      console.log('attachedpost length', attachedPosts.length, updatedRecord);
+      if (attachedPosts.length) {
+        console.log('item index is', itemIndex);
+        attachedPosts[itemIndex] = updatedRecord;
+        dispatch(updateCurrentRecord({ attachedPosts }));
+        return;
+      }
+    } else if (
+      isAllValuesValid([
+        id,
+        currentRecordIndex,
+        itemIndex,
+        isServerRecord,
+        updatedRecord,
+      ])
+    ) {
+      dispatch(updateRecordPostStart());
+      dispatch(
+        updateRecordPost(
+          id,
+          updatedRecord,
+          uploadProgressUpdate,
+          (dataUploaded, updatedPostObj) => {
+            isSuccess(dataUploaded);
+            console.log('data uploaded is', dataUploaded);
+
+            if (dataUploaded) {
+              dispatch(
+                updateRecordPostSuccess({
+                  currentRecordIndex,
+                  itemIndex,
+                  updatedPostObj,
+                  isServerRecord,
+                })
+              );
+            } else {
+              dispatch(updateRecordPostFailed('An error occurred'));
+            }
+          }
+        )
+      );
+    }
+  };
+};
+
+export const updateRecordPost = (
+  postId,
+  fileInfo,
+  updateUploadProgress,
+  isSuccess = isSuccessDefault
+) => {
+  return async (dispatch, getState) => {
+    try {
+      let formData = getUpdatePhotoFormData(fileInfo);
+      let nextUpdateDue = 0;
+
+      const fileHeader =
+        formData instanceof FormData
+          ? { 'Content-Type': 'multipart/form-data' }
+          : {};
+      var myHeaders = new Headers();
+      myHeaders.append('Content-Type', 'multipart/form-data');
+      const response = await axios.post(
+        API_URL + apiRoutes.UPDATE_RECORD_POST + `/${postId}`,
+        formData,
+        {
+          ...getAxiosConfig(getState, fileHeader),
+          onUploadProgress: (progressEvent) => {
+            var percentCompleted = getProgress(progressEvent);
+            if (nextUpdateDue > moment().unix()) {
+              return;
+            }
+            nextUpdateDue = moment().add(4, 'seconds').unix();
+            updateUploadProgress(percentCompleted);
+          },
+        }
+      );
+      if (isValidServerResponse(response)) {
+        const result = getServerResponseData(response);
+        isSuccess(true, result);
+        updateUploadProgress(100, true, result);
+      } else if (response.error) {
+        updateUploadProgress(-1);
+        isSuccess(false, null);
+      }
+    } catch (error) {
+      updateUploadProgress(-1);
+      isSuccess(false, null);
+      console.log('error is', error, error.message);
+      dispatch(showAlert('An error occurred ', getErrorMessage(error)));
+
+      // dispatch(clearUploadingRecord(currentRecordIndex));
+    }
+  };
+};
+
 export const updateRecord = (recordData) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       dispatch(updateRecordStart());
       const response = await axios.post(
         API_URL + apiRoutes.UPLOAD_RECORD_FILE,
-        recordData
+        recordData,
+        { ...getAxiosConfig(getState) }
       );
       if (isValidServerResponse(response)) {
         dispatch(updateRecordSuccess(getServerResponseData(response)));
@@ -582,34 +727,14 @@ const allFilesUploaded = (
   return allItems.filter((el) => !uploaded.includes(el)).length == 0;
 };
 
-export const createTransportRequest = (recordData) => {
-  return async (dispatch) => {
-    try {
-      dispatch(createTransportRequestStart());
-      const response = await axios.post(
-        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
-        recordData
-      );
-      if (isValidServerResponse(response)) {
-        dispatch(
-          createTransportRequestSuccess(getServerResponseData(response))
-        );
-      } else if (response.error) {
-        dispatch(createTransportRequestFailed(response.error));
-      }
-    } catch (error) {
-      dispatch(createTransportRequestFailed('An error occurred'));
-    }
-  };
-};
-
 export const getAllRecords = (recordData = {}) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       dispatch(getAllRecordsStart());
       const response = await axios.post(
         API_URL + apiRoutes.GET_ALL_RECORDS,
-        recordData
+        recordData,
+        { ...getAxiosConfig(getState) }
       );
       if (isValidServerResponse(response)) {
         let record = getServerResponseData(response);

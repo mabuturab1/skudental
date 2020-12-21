@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { apiRoutes, API_URL, BASE_URL, BASE_URL_IP } from '../../constants/apiRoutes';
+import {
+  apiRoutes,
+  API_URL,
+  BASE_URL,
+  BASE_URL_IP,
+} from '../../constants/apiRoutes';
 import { getAxiosConfig } from '../../helpers/Utils';
 import { io } from 'socket.io-client';
 let socket;
@@ -71,13 +76,15 @@ export const getAllChatRoomMessages = (id) => {
     try {
       dispatch(getAllChatRoomMessagesStart());
       const response = await axios.get(
-        apiUrl + apiRoutes.GET_CHAT_ROOM + '/' + id,
+        API_URL + apiRoutes.GET_CHAT_ROOM + '/' + id,
         {
           ...getAxiosConfig(getState),
         }
       );
-      if (response && response.data) {
-        dispatch(getAllChatRoomMessagesSuccess(response.data));
+      if (isValidServerResponse(response)) {
+        dispatch(
+          getAllChatRoomMessagesSuccess(getServerResponseData(response))
+        );
       } else if (response.error) {
         dispatch(getAllChatRoomMessagesFailed(response.error));
       }
@@ -92,37 +99,18 @@ export const getAllChatRooms = (id) => {
     try {
       dispatch(getAllChatRoomsStart());
       const response = await axios.get(
-        apiUrl + apiRoutes.GET_ALL_CHAT_ROOMS + '/' + id,
+        API_URL + apiRoutes.GET_ALL_CHAT_ROOMS + '/' + id,
         {
           ...getAxiosConfig(getState),
         }
       );
-      if (response && response.data) {
-        dispatch(getAllChatRoomsSuccess(response.data));
+      if (isValidServerResponse(response)) {
+        dispatch(getAllChatRoomsSuccess(getServerResponseData(response)));
       } else if (response.error) {
         dispatch(getAllChatRoomsFailed(response.error));
       }
     } catch (error) {
       dispatch(getAllChatRoomsFailed('An error occurred'));
-    }
-  };
-};
-
-export const sendTransportMessage = (userData) => {
-  return async (dispatch) => {
-    try {
-      dispatch(sendTransportMessageStart());
-      const response = await axios.post(
-        apiUrl + apiRoutes.SEND_TRANSPORT_MESSAGE,
-        userData
-      );
-      if (response && response.data) {
-        dispatch(sendTransportMessageSuccess(response.data));
-      } else if (response.error) {
-        dispatch(sendTransportMessageFailed(response.error));
-      }
-    } catch (error) {
-      dispatch(sendTransportMessageFailed('An error occurred'));
     }
   };
 };

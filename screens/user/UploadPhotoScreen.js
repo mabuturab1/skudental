@@ -87,15 +87,12 @@ const UploadPhotoScreen = ({ navigation }) => {
 
       {uploadedPhoto.current ? (
         <View style={styles.uploadStatus}>
-          <TouchableOpacity
-            onPress={isFailed ? () => startUploadingFile() : undefined}
-          >
-            <ProgressUploadStatus
-              progress={progress}
-              isFailed={isFailed}
-              isComplete={isComplete}
-            />
-          </TouchableOpacity>
+          <ProgressUploadStatus
+            progress={progress}
+            isFailed={isFailed}
+            isComplete={isComplete}
+            onReUpload={startUploadingFile}
+          />
         </View>
       ) : null}
       <Text style={styles.updateUserPhoto}>Update user photo</Text>
@@ -130,6 +127,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingHorizontal: 20,
-    marginVertical:10
+    marginVertical: 10,
   },
 });

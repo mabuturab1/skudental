@@ -6,10 +6,12 @@ import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 import moment from 'moment';
 import { isAndroid } from '../../helpers/Utils';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 const AudioRecorder = ({
   audioName,
   onRecordingComplete = () => {},
   onRecordingStart = () => {},
+  onlyIcon = false,
 }) => {
   const [recording, setRecording] = useState();
 
@@ -69,19 +71,35 @@ const AudioRecorder = ({
 
   return (
     <View style={styles.container}>
-      <RoundedButton
-        style={styles.microphoneButton}
-        icon={
-          <FontAwesome
-            name={recording ? 'microphone-slash' : 'microphone'}
-            size={24}
-            color='white'
-          />
-        }
-        onPress={(event) =>
-          recording ? stopRecording(event) : startRecording(event)
-        }
-      />
+      {onlyIcon ? (
+        <TouchableOpacity
+          onPress={(event) =>
+            recording ? stopRecording(event) : startRecording(event)
+          }
+        >
+          <View style={styles.iconWrapper}>
+            <FontAwesome
+              name={recording ? 'microphone-slash' : 'microphone'}
+              size={24}
+              color='white'
+            />
+          </View>
+        </TouchableOpacity>
+      ) : (
+        <RoundedButton
+          style={styles.microphoneButton}
+          icon={
+            <FontAwesome
+              name={recording ? 'microphone-slash' : 'microphone'}
+              size={24}
+              color='white'
+            />
+          }
+          onPress={(event) =>
+            recording ? stopRecording(event) : startRecording(event)
+          }
+        />
+      )}
     </View>
   );
 };
@@ -98,4 +116,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1453d',
     borderColor: '#f1453d',
   },
+  iconWrapper: { padding: 15, justifyContent: 'center', alignItems: 'center' },
 });

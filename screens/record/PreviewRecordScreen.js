@@ -2,17 +2,13 @@ import React, { useRef } from 'react';
 import { SafeAreaView, StyleSheet, FlatList, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { UploadPostItem } from '../../components';
-import {
-  deleteRecordPost,
-  proceedForPostDeletion,
-  updateCurrentRecord,
-} from '../../store/actions';
+import { proceedForPostDeletion } from '../../store/actions';
 const PreviewRecordScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const {
     currentRecordIndex,
     isServerRecord,
-    showCurrentReduxRecord,
+    isCurrentReduxRecord,
     editMode,
   } = route.params;
   const {
@@ -25,7 +21,7 @@ const PreviewRecordScreen = ({ route, navigation }) => {
     currentRecord: record.currentRecord,
   }));
   let attachedPosts = [];
-  if (showCurrentReduxRecord) {
+  if (isCurrentReduxRecord) {
     attachedPosts = currentRecord.attachedPosts || [];
   } else if (
     uploadingDataArr?.length >= currentRecordIndex + 1 &&
@@ -68,7 +64,7 @@ const PreviewRecordScreen = ({ route, navigation }) => {
     dispatch(
       proceedForPostDeletion(
         attachedPosts[itemIndex]._id,
-        showCurrentReduxRecord,
+        isCurrentReduxRecord,
         currentRecordIndex,
         itemIndex,
         isServerRecord
@@ -83,7 +79,7 @@ const PreviewRecordScreen = ({ route, navigation }) => {
         itemIndex={index}
         navigation={navigation}
         deleteItem={deleteRecord}
-        isCurrentReduxRecord={showCurrentReduxRecord}
+        isCurrentReduxRecord={isCurrentReduxRecord}
         isServerRecord={isServerRecord}
         currentRecordIndex={currentRecordIndex}
       />

@@ -24,4 +24,5 @@ export const routes = {
   ChatRoomList: 'ChatRoomList',
   ChatRoom: 'ChatRoom',
   UploadPhoto: 'UploadPhoto',
+  VerifyUsers:'VerifyUsers'
 };

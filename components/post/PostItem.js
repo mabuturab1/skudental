@@ -1,15 +1,17 @@
-import { AntDesign, Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
+import React, { Fragment, useState } from 'react';
 import {
   StyleSheet,
   View,
   Image,
   TextInput,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import PostAudio from './PostAudio';
-import { isAndroid } from '../../helpers/Utils';
+import { isAndroid, isValidValue } from '../../helpers/Utils';
 import RoundedButton from '../button/RoundedButton';
+import ProgressUploadStatus from '../progressUploadStatus/ProgressUploadStatus';
 const PostItem = ({
   postObj,
   itemIndex,
@@ -17,17 +19,71 @@ const PostItem = ({
   onAddComments = () => {},
   onAudioUpdate = () => {},
   onDelete = () => {},
+  uploadProgress = 0,
+  isUploadComplete = true,
+  isCurrentReduxRecord = false,
   isLastItem,
   sendImageData,
+  onSavePost = () => {},
 }) => {
+  const onEditPostItem = () => {
+    setIsEditMode(false);
+    onSavePost();
+  };
+  const [isEditMode, setIsEditMode] = useState(isEditAllowed);
+  const [canSwitchToEditMode] = useState(isEditAllowed === false);
   return (
     <View style={styles.imageItemWrapper}>
-      <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={onDelete}>
-          <AntDesign name='delete' size={24} color='white' />
-        </TouchableOpacity>
+      <View style={styles.topIconsContainer}>
+        <View style={styles.postButtons}>
+          <View style={styles.singleIcon}>
+            <TouchableOpacity onPress={onDelete}>
+              <AntDesign name='delete' size={24} color='white' />
+            </TouchableOpacity>
+          </View>
+          {canSwitchToEditMode ? (
+            <Fragment>
+              {!isEditMode ? (
+                <View style={styles.singleIcon}>
+                  <TouchableOpacity onPress={() => setIsEditMode(true)}>
+                    <FontAwesome name={'edit'} size={24} color={'white'} />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={styles.singleIcon}>
+                  <TouchableOpacity onPress={onEditPostItem}>
+                    <Ionicons
+                      name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
+                      size={24}
+                      color={'white'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
+              <View style={styles.singleIcon}>
+                {!isCurrentReduxRecord ? (
+                  <ProgressUploadStatus
+                    isFailed={
+                      isValidValue(uploadProgress) && uploadProgress < 0
+                    }
+                    isComplete={isUploadComplete}
+                    progress={uploadProgress}
+                    onReUpload={onSavePost}
+                  />
+                ) : null}
+              </View>
+            </Fragment>
+          ) : null}
+        </View>
+        <PostAudio
+          isEditAllowed={isEditMode}
+          initAudioItem={
+            postObj.audioUrl ? { uri: postObj.audioUrl } : postObj.audioItem
+          }
+          itemIndex={itemIndex}
+          onAudioUpdate={(audio) => onAudioUpdate(itemIndex, audio)}
+        />
       </View>
-
       <Image
         onError={({ nativeEvent: { error } }) => console.log(error)}
         style={styles.singleImage}
@@ -40,39 +96,33 @@ const PostItem = ({
           style={styles.textInput}
           defaultValue={postObj.additionalComments || ''}
           placeholderTextColor='rgba(255,255,255,0.6)'
-          placeholder={isEditAllowed ? 'Add comments' : ''}
-          editable={isEditAllowed}
+          placeholder={isEditMode ? 'Add comments' : ''}
+          editable={isEditMode}
           onChangeText={(text) => onAddComments(itemIndex, text)}
         />
       </View>
 
-      <View style={styles.sendButton}>
-        <RoundedButton
-          onPress={sendImageData}
-          icon={
-            <Ionicons
-              name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
-              size={24}
-              color={'white'}
-            />
-          }
-        />
-      </View>
-
-      <View style={styles.postAudioWrapper}>
-        <PostAudio
-          isEditAllowed={isEditAllowed}
-          initUrl={postObj.audioUrl}
-          itemIndex={itemIndex}
-          onAudioUpdate={(audio) => onAudioUpdate(itemIndex, audio)}
-        />
-      </View>
+      {!canSwitchToEditMode ? (
+        <View style={styles.sendButton}>
+          <RoundedButton
+            onPress={sendImageData}
+            icon={
+              <Ionicons
+                name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
+                size={24}
+                color={'white'}
+              />
+            }
+          />
+        </View>
+      ) : null}
     </View>
   );
 };
 const styles = StyleSheet.create({
   imageItemWrapper: {
     flex: 1,
+    width: '100%',
     height: '100%',
     justifyContent: 'center',
     position: 'relative',
@@ -97,16 +147,19 @@ const styles = StyleSheet.create({
     right: 10,
     zIndex: 1000,
   },
-  postAudioWrapper: {
+  postButtons: { flexDirection: 'row', padding: 15 },
+  topIconsContainer: {
     position: 'absolute',
     top: 40,
-    right: 5,
-  },
-  iconContainer: {
-    position: 'absolute',
-    top: 40,
-    left: 5,
+    width: '100%',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     zIndex: 1000,
+  },
+ 
+  singleIcon: {
+    paddingRight: 30,
   },
 });
 export default PostItem;

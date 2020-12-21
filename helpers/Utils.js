@@ -26,6 +26,14 @@ export const getImageComments = (itemsList = []) => {
   return itemsList;
 };
 
+export const isAllValuesValid = (val) => {
+  let isAllValuesValid = true;
+  val.forEach(
+    (el) => (isAllValuesValid = isValidValue(el) && isAllValuesValid)
+  );
+  return isAllValuesValid;
+};
+
 export const isValidValue = (val) => val !== null && val !== undefined;
 
 const isString = (val) => {

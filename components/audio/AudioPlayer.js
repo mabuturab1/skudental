@@ -14,6 +14,7 @@ const AudioPlayer = ({
   textColor = 'white',
   onlyIcon = false,
   color = 'white',
+  updateRecordingPlayStatus = () => {},
 }) => {
   const [playingSound, setPlayingSound] = useState();
   const [soundPlayStatus, setSoundPlayStatus] = useState(false);
@@ -32,10 +33,14 @@ const AudioPlayer = ({
         onPlaybackStatusUpdate(0);
       }
       if (playbackStatus.didJustFinish) {
-        setSoundPlayStatus(false);
-        setDurationMillis(fileDuration);
+        setDurationMillis(0);
+        updatePlayStatus(false);
       }
     }
+  };
+  const updatePlayStatus = (status) => {
+    setSoundPlayStatus(status);
+    updateRecordingPlayStatus(status);
   };
   useEffect(() => {
     if (!audioItem && soundPlayStatus) {
@@ -57,7 +62,7 @@ const AudioPlayer = ({
     var status = await sound.getStatusAsync();
     setFileDuration(status.durationMillis);
     setPlayingSound(sound);
-    setSoundPlayStatus(true);
+    updatePlayStatus(true);
 
     await sound.setProgressUpdateIntervalAsync(50);
     await sound.playAsync();
@@ -66,7 +71,7 @@ const AudioPlayer = ({
   const stopSound = useCallback(async () => {
     try {
       await playingSound.stopAsync();
-      setSoundPlayStatus(false);
+      updatePlayStatus(false);
     } catch (error) {
       console.log('error while playing sound', error);
     }
@@ -133,6 +138,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   durationMillisText: {
     color: 'white',

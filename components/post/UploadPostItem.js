@@ -11,23 +11,23 @@ import {
 } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
-import CircularProgressbar from '../progressbar/CircularProgressbar';
-import { ThemeColors } from '../../constants/Colors';
 import { routes } from '../../constants/routes';
-import { isAndroid, isValidValue } from '../../helpers/Utils';
+import { isValidValue } from '../../helpers/Utils';
 import { uploadRecordPhoto } from '../../store/record/actions';
 import AudioPlayer from '../audio/AudioPlayer';
+import ProgressUploadStatus from '../progressUploadStatus/ProgressUploadStatus';
 const UploadPostItem = ({
   postObj,
   navigation,
   currentRecordIndex,
   itemIndex,
-  isServerRecord=true,
+  isServerRecord = true,
   isCurrentReduxRecord,
   deleteItem = () => {},
 }) => {
   const dispatch = useDispatch();
   const uploadingDataArr = useSelector(({ record }) => record.uploadingDataArr);
+
   useEffect(() => {}, []);
   const showImagePreview = () => {
     navigation.navigate(routes.ImagePreview, {
@@ -35,8 +35,7 @@ const UploadPostItem = ({
       currentRecordIndex,
       isServerRecord,
       itemIndex,
-      isCurrentReduxRecord
-      
+      isCurrentReduxRecord,
     });
   };
   const reUploadData = () => {
@@ -53,15 +52,26 @@ const UploadPostItem = ({
       );
     } catch (error) {}
   };
+
+  const isFileUploading = () =>
+    !isCurrentReduxRecord &&
+    postObj.progress != null &&
+    !postObj.uploadComplete;
   return (
     <View style={styles.wrapper}>
-      <View style={styles.iconWrapper}>
+      <View style={{ ...styles.iconWrapper, ...styles.smallPadding }}>
         {postObj.additionalComments != null ? (
           <Text style={styles.commentsText}>{postObj.additionalComments}</Text>
         ) : null}
-        <TouchableOpacity onPress={() => deleteItem(itemIndex)}>
+        <TouchableOpacity
+          onPress={() =>
+            !isFileUploading() ? deleteItem(itemIndex) : undefined
+          }
+        >
           <View style={styles.singleIconWrapper}>
-            <MaterialIcons name={'delete'} size={24} color='black' />
+            {!isFileUploading() ? (
+              <MaterialIcons name={'delete'} size={24} color='black' />
+            ) : null}
           </View>
         </TouchableOpacity>
       </View>
@@ -75,31 +85,22 @@ const UploadPostItem = ({
           {isValidValue(postObj.audioItem) ? (
             <AudioPlayer
               audioItem={postObj.audioItem}
-              isSmallAudioPlayerButton={true}
               durationOnRight={true}
               textColor='black'
+              onlyIcon={true}
+              color='black'
             />
           ) : null}
         </View>
 
         <View style={styles.singleIconWrapper}>
-          {postObj.recordUpdateFailed ? (
-            <TouchableOpacity onPress={reUploadData}>
-              <Ionicons
-                name={isAndroid() ? 'md-refresh-circle' : 'ios-refresh-circle'}
-                color={ThemeColors.primary}
-                size={24}
-              />
-            </TouchableOpacity>
-          ) : postObj.progress != null && !postObj.uploadComplete ? (
-            <CircularProgressbar progress={postObj.progress} />
-          ) : (
-            <Ionicons
-              name={isAndroid() ? 'md-checkmark-done' : 'ios-checkmark-done'}
-              color={ThemeColors.primary}
-              size={24}
-            />
-          )}
+          <ProgressUploadStatus
+            returnEmpty={isCurrentReduxRecord}
+            isFailed={postObj.recordUpdateFailed}
+            progress={postObj.progress}
+            isComplete={postObj.uploadComplete}
+            onReUpload={reUploadData}
+          />
         </View>
       </View>
     </View>
@@ -119,9 +120,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     height: 40,
-    paddingHorizontal: 20,
+
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  smallPadding: {
+    paddingHorizontal: 15,
   },
   singleIconWrapper: {
     width: 40,
@@ -143,7 +147,6 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   postAudioWrapper: {
-    paddingHorizontal: 50,
     marginVertical: 5,
     flexDirection: 'row',
     justifyContent: 'flex-start',

@@ -36,9 +36,9 @@ const getFontsConfig = () => ({
   RobotoThinItalic: require('./assets/fonts/Roboto-ThinItalic.ttf'),
 });
 const MainNavigationScreens = () => {
-  const token = useSelector(({ auth }) => auth.token);
-  if (isUserAuthenticated(token)) connectSocketIo(token);
-  return MainNavigator(isUserAuthenticated(token));
+  const auth = useSelector(({ auth }) => auth);
+  if (isUserAuthenticated(auth.token)) connectSocketIo(auth.token);
+  return MainNavigator(auth);
 };
 export default function App() {
   const [fontsLoaded] = useFonts(getFontsConfig());

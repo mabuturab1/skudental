@@ -1,7 +1,6 @@
 import React from 'react';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 const CircularProgressbar = ({ progress = 0 }) => {
-  console.log('progress is', progress);
   return (
     <AnimatedCircularProgress
       size={17}

@@ -22,7 +22,7 @@ import PinScreen from './user/passwordReset/PinScreen';
 import ImagePreviewScreen from './record/ImagePreviewScreen';
 import RoomScreen from './chatRoom/RoomScreen';
 import ChatRoomListScreen from './chatRoom/ChatRoomListScreen';
-
+import VerifyUsersScreen from './admin/VerifyUsersScreen'
 export {
   RecordDetailsScreen,
   RecordListScreen,
@@ -47,5 +47,6 @@ export {
   LogoutScreen,
   RoomScreen,
   ChatRoomListScreen,
-  UploadPhotoScreen
+  UploadPhotoScreen,
+  VerifyUsersScreen
 };

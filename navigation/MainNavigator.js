@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { HeaderButton, MaterialMenu } from '../components';
-import { isAndroid } from '../helpers/Utils';
+import { isAndroid, isUserAuthenticated } from '../helpers/Utils';
 import { Ionicons } from '@expo/vector-icons';
 import {
   RecordDetailsScreen,
@@ -31,10 +31,12 @@ import {
   RoomScreen,
   ChatRoomListScreen,
   UploadPhotoScreen,
+  VerifyUsersScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
 import { routes } from '../constants/routes';
+import { Role } from '../constants/UIConstants';
 const screenOptions = {
   headerStyle: {
     backgroundColor: isAndroid() ? '#fafafa' : '',
@@ -48,9 +50,9 @@ const screenOptions = {
   headerTintColor: 'black',
 };
 
-const getCommonOptions = (drawerNavigation) => ({
+const getCommonOptions = (drawerNavigation, user) => ({
   // headerLeft: (props) => menuButton(drawerNavigation),
-  headerRight: (props) => popupMenu(drawerNavigation),
+  headerRight: (props) => popupMenu(drawerNavigation, user),
 });
 
 const Stack = createStackNavigator();
@@ -228,24 +230,29 @@ const menuButton = (navigation) => {
   );
 };
 
-const popupMenu = (navigation) => {
+const popupMenu = (navigation, user) => {
+  const isAdmin = user?.role?.roleType === Role.Admin;
   const popupMenuData = [
-    { label: 'Update Photo', id: 1 },
-    { label: 'Update User', id: 2 },
-    { label: 'Lab Docket', id: 3 },
-    { label: 'Logout', id: 4 },
+    { label: 'Update Photo', id: 'UPDATE_PHOTO' },
+    { label: 'Update User', id: 'UPDATE_USER' },
+    { label: 'Lab Docket', id: 'LAB_DOCKET' },
+    { label: 'Logout', id: 'LOGOUT' },
   ];
+  if (isAdmin||true)
+    popupMenuData.unshift({ label: 'Verify Users', id: 'VERIFY_USERS' });
   const onPopupMenuClick = (id) => {
     switch (id) {
-      case 1:
+      case 'VERIFY_USERS':
+        return navigation.navigate(routes.VerifyUsers);
+      case 'UPDATE_PHOTO':
         return navigation.navigate(routes.UploadPhoto);
-      case 2:
+      case 'UPDATE_USER':
         return navigation.navigate(routes.ConfirmPassword, {
           routeToNavigate: routes.UpdateUser,
         });
-      case 3:
+      case 'LAB_DOCKET':
         return navigation.navigate(routes.LabDocket);
-      case 4:
+      case 'LOGOUT':
         return navigation.navigate(routes.Logout);
     }
   };
@@ -320,14 +327,16 @@ const tabNavigator = () => (
     )}
   </Tab.Navigator>
 );
-export default mainStackNavigator = (isAuthenticated) => (
+export default mainStackNavigator = (auth) => (
   <Stack.Navigator
     screenOptions={screenOptions}
-    initialRouteName={isAuthenticated ? routes.Home : routes.Auth}
+    initialRouteName={
+      isUserAuthenticated(auth.token) ? routes.Home : routes.Auth
+    }
   >
     <Stack.Screen
       options={({ navigation }) => ({
-        ...getCommonOptions(navigation),
+        ...getCommonOptions(navigation, auth.user),
         title: 'SK',
         headerLeft: null,
       })}
@@ -350,6 +359,10 @@ export default mainStackNavigator = (isAuthenticated) => (
     <Stack.Screen
       name={routes.ConfirmPassword}
       component={ConfirmPasswordScreen}
+    />
+    <Stack.Screen
+      name={routes.VerifyUsers}
+      component={VerifyUsersScreen}
     />
     <Stack.Screen
       options={{ headerShown: false }}

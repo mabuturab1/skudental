@@ -5,6 +5,7 @@ import TransportReducer from './transport/reducer';
 import RecordReducer from './record/reducer';
 import ChatRoomReducer from './chatRoom/reducer';
 import AlertReducer from './alert/reducer';
+import AdminReducer from './admin/reducer';
 import ReduxThunk from 'redux-thunk';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -20,6 +21,7 @@ const appReducer = combineReducers({
   record: RecordReducer,
   chatRoom: ChatRoomReducer,
   alert: AlertReducer,
+  admin: AdminReducer,
 });
 const rootReducer = (state, action) => {
   if (action.type === 'USER_LOGOUT') {

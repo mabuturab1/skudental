@@ -14,9 +14,6 @@ import {
   UPDATE_USER_START,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_FAILED,
-  VERIFY_USER_START,
-  VERIFY_USER_SUCCESS,
-  VERIFY_USER_FAILED,
   USER_LOGOUT,
 } from './actions';
 import { addApiUrlInUserObj } from './userUtilsFunctions';
@@ -152,25 +149,7 @@ export default (state = initialState, action) => {
         error: { ...state.error, updateUser: action.payload },
       };
 
-    case VERIFY_USER_START:
-      return {
-        ...state,
-        loading: { ...state.loading, verifyUser: true },
-        error: { ...state.error, verifyUser: '' },
-      };
-    case VERIFY_USER_SUCCESS:
-      return {
-        ...state,
-        user: action.payload,
-        loading: { ...state.loading, verifyUser: false },
-      };
-    case VERIFY_USER_FAILED:
-      return {
-        ...state,
-        user: {},
-        loading: { ...state.loading, verifyUser: false },
-        error: { ...state.error, verifyUser: action.payload },
-      };
+  
     case USER_LOGOUT:
       return initialState;
   }

@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL, apiRoutes } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
-import { getAxiosConfig, getErrorMessage } from '../../helpers/Utils';
+import { getAxiosConfig, getErrorMessage, getServerResponseData, isValidServerResponse } from '../../helpers/Utils';
 import { auth } from '../../helpers/firebase/Firebase';
 import { showAlert } from '../alert/actions';
 import { connectSocketIo } from '../chatRoom/actions';
@@ -26,9 +26,7 @@ export const CONFIRM_PIN_START = 'CONFIRM_PIN_START';
 export const CONFIRM_PIN_SUCCESS = 'CONFIRM_PIN_SUCCESS';
 export const CONFIRM_PIN_FAILED = 'CONFIRM_PIN_FAILED';
 
-export const VERIFY_USER_START = 'VERIFY_USER_START';
-export const VERIFY_USER_SUCCESS = 'VERIFY_USER_SUCCESS';
-export const VERIFY_USER_FAILED = 'VERIFY_USER_FAILED';
+
 export const USER_LOGOUT = 'USER_LOGOUT';
 
 export const userSignupStart = () => ({ type: USER_SIGNUP_START });
@@ -81,17 +79,6 @@ const confirmPinFailed = (error) => ({
   error,
 });
 
-const verifyUserStart = () => ({
-  type: VERIFY_USER_START,
-});
-const verifyUserSuccess = (payload) => ({
-  type: VERIFY_USER_SUCCESS,
-  payload,
-});
-const verifyUserFailed = (error) => ({
-  type: VERIFY_USER_FAILED,
-  error,
-});
 
 export const userLogout = () => ({ type: USER_LOGOUT });
 export const userSignup = (userData, isSuccess = isSuccessDefault) => {
@@ -159,8 +146,8 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
         emailVerified,
       });
 
-      if (response?.data?.data) {
-        const result = response?.data?.data;
+      if (isValidServerResponse(response)) {
+        const result = getServerResponseData(response);
         dispatch(userSigninSuccess(result));
 
         const token = result.token;
@@ -286,28 +273,6 @@ export const firebaseResetPassword = (
           'Cannot reset password' + getErrorMessage(error)
         )
       );
-    }
-  };
-};
-
-export const verifyUser = (userData, isSuccess = isSuccessDefault) => {
-  return async (dispatch) => {
-    try {
-      dispatch(verifyUserStart());
-      const response = await axios.post(
-        API_URL + apiRoutes.VERIFY_ADMIN,
-        userData
-      );
-      if (response && response.data) {
-        dispatch(verifyUserSuccess(response.data));
-        isSuccess(true);
-      } else if (response.error) {
-        dispatch(verifyUserFailed(response.error));
-        isSuccess(false);
-      }
-    } catch (error) {
-      dispatch(verifyUserFailed('An error occurred'));
-      isSuccess(false);
     }
   };
 };

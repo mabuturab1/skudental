@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { apiRoutes } from '../../constants/apiRoutes';
+import { apiRoutes, API_URL } from '../../constants/apiRoutes';
 export const CREATE_TRANSPORT_REQUEST_START = 'CREATE_TRANSPORT_REQUEST_START';
 export const CREATE_TRANSPORT_REQUEST_SUCCESS = 'CREATE_TRANSPORT_REQUEST_SUCCESS';
 export const CREATE_TRANSPORT_REQUEST_FAILED = 'CREATE_TRANSPORT_REQUEST_FAILED';
@@ -64,7 +64,7 @@ export const createTransportRequest = (userData) => {
     try {
       dispatch(createTransportRequestStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.CREATE_TRANSPORT_REQUEST,
+        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         userData
       );
       if (response && response.data) {
@@ -83,7 +83,7 @@ export const sendTransportMessage = (userData) => {
     try {
       dispatch(sendTransportMessageStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.SEND_TRANSPORT_MESSAGE,
+        API_URL + apiRoutes.SEND_TRANSPORT_MESSAGE,
         userData
       );
       if (response && response.data) {
@@ -102,7 +102,7 @@ export const getAllTransportRequest = (userData) => {
     try {
       dispatch(getAllTransportRequestStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.CREATE_TRANSPORT_REQUEST,
+        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         userData
       );
       if (response && response.data) {
@@ -121,7 +121,7 @@ export const getAllTransportMessages = (userData) => {
     try {
       dispatch(getAllTransportMessagesStart());
       const response = await axios.post(
-        apiUrl + apiRoutes.CREATE_TRANSPORT_REQUEST,
+        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         userData
       );
       if (response && response.data) {

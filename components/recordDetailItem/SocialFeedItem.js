@@ -23,8 +23,8 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
       <View style={styles.infoContainer}>
         <Image
           source={
-            user?.profileImageUrl
-              ? { uri: user?.profileImageUrl }
+            record?.recordOwner?.profileImageUrl
+              ? { uri:  record?.recordOwner?.profileImageUrl }
               : require('../../assets/defaultImage.png')
           }
           style={styles.avatarImage}

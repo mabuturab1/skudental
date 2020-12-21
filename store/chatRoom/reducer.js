@@ -11,10 +11,12 @@ import {
 const initialState = {
   allChatRooms: [],
   loading: {
-    getChatRoomMessages: false,
+    getAllChatRoomMessages: false,
+    getAllChatRooms:false,
   },
   error: {
-    getChatRoomMessages: '',
+    getAllChatRoomMessages: '',
+    getAllChatRooms:''
   },
 };
 
@@ -33,8 +35,8 @@ export default (state = initialState, action) => {
     case GET_ALL_CHAT_ROOM_MESSAGES_START:
       return {
         ...state,
-        loading: { ...state.loading, createTransportRequest: true },
-        error: { ...state.error, createTransportRequest: '' },
+        loading: { ...state.loading, getAllChatRoomMessages: true },
+        error: { ...state.error, getAllChatRoomMessages: '' },
       };
     case GET_ALL_CHAT_ROOM_MESSAGES_SUCCESS:
       return {
@@ -53,20 +55,21 @@ export default (state = initialState, action) => {
       };
       case GET_ALL_CHAT_ROOMS_START:
       return {
-        loading: { ...state.loading, createTransportRequest: true },
-        error: { ...state.error, createTransportRequest: '' },
+        ...state,
+        loading: { ...state.loading, getAllChatRooms: true },
+        error: { ...state.error, getAllChatRooms: '' },
       };
     case GET_ALL_CHAT_ROOMS_SUCCESS:
       return {
         ...state,
         allChatRooms: action.payload,
-        loading: { ...state.loading, getAllChatRoomMessages: false },
+        loading: { ...state.loading, getAllChatRooms: false },
       };
     case GET_ALL_CHAT_ROOMS_FAILED:
       return {
         ...state,
-        loading: { ...state.loading, getAllChatRoomMessages: false },
-        error: { ...state.error, getAllChatRoomMessages: action.payload },
+        loading: { ...state.loading, getAllChatRooms: false },
+        error: { ...state.error, getAllChatRooms: action.payload },
       };
     case ADD_NEW_MESSAGE:
       return {

@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import jwt_decode from 'jwt-decode';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export const isAndroid = () => Platform.OS === 'android';
 export const isUserAuthenticated = (token) => {
   if (token) {

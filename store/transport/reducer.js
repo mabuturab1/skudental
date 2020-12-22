@@ -2,12 +2,15 @@ import {
   CREATE_TRANSPORT_REQUEST_START,
   CREATE_TRANSPORT_REQUEST_SUCCESS,
   CREATE_TRANSPORT_REQUEST_FAILED,
+  UPDATE_TRANSPORT_REQUEST_START,
+  UPDATE_TRANSPORT_REQUEST_SUCCESS,
+  UPDATE_TRANSPORT_REQUEST_FAILED,
   SEND_TRANSPORT_MESSAGE_START,
   SEND_TRANSPORT_MESSAGE_SUCCESS,
   SEND_TRANSPORT_MESSAGE_FAILED,
-  GET_ALL_TRANSPORTS_START,
-  GET_ALL_TRANSPORTS_SUCCESS,
-  GET_ALL_TRANSPORTS_FAILED,
+  GET_ALL_TRANSPORT_REQUESTS_START,
+  GET_ALL_TRANSPORT_REQUESTS_SUCCESS,
+  GET_ALL_TRANSPORT_REQUESTS_FAILED,
   GET_ALL_TRANSPORT_MESSAGE_START,
   GET_ALL_TRANSPORT_MESSAGE_SUCCESS,
   GET_ALL_TRANSPORT_MESSAGE_FAILED,
@@ -17,14 +20,16 @@ const initialState = {
   allTransportRequests: [],
   loading: {
     createTransportRequest: false,
+    updateTransportRequest: false,
     sendTransportMessage: false,
-    getAllTransports: false,
+    getAllTransportRequests: false,
     getAllTransportMessages: false,
   },
   error: {
     createTransportRequest: '',
+    updateTransportRequest: '',
     sendTransportMessage: '',
-    getAllTransports: '',
+    getAllTransportRequests: '',
     getAllTransportMessages: '',
   },
 };
@@ -51,6 +56,29 @@ export default (state = initialState, action) => {
         loading: { ...state.loading, createTransportRequest: false },
         error: { ...state.error, createTransportRequest: action.payload },
       };
+    case UPDATE_TRANSPORT_REQUEST_START:
+      return {
+        ...state,
+        loading: { ...state.loading, updateTransportRequest: true },
+        error: { ...state.error, updateTransportRequest: '' },
+      };
+    case UPDATE_TRANSPORT_REQUEST_SUCCESS:
+      return {
+        ...state,
+        allTransportRequests: state.allTransportRequests.map((el) => {
+          if (el._id === action.payload._id) return { ...action.payload };
+          return { ...el };
+        }),
+        loading: { ...state.loading, updateTransportRequest: false },
+      };
+    case UPDATE_TRANSPORT_REQUEST_FAILED:
+      return {
+        ...state,
+
+        loading: { ...state.loading, updateTransportRequest: false },
+        error: { ...state.error, updateTransportRequest: action.payload },
+      };
+
     case SEND_TRANSPORT_MESSAGE_START:
       return {
         ...state,
@@ -71,25 +99,25 @@ export default (state = initialState, action) => {
         loading: { ...state.loading, sendTransportMessage: false },
         error: { ...state.error, sendTransportMessage: action.payload },
       };
-    case GET_ALL_TRANSPORTS_START:
+    case GET_ALL_TRANSPORT_REQUESTS_START:
       return {
         ...state,
         allTransportRequests: [],
-        loading: { ...state.loading, getAllTransports: true },
-        error: { ...state.error, getAllTransports: '' },
+        loading: { ...state.loading, getAllTransportRequests: true },
+        error: { ...state.error, getAllTransportRequests: '' },
       };
-    case GET_ALL_TRANSPORTS_SUCCESS:
+    case GET_ALL_TRANSPORT_REQUESTS_SUCCESS:
       return {
         ...state,
         allTransportRequests: action.payload,
-        loading: { ...state.loading, getAllTransports: false },
+        loading: { ...state.loading, getAllTransportRequests: false },
       };
-    case GET_ALL_TRANSPORTS_FAILED:
+    case GET_ALL_TRANSPORT_REQUESTS_FAILED:
       return {
         ...state,
         user: {},
-        loading: { ...state.loading, getAllTransports: false },
-        error: { ...state.error, getAllTransports: action.payload },
+        loading: { ...state.loading, getAllTransportRequests: false },
+        error: { ...state.error, getAllTransportRequests: action.payload },
       };
 
     case GET_ALL_TRANSPORT_MESSAGE_START:

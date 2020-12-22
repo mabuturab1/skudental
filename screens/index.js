@@ -3,9 +3,9 @@ import RecordListScreen from './record/RecordListScreen';
 import LabDocketScreen from './info/LabDocketScreen';
 import PricingScreen from './info/PricingScreen';
 import HomeFeedScreen from './info/HomeFeedScreen';
-import ArrangePickupScreen from './pickup/ArrangePickupScreen';
+import CreateTransportRequestScreen from './pickup/CreateTransportRequestScreen';
 import PickupRequestDetailsScreen from './pickup/PickupDetailsScreen';
-import PickupListScreen from './pickup/PickupListScreen';
+import TransportListScreen from './pickup/TransportListScreen';
 import CreateRecordScreen from './record/CreateRecordScreen';
 import RecordInquiryScreen from './record/RecordInquiryScreen';
 import PreviewCarouselScreen from './record/PreviewCarouselScreen';
@@ -29,13 +29,13 @@ export {
   LabDocketScreen,
   PricingScreen,
   HomeFeedScreen,
-  ArrangePickupScreen,
+  CreateTransportRequestScreen,
   PickupRequestDetailsScreen,
   CreateRecordScreen,
   RecordInquiryScreen,
   UserSigninScreen,
   UserSignupScreen,
-  PickupListScreen,
+  TransportListScreen,
   UpdateUserScreen,
   ConfirmPasswordScreen,
   EmailScreen,

@@ -24,6 +24,7 @@ import SingleChatView from './chat/SingleChatView';
 import ProgressUploadStatus from './progressUploadStatus/ProgressUploadStatus';
 import ShowAlert from './alert/ShowAlert';
 import UserVerification from './admin/UserVerification'
+import TransportDetailItem from './transport/TransportDetailItem'
 import {
   FormWrapper,
   FormInputWrapper,
@@ -61,5 +62,6 @@ export {
   SingleChatView,
   ProgressUploadStatus,
   ShowAlert,
-  UserVerification
+  UserVerification,
+  TransportDetailItem
 };

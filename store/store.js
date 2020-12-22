@@ -27,6 +27,7 @@ const rootReducer = (state, action) => {
   if (action.type === 'USER_LOGOUT') {
     state = undefined;
     AsyncStorage.removeItem('persist:root');
+    AsyncStorage.multiRemove(['token', 'userRole']);
   }
 
   return appReducer(state, action);

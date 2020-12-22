@@ -1,20 +1,42 @@
 import axios from 'axios';
 import { apiRoutes, API_URL } from '../../constants/apiRoutes';
+import { isSuccessDefault } from '../../constants/UIConstants';
+import {
+  getAxiosConfig,
+  getErrorMessage,
+  getServerResponseData,
+  isValidServerResponse,
+} from '../../helpers/Utils';
+import { showAlert } from '../alert/actions';
 export const CREATE_TRANSPORT_REQUEST_START = 'CREATE_TRANSPORT_REQUEST_START';
-export const CREATE_TRANSPORT_REQUEST_SUCCESS = 'CREATE_TRANSPORT_REQUEST_SUCCESS';
-export const CREATE_TRANSPORT_REQUEST_FAILED = 'CREATE_TRANSPORT_REQUEST_FAILED';
+export const CREATE_TRANSPORT_REQUEST_SUCCESS =
+  'CREATE_TRANSPORT_REQUEST_SUCCESS';
+export const CREATE_TRANSPORT_REQUEST_FAILED =
+  'CREATE_TRANSPORT_REQUEST_FAILED';
+
+export const UPDATE_TRANSPORT_REQUEST_START = 'UPDATE_TRANSPORT_REQUEST_START';
+export const UPDATE_TRANSPORT_REQUEST_SUCCESS =
+  'UPDATE_TRANSPORT_REQUEST_SUCCESS';
+export const UPDATE_TRANSPORT_REQUEST_FAILED =
+  'UPDATE_TRANSPORT_REQUEST_FAILED';
 
 export const SEND_TRANSPORT_MESSAGE_START = 'SEND_TRANSPORT_MESSAGE_START';
 export const SEND_TRANSPORT_MESSAGE_SUCCESS = 'SEND_TRANSPORT_MESSAGE_SUCCESS';
 export const SEND_TRANSPORT_MESSAGE_FAILED = 'SEND_TRANSPORT_MESSAGE_FAILED';
 
-export const GET_ALL_TRANSPORTS_START = 'GET_ALL_TRANSPORTS_START';
-export const GET_ALL_TRANSPORTS_SUCCESS = 'GET_ALL_TRANSPORTS_SUCCESS';
-export const GET_ALL_TRANSPORTS_FAILED = 'GET_ALL_TRANSPORTS_FAILED';
+export const GET_ALL_TRANSPORT_REQUESTS_START =
+  'GET_ALL_TRANSPORT_REQUESTS_START';
+export const GET_ALL_TRANSPORT_REQUESTS_SUCCESS =
+  'GET_ALL_TRANSPORT_REQUESTS_SUCCESS';
+export const GET_ALL_TRANSPORT_REQUESTS_FAILED =
+  'GET_ALL_TRANSPORT_REQUESTS_FAILED';
 
-export const GET_ALL_TRANSPORT_MESSAGE_START = 'GET_ALL_TRANSPORT_MESSAGE_START';
-export const GET_ALL_TRANSPORT_MESSAGE_SUCCESS = 'GET_ALL_TRANSPORT_MESSAGE_SUCCESS';
-export const GET_ALL_TRANSPORT_MESSAGE_FAILED = 'GET_ALL_TRANSPORT_MESSAGE_FAILED';
+export const GET_ALL_TRANSPORT_MESSAGE_START =
+  'GET_ALL_TRANSPORT_MESSAGE_START';
+export const GET_ALL_TRANSPORT_MESSAGE_SUCCESS =
+  'GET_ALL_TRANSPORT_MESSAGE_SUCCESS';
+export const GET_ALL_TRANSPORT_MESSAGE_FAILED =
+  'GET_ALL_TRANSPORT_MESSAGE_FAILED';
 
 const createTransportRequestStart = () => ({
   type: CREATE_TRANSPORT_REQUEST_START,
@@ -25,6 +47,17 @@ const createTransportRequestSuccess = (payload) => ({
 });
 const createTransportRequestFailed = (error = '') => ({
   type: CREATE_TRANSPORT_REQUEST_FAILED,
+  error,
+});
+const updateTransportRequestStart = () => ({
+  type: UPDATE_TRANSPORT_REQUEST_START,
+});
+const updateTransportRequestSuccess = (payload) => ({
+  type: UPDATE_TRANSPORT_REQUEST_SUCCESS,
+  payload,
+});
+const updateTransportRequestFailed = (error = '') => ({
+  type: UPDATE_TRANSPORT_REQUEST_FAILED,
   error,
 });
 const sendTransportMessageStart = () => ({
@@ -38,13 +71,15 @@ const sendTransportMessageFailed = (error = '') => ({
   type: SEND_TRANSPORT_MESSAGE_FAILED,
   error,
 });
-const getAllTransportRequestStart = () => ({ type: GET_ALL_TRANSPORTS_START });
-const getAllTransportRequestSuccess = (payload) => ({
-  type: GET_ALL_TRANSPORTS_SUCCESS,
+const getAllTransportRequestsStart = () => ({
+  type: GET_ALL_TRANSPORT_REQUESTS_START,
+});
+const getAllTransportRequestsSuccess = (payload) => ({
+  type: GET_ALL_TRANSPORT_REQUESTS_SUCCESS,
   payload,
 });
-const getAllTransportRequestFailed = (error = '') => ({
-  type: GET_ALL_TRANSPORTS_FAILED,
+const getAllTransportRequestsFailed = (error = '') => ({
+  type: GET_ALL_TRANSPORT_REQUESTS_FAILED,
   error,
 });
 const getAllTransportMessagesStart = () => ({
@@ -59,21 +94,62 @@ const getAllTransportMessagesFailed = (error) => ({
   error,
 });
 
-export const createTransportRequest = (userData) => {
-  return async (dispatch) => {
+export const createTransportRequest = (
+  userData,
+  isSuccess = isSuccessDefault
+) => {
+  return async (dispatch, getState) => {
     try {
       dispatch(createTransportRequestStart());
+      console.log('dispatching request with', userData)
       const response = await axios.post(
         API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
-        userData
+        userData,
+        { ...getAxiosConfig(getState) }
       );
-      if (response && response.data) {
-        dispatch(createTransportRequestSuccess(response.data));
+      if (isValidServerResponse(response)) {
+        dispatch(
+          createTransportRequestSuccess(getServerResponseData(response))
+        );
+        isSuccess(true);
       } else if (response.error) {
         dispatch(createTransportRequestFailed(response.error));
+        isSuccess(false);
       }
     } catch (error) {
       dispatch(createTransportRequestFailed('An error occurred'));
+      isSuccess(false);
+      dispatch(showAlert('An error occurred', getErrorMessage(error)));
+    }
+  };
+};
+
+export const updateTransportRequest = (
+  id,
+  updateData,
+  isSuccess = isSuccessDefault
+) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch(createTransportRequestStart());
+      const response = await axios.post(
+        API_URL + apiRoutes.UPDATE_TRANSPORT_REQUEST + '/' + id,
+        updateData,
+        { ...getAxiosConfig(getState) }
+      );
+      if (isValidServerResponse(response)) {
+        dispatch(
+          createTransportRequestSuccess(getServerResponseData(response))
+        );
+        isSuccess(true);
+      } else if (response.error) {
+        dispatch(createTransportRequestFailed(response.error));
+        isSuccess(false);
+      }
+    } catch (error) {
+      dispatch(createTransportRequestFailed('An error occurred'));
+      isSuccess(false);
+      dispatch(showAlert('An error occurred', getErrorMessage(error)));
     }
   };
 };
@@ -97,21 +173,31 @@ export const sendTransportMessage = (userData) => {
   };
 };
 
-export const getAllTransportRequest = (userData) => {
-  return async (dispatch) => {
+export const getAllTransportRequests = (
+  userData = {},
+  isSuccess = isSuccessDefault
+) => {
+  return async (dispatch, getState) => {
     try {
-      dispatch(getAllTransportRequestStart());
+      dispatch(getAllTransportRequestsStart());
       const response = await axios.post(
-        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
-        userData
+        API_URL + apiRoutes.GET_ALL_TRANSPORT_REQUESTS,
+        userData,
+        { ...getAxiosConfig(getState) }
       );
-      if (response && response.data) {
-        dispatch(getAllTransportRequestSuccess(response.data));
+      if (isValidServerResponse(response)) {
+        dispatch(
+          getAllTransportRequestsSuccess(getServerResponseData(response))
+        );
+        isSuccess(true);
       } else if (response.error) {
-        dispatch(getAllTransportRequestFailed(response.error));
+        dispatch(getAllTransportRequestsFailed(response.error));
+        isSuccess(false);
       }
     } catch (error) {
-      dispatch(getAllTransportRequestFailed('An error occurred'));
+      dispatch(getAllTransportRequestsFailed('An error occurred'));
+      isSuccess(false);
+      dispatch(showAlert('An error occurred', getErrorMessage(error)));
     }
   };
 };

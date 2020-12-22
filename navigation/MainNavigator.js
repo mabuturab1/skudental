@@ -12,13 +12,13 @@ import {
   LabDocketScreen,
   PricingScreen,
   HomeFeedScreen,
-  ArrangePickupScreen,
+  CreateTransportRequestScreen,
   PickupRequestDetailsScreen,
   CreateRecordScreen,
   RecordInquiryScreen,
   UserSigninScreen,
   UserSignupScreen,
-  PickupListScreen,
+  TransportListScreen,
   UpdateUserScreen,
   ConfirmPasswordScreen,
   PasswordResetScreen,
@@ -88,63 +88,6 @@ const RecordListNavigator = (props) =>
 const AuthNavigator = (props) =>
   createStackNav(authData, props.navigation, { headerLeft: null });
 
-const drawerData = [
-  {
-    navigatorName: routes.HomeFeed,
-    component: HomeFeedScreen,
-    componentName: 'SkDental Lab',
-    wrapStackNavigator: true,
-  },
-  {
-    navigatorName: routes.Pricing,
-    component: PricingScreen,
-    componentName: 'Pricing ',
-    wrapStackNavigator: true,
-  },
-  {
-    navigatorName: routes.LabDocket,
-    component: LabDocketScreen,
-    componentName: 'Lab Docket',
-    wrapStackNavigator: true,
-  },
-  {
-    navigatorName: routes.CreateRecord,
-    component: CreateRecordScreen,
-    componentName: 'Create Patient Record ',
-    wrapStackNavigator: true,
-  },
-  {
-    navigatorName: routes.RecordList,
-    component: RecordListNavigator,
-    componentName: 'Patient Record List',
-    wrapStackNavigator: false,
-  },
-  {
-    navigatorName: routes.ArrangePickup,
-    component: ArrangePickupScreen,
-    componentName: 'Arrange Pickup',
-    wrapStackNavigator: true,
-  },
-  {
-    navigatorName: routes.RecordInquriy,
-    component: RecordInquiryScreen,
-    componentName: 'Record Inquiry',
-    wrapStackNavigator: true,
-  },
-  {
-    navigatorName: routes.PickupList,
-    component: PickupListScreen,
-    componentName: 'Pickup List',
-    wrapStackNavigator: true,
-  },
-  {
-    navigatorName: routes.Auth,
-    component: AuthNavigator,
-    componentName: 'Authentication',
-    wrapStackNavigator: false,
-  },
-];
-
 const tabData = [
   {
     navigatorName: routes.HomeFeed,
@@ -165,9 +108,9 @@ const tabData = [
     wrapStackNavigator: false,
   },
   {
-    navigatorName: routes.ArrangePickup,
-    component: ArrangePickupScreen,
-    componentName: 'Arrange Pickup',
+    navigatorName: routes.TransportList,
+    component: TransportListScreen,
+    componentName: 'Transport Request List',
     wrapStackNavigator: false,
   },
   {
@@ -196,7 +139,7 @@ const getTabIcon = (routeName, focused) => {
         name: prefix + (focused ? 'add-circle' : 'add-circle-outline'),
         Icon: Ionicons,
       };
-    case routes.ArrangePickup:
+    case routes.TransportList:
       return {
         name: prefix + (focused ? 'airplane' : 'airplane-outline'),
         Icon: Ionicons,
@@ -238,7 +181,7 @@ const popupMenu = (navigation, user) => {
     { label: 'Lab Docket', id: 'LAB_DOCKET' },
     { label: 'Logout', id: 'LOGOUT' },
   ];
-  if (isAdmin||true)
+  if (isAdmin || true)
     popupMenuData.unshift({ label: 'Verify Users', id: 'VERIFY_USERS' });
   const onPopupMenuClick = (id) => {
     switch (id) {
@@ -271,35 +214,6 @@ const WrapStackNavigator = ({ component: Component, name, navigation }) => (
     />
   </Stack.Navigator>
 );
-const Drawer = createDrawerNavigator();
-
-// export default drawerNavigator = () => (
-//   <Drawer.Navigator initialRouteName='Home' >
-//     {drawerData.map(
-//       ({ wrapStackNavigator, component, componentName, navigatorName }) =>
-//         wrapStackNavigator ? (
-//           <Drawer.Screen
-//             key={componentName + navigatorName}
-//             name={navigatorName}
-//           >
-//             {(props) => (
-//               <WrapStackNavigator
-//                 {...props}
-//                 component={component}
-//                 name={componentName}
-//               />
-//             )}
-//           </Drawer.Screen>
-//         ) : (
-//           <Drawer.Screen
-//             key={navigatorName}
-//             name={navigatorName}
-//             component={component}
-//           />
-//         )
-//     )}
-//   </Drawer.Navigator>
-// );
 const Tab = createBottomTabNavigator();
 const tabNavigator = () => (
   <Tab.Navigator
@@ -361,9 +275,10 @@ export default mainStackNavigator = (auth) => (
       component={ConfirmPasswordScreen}
     />
     <Stack.Screen
-      name={routes.VerifyUsers}
-      component={VerifyUsersScreen}
+      name={routes.CreateTransportRequest}
+      component={CreateTransportRequestScreen}
     />
+    <Stack.Screen name={routes.VerifyUsers} component={VerifyUsersScreen} />
     <Stack.Screen
       options={{ headerShown: false }}
       name={routes.Auth}

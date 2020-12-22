@@ -2,7 +2,12 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL, apiRoutes } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
-import { getAxiosConfig, getErrorMessage, getServerResponseData, isValidServerResponse } from '../../helpers/Utils';
+import {
+  getAxiosConfig,
+  getErrorMessage,
+  getServerResponseData,
+  isValidServerResponse,
+} from '../../helpers/Utils';
 import { auth } from '../../helpers/firebase/Firebase';
 import { showAlert } from '../alert/actions';
 import { connectSocketIo } from '../chatRoom/actions';
@@ -25,7 +30,6 @@ export const FORGOT_PASSWORD_FAILED = 'FORGOT_PASSWORD_FAILED';
 export const CONFIRM_PIN_START = 'CONFIRM_PIN_START';
 export const CONFIRM_PIN_SUCCESS = 'CONFIRM_PIN_SUCCESS';
 export const CONFIRM_PIN_FAILED = 'CONFIRM_PIN_FAILED';
-
 
 export const USER_LOGOUT = 'USER_LOGOUT';
 
@@ -79,7 +83,6 @@ const confirmPinFailed = (error) => ({
   error,
 });
 
-
 export const userLogout = () => ({ type: USER_LOGOUT });
 export const userSignup = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
@@ -94,7 +97,6 @@ export const userSignup = (userData, isSuccess = isSuccessDefault) => {
         const result = response?.data?.data;
 
         dispatch(userSignupSuccess(result));
-       
 
         isSuccess(true);
       } else if (response.error) {
@@ -151,7 +153,9 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
         dispatch(userSigninSuccess(result));
 
         const token = result.token;
+
         await AsyncStorage.setItem('token', token);
+
         connectSocketIo(token);
         isSuccess(true);
       } else if (response.error) {

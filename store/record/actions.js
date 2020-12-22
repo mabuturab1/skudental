@@ -796,21 +796,3 @@ export const getAllMessages = (recordData) => {
   };
 };
 
-export const sendMessages = (recordData) => {
-  return async (dispatch) => {
-    try {
-      dispatch(sendMessagesStart());
-      const response = await axios.post(
-        API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
-        recordData
-      );
-      if (isValidServerResponse(response)) {
-        dispatch(sendMessagesSuccess(getServerResponseData(response)));
-      } else if (response.error) {
-        dispatch(sendMessagesFailed(response.error));
-      }
-    } catch (error) {
-      dispatch(sendMessagesFailed('An error occurred'));
-    }
-  };
-};

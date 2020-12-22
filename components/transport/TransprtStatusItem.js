@@ -2,7 +2,8 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { FlatButton, FormTextInput, FormWrapper } from '../../components';
+import FlatButton from '../button/FlatButton';
+import { FormTextInput } from '../forms/FormComponents';
 const ArrangePickeupScreen = ({
   initValue,
   onSave,

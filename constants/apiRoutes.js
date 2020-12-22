@@ -25,6 +25,6 @@ export const apiRoutes = {
   GET_ALL_TRANSPORT_REQUESTS: '/transport/alltransportrequests',
   SEND_TRANSPORT_MESSAGE: '/transport/sendtransportmessage',
   UPLOAD_RECORD_FILE: '/record/uploadrecordfile',
-  GET_CHAT_ROOM: '/chatRoom/singlechatroom',
-  GET_ALL_CHAT_ROOMS: '/chatRoom/allchatrooms',
+  GET_CHAT_ROOM: '/chatroom/singlechatroom',
+  GET_ALL_CHAT_ROOMS: '/chatroom/allchatrooms',
 };

@@ -5,29 +5,57 @@ import {
   GET_ALL_CHAT_ROOMS_START,
   GET_ALL_CHAT_ROOMS_SUCCESS,
   GET_ALL_CHAT_ROOMS_FAILED,
-  ADD_NEW_MESSAGE,
+  ADD_NEW_MESSAGES,
+  CLEAR_RECEIVED_MESSAGES,
 } from './actions';
+import {
+  addApiUrlInChatRoom,
+  addApiUrlInChatRoomsArr,
+} from './chatRoomUtilsFunctions';
 
 const initialState = {
   allChatRooms: [],
+  newMessagesObj: {},
   loading: {
     getAllChatRoomMessages: false,
-    getAllChatRooms:false,
+    getAllChatRooms: false,
   },
   error: {
     getAllChatRoomMessages: '',
-    getAllChatRooms:''
+    getAllChatRooms: '',
   },
 };
 
-const addNewMessage = (allChatRooms, payload) => {
-  let newChatRooms = allChatRooms.map((el) => ({ ...el }));
-  let currentRoomIndex = newChatRooms.findIndex(
-    (el) => el._id === payload.chatRoomId
-  );
-  if (currentRoomIndex < 0) return newChatRooms;
-  newChatRooms[currentRoomIndex].messages.push(payload);
-  return newChatRooms;
+const addNewMessage = (newMessagesObj, payload) => {
+  const chatRoomId = payload.chatRoomId;
+  let updatedMessages = newMessagesObj[chatRoomId] || [];
+  updatedMessages = updatedMessages.map((el) => ({ ...el }));
+  updatedMessages.push(payload.messageObj);
+  const updated = {
+    ...newMessagesObj,
+    [chatRoomId]: updatedMessages.map((el) => ({ ...el })),
+  };
+  return updated;
+};
+const deleteReceivedMessages = (newMessagesObj, payload) => {
+  const chatRoomId = payload.chatRoomId;
+  let newUpdatedMessageObj = {};
+  Object.keys(newMessagesObj).forEach((el) => {
+    newUpdatedMessageObj = {
+      ...newUpdatedMessageObj,
+      [el]: (newMessagesObj[el] || []).map((mess) => ({ ...mess })),
+    };
+  });
+  let updatedMessages = newUpdatedMessageObj[chatRoomId];
+  updatedMessages = updatedMessages
+    .map((el) => ({ ...el }))
+    .filter((el) => !action.payload.idsArr.includes(el._id));
+  updatedMessages.push(payload.messageObj);
+  const updated = {
+    ...newUpdatedMessageObj,
+    [chatRoomId]: updatedMessages.map((el) => ({ ...el })),
+  };
+  return updated;
 };
 
 export default (state = initialState, action) => {
@@ -43,7 +71,7 @@ export default (state = initialState, action) => {
         ...state,
         allChatRooms: state.allChatRooms
           .filter((el) => el._id !== action.payload._id)
-          .concat(action.payload)
+          .concat(addApiUrlInChatRoom(action.payload))
           .map((room) => ({ ...room })),
         loading: { ...state.loading, getAllChatRoomMessages: false },
       };
@@ -53,7 +81,7 @@ export default (state = initialState, action) => {
         loading: { ...state.loading, getAllChatRoomMessages: false },
         error: { ...state.error, getAllChatRoomMessages: action.payload },
       };
-      case GET_ALL_CHAT_ROOMS_START:
+    case GET_ALL_CHAT_ROOMS_START:
       return {
         ...state,
         loading: { ...state.loading, getAllChatRooms: true },
@@ -62,7 +90,7 @@ export default (state = initialState, action) => {
     case GET_ALL_CHAT_ROOMS_SUCCESS:
       return {
         ...state,
-        allChatRooms: action.payload,
+        allChatRooms: addApiUrlInChatRoomsArr(action.payload),
         loading: { ...state.loading, getAllChatRooms: false },
       };
     case GET_ALL_CHAT_ROOMS_FAILED:
@@ -71,10 +99,18 @@ export default (state = initialState, action) => {
         loading: { ...state.loading, getAllChatRooms: false },
         error: { ...state.error, getAllChatRooms: action.payload },
       };
-    case ADD_NEW_MESSAGE:
+    case ADD_NEW_MESSAGES:
       return {
         ...state,
-        allChatRooms: addNewMessage(state.allChatRooms, action.payload),
+        newMessagesObj: addNewMessage(state.newMessagesObj, action.payload),
+      };
+    case CLEAR_RECEIVED_MESSAGES:
+      return {
+        ...state,
+        newMessagesObj: deleteReceivedMessages(
+          state.newMessagesObj,
+          action.payload
+        ),
       };
   }
   return state;

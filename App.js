@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import MainNavigator from './navigation/MainNavigator';
-import { Provider, useSelector } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { isUserAuthenticated } from './helpers/Utils';
 import { PersistGate } from 'redux-persist/integration/react';
 import * as SplashScreen from 'expo-splash-screen';
@@ -10,7 +10,11 @@ import { store, persistor } from './store/store';
 import { useFonts } from 'expo-font';
 import 'react-native-get-random-values';
 import { ShowAlert } from './components';
-import { connectSocketIo } from './store/actions';
+import {
+  connectSocketIo,
+  disConnectSocketIo,
+  getSocket,
+} from './store/actions';
 const getFontsConfig = () => ({
   // OpenSansBold: require('./assets/fonts/OpenSans-Bold.ttf'),
   // OpenSansBoldItalic: require('./assets/fonts/OpenSans-BoldItalic.ttf'),
@@ -37,12 +41,29 @@ const getFontsConfig = () => ({
 });
 const MainNavigationScreens = () => {
   const auth = useSelector(({ auth }) => auth);
-  if (isUserAuthenticated(auth.token)) connectSocketIo(auth.token);
+  const token = auth.token;
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (isUserAuthenticated(token)) connectSocketIo(auth.token);
+    return () => disConnectSocketIo();
+  }, [token]);
+
+  useEffect(() => {
+    const socket = getSocket();
+    const eventHandler = (chatRoomId,messageObj) => {
+      dispatch(addNewMessage({chatRoomId, messageObj}));
+    };
+    socket.on('message', eventHandler);
+    return () => {
+      socket.off('message', eventHandler);
+    };
+  }, [token]);
   return MainNavigator(auth);
 };
 export default function App() {
   const [fontsLoaded] = useFonts(getFontsConfig());
   const persistorLoaded = useRef(false);
+
   useEffect(() => {
     try {
       SplashScreen.preventAutoHideAsync();

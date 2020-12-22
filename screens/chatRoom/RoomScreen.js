@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import {
   GiftedChat,
   Bubble,
@@ -8,46 +8,96 @@ import {
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllChatRoomMessages } from '../../store/actions';
+import {
+  clearReceivedMessages,
+  getAllChatRoomMessages,
+  sendMessages,
+} from '../../store/actions';
 
 const RoomScreen = ({ route }) => {
-  const { userId, chatRoomMessages=[] } = useSelector(({ auth, chatRoom }) => ({
-    userId: auth.user?._id,
-    chatRoomMessages: chatRoom.chatRoomsArr,
-  }));
-  const dispatch=useDispatch()
+  const { userId, allChatRooms = [], newMessagesObj } = useSelector(
+    ({ auth, chatRoom }) => ({
+      userId: auth.user?._id,
+      allChatRooms: chatRoom.allChatRooms,
+      newMessagesObj: chatRoom.newMessagesObj,
+    })
+  );
+  const chatRoomId = route.params.chatRoomId;
+  const currentChatRoom =
+    allChatRooms.find((el) => el._id === chatRoomId) || {};
+  const chatRoomMessages = currentChatRoom?.messages || [];
+  const dispatch = useDispatch();
   useEffect(() => {
-    // dispatch(getAllChatRoomMessages(route.params.chatRoomId));
+    dispatch(getAllChatRoomMessages(chatRoomId));
   }, [dispatch]);
+
+  useEffect(() => {
+    const currentChatRoomMessages = newMessagesObj[chatRoomId] || [];
+    if (!currentChatRoomMessages.length) return;
+    const updateMessageObj = currentChatRoomMessages.map((el) => ({
+      ...el,
+      user: getMemebersInfo(el.user._id),
+    }));
+    const idsArr = currentChatRoomMessages.map((el) => el._id);
+    dispatch(clearReceivedMessages({ chatRoomId, idsArr }));
+    setMessages(updateMessageObj.concat(messages));
+  }, [newMessagesObj, chatRoomId, getMemebersInfo, messages]);
+  const getMemebersInfo = useCallback(
+    (id) => {
+      if (!id) return {};
+      const currentRoom =
+        allChatRooms.find((el) => el._id === chatRoomId) || {};
+      const user = currentRoom?.members?.find((el) => el._id === id);
+      console.log('returning obj', {
+        _id: id,
+        name: user?.name,
+        avatar: user?.profileImageUrl,
+      });
+      return {
+        _id: id,
+        name: user?.name,
+        avatar: user?.profileImageUrl,
+      };
+    },
+    [allChatRooms]
+  );
   const getTransformedMessages = (msg) => {
     return {
       _id: msg._id,
       text: msg.chatMessage,
       createdAt: msg.createdAt || '',
-      user: {
-        _id: msg.messageOwner._id,
-        name: msg.messageOwner.name,
-        avatar: '',
-      },
+      user: getMemebersInfo(msg?.messageOwner),
     };
   };
-  const [messages, setMessages] = useState([
-    {
-      _id: 1,
-      text: 'Hello developer',
-      createdAt: new Date(),
-      user: {
-        _id: 2,
-        name: 'React Native',
-        avatar: 'https://placeimg.com/140/140/any',
-      },
-    },
-  ]);
+  const [messages, setMessages] = useState(
+    chatRoomMessages.map((el) => getTransformedMessages(el)).reverse()
+  );
   //   const { thread } = route.params;
   //   const { user } = useContext(AuthContext);
   //   const currentUser = user.toJSON();
 
-  async function handleSend(messages) {}
+  async function handleSend(messageObj) {
+    if (!chatRoomId) return;
+    console.log('messages', messageObj);
+    let newMessageArr = messageObj.map((el) => ({
+      chatMessage: el.text,
+      messageOwner: el.user?._id,
+      createdAt: el.createdAt,
+    }));
+
+    dispatch(
+      sendMessages(chatRoomId, newMessageArr, (isSuccess) => {
+        console.log('is success is', isSuccess);
+        if (isSuccess) {
+          const updateMessageObj = messageObj.map((el) => ({
+            ...el,
+            user: getMemebersInfo(el.user._id),
+          }));
+          setMessages(updateMessageObj.concat(messages));
+        }
+      })
+    );
+  }
 
   function renderBubble(props) {
     return (

@@ -1,42 +1,95 @@
-import React from 'react';
-import { View, StyleSheet, Text, FlatList } from 'react-native';
-import { useSelector } from 'react-redux';
-import { SingleChatView } from '../../components';
+import { Ionicons } from '@expo/vector-icons';
+import React, { Fragment, useEffect, useRef } from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  FlatList,
+  RefreshControl,
+  TouchableOpacity,
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { LoadingIndicator, SingleChatView } from '../../components';
+import { ThemeColors } from '../../constants/Colors';
 import { routes } from '../../constants/routes';
+import { isAndroid } from '../../helpers/Utils';
+import { getAllChatRooms } from '../../store/actions';
 const ChatRoomListScreen = ({ navigation }) => {
-  const chatRooms = useSelector(({ chatRoom }) => chatRoom.chatRoomsArr);
-  const dummyData = [
-    {
-      _id: '2',
-      title: 'Testing Title',
-      subtitle: 'Address',
-      createdAt: 'today',
-    },
-  ];
+  const dispatch = useDispatch();
+  const { allChatRooms = [], getAllChatRoomsLoading } = useSelector(
+    ({ chatRoom }) => ({
+      allChatRooms: chatRoom.allChatRooms,
+      getAllChatRoomsLoading: chatRoom.loading.getAllChatRooms,
+    })
+  );
+  useEffect(() => {
+    dispatch(getAllChatRooms());
+  }, [dispatch]);
   const onPress = (chatRoomId) => {
     navigation.navigate(routes.ChatRoom, { chatRoomId });
   };
+ 
   const renderSingleItem = ({ item }) => (
     <SingleChatView item={item} onPress={onPress} key={item._id} />
   );
+  const refreshData = () => {
+    dispatch(getAllChatRooms());
+  };
+
   return (
-    <View style={styles.wrapper}>
-      <FlatList
-        data={dummyData}
-        renderItem={renderSingleItem}
-        keyExtractor={(item) => item._id}
-      />
-    </View>
+    <SafeAreaView style={styles.safeAreaWrapper}>
+      {allChatRooms.length > 0 ? (
+        <FlatList
+          data={allChatRooms}
+          renderItem={renderSingleItem}
+          keyExtractor={(item) => item._id}
+          refreshControl={
+            <RefreshControl
+              refreshing={getAllChatRoomsLoading}
+              onRefresh={refreshData}
+            />
+          }
+        />
+      ) : (
+        <View style={styles.noDataWrapper}>
+          {getAllChatRoomsLoading ? (
+            <LoadingIndicator />
+          ) : (
+            <Fragment>
+              <Text style={styles.noDataText}>
+                No Record found. Kindly pull down to refresh data
+              </Text>
+              <TouchableOpacity onPress={refreshData}>
+                <Ionicons
+                  name={
+                    isAndroid() ? 'md-refresh-circle' : 'ios-refresh-circle'
+                  }
+                  color={ThemeColors.primary}
+                  size={30}
+                />
+              </TouchableOpacity>
+            </Fragment>
+          )}
+        </View>
+      )}
+    </SafeAreaView>
   );
 };
+export default ChatRoomListScreen;
 const styles = StyleSheet.create({
-  wrapper: {
+  safeAreaWrapper: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#e5e5ea',
+    position: 'relative',
   },
-  listItem: {
-    width: '100%',
-    padding: 10,
+  noDataWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+  },
+  noDataText: {
+    textAlign: 'center',
   },
 });
-export default ChatRoomListScreen;

@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import FlatButton from '../button/FlatButton';
 import { Role } from '../../constants/UIConstants';
 import { useSelector } from 'react-redux';
 import TransportStatusItem from './TransprtStatusItem';

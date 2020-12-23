@@ -15,6 +15,7 @@ import {
   disConnectSocketIo,
   getSocket,
 } from './store/actions';
+import { messaging, requestUserPermission } from './helpers/firebase/Firebase';
 const getFontsConfig = () => ({
   // OpenSansBold: require('./assets/fonts/OpenSans-Bold.ttf'),
   // OpenSansBoldItalic: require('./assets/fonts/OpenSans-BoldItalic.ttf'),
@@ -47,6 +48,15 @@ const MainNavigationScreens = () => {
     if (isUserAuthenticated(token)) connectSocketIo(auth.token);
     return () => disConnectSocketIo();
   }, [token]);
+
+  useEffect(() => {
+    requestUserPermission();
+    const unsubscribe = messaging.onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, [requestUserPermission]);
 
   useEffect(() => {
     const socket = getSocket();

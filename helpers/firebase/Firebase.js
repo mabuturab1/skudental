@@ -20,5 +20,21 @@
 
 // export { auth, database, googleAuthProvider, facebookAuthProvider, firebase };
 import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
 const authModule = auth();
-export { authModule as auth };
+const messagingModule = messaging();
+async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
+export {
+  authModule as auth,
+  messagingModule as messaging,
+  requestUserPermission,
+};

@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'flex-end',
+    paddingHorizontal: 15,
   },
   coverPhoto: {
     width: Dimensions.get('screen').width,

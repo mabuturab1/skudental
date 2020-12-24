@@ -10,8 +10,8 @@ export default (state = initialState, action) => {
     case SHOW_ALERT_MESSAGE:
       const errorIndex = state.alertArr.findIndex(
         (el) =>
-          el.title === action.payload.tile &&
-          el.message !== action.payload.message
+          el.title === action.payload.title &&
+          el.message === action.payload.message
       );
       if (state.alertArr.length > 0 && errorIndex >= 0) return state;
       return {

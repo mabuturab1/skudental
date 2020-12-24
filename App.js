@@ -9,12 +9,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { store, persistor } from './store/store';
 import { useFonts } from 'expo-font';
 import 'react-native-get-random-values';
-import { ShowAlert } from './components';
-import {
-  connectSocketIo,
-  disConnectSocketIo,
-  getSocket,
-} from './store/actions';
+import { ShowAlert, ChatRoomsListener } from './components';
+
 import { messaging, requestUserPermission } from './helpers/firebase/Firebase';
 const getFontsConfig = () => ({
   RobotoBlack: require('./assets/fonts/Roboto-Black.ttf'),
@@ -33,31 +29,14 @@ const getFontsConfig = () => ({
 const MainNavigationScreens = () => {
   const auth = useSelector(({ auth }) => auth);
   const token = auth.token;
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (isUserAuthenticated(token)) connectSocketIo(auth.token);
-    return () => disConnectSocketIo();
-  }, [token]);
-
   useEffect(() => {
     requestUserPermission();
-    const unsubscribe = messaging.onMessage(async remoteMessage => {
+    const unsubscribe = messaging.onMessage(async (remoteMessage) => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
 
     return unsubscribe;
   }, [requestUserPermission]);
-
-  useEffect(() => {
-    // const socket = getSocket();
-    // const eventHandler = (chatRoomId,messageObj) => {
-    //   dispatch(addNewMessage({chatRoomId, messageObj}));
-    // };
-    // socket.on('message', eventHandler);
-    // return () => {
-    //   socket.off('message', eventHandler);
-    // };
-  }, [token]);
   return MainNavigator(auth);
 };
 export default function App() {
@@ -89,6 +68,7 @@ export default function App() {
         <NavigationContainer>
           <MainNavigationScreens />
           <ShowAlert />
+          <ChatRoomsListener />
         </NavigationContainer>
       </PersistGate>
     </Provider>

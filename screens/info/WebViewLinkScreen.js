@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { LoadingIndicator } from '../../components';
-const WebViewLinkScreen = (props) => {
+const WebViewLinkScreen = ({route}) => {
   const { link } = route.params;
   return (
     <WebView

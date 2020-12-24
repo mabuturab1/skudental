@@ -1,13 +1,14 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-const LoadingIndicator = ({ color, alignCenter = true }) => {
+const LoadingIndicator = (props) => {
+  const { color = '#00ff00', alignCenter = true } = props || {};
   let indicatorStyles = { ...styles.centerAlign };
   if (!alignCenter) {
     indicatorStyles = {};
   }
   return (
     <View style={indicatorStyles}>
-      <ActivityIndicator size={'large'} color={color || '#00ff00'} />
+      <ActivityIndicator size={'large'} color={color} />
     </View>
   );
 };

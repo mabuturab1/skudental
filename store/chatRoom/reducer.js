@@ -7,16 +7,19 @@ import {
   GET_ALL_CHAT_ROOMS_FAILED,
   ADD_NEW_MESSAGES,
   CLEAR_RECEIVED_MESSAGES,
+  GET_ALL_CHAT_ROOMS_DATA_SUCCESS,
 } from './actions';
 import {
   addApiUrlInChatRoom,
   addApiUrlInChatRoomsArr,
   updateMessageArr,
+  updateMultipleChatRooms,
 } from './chatRoomUtilsFunctions';
 
 const initialState = {
   allChatRooms: [],
   newMessagesObj: {},
+  firebaseData: [],
   loading: {
     getAllChatRoomMessages: false,
     getAllChatRooms: false,
@@ -34,27 +37,6 @@ const addNewMessage = (newMessagesObj, payload) => {
   updatedMessages.push(payload.messageObj);
   const updated = {
     ...newMessagesObj,
-    [chatRoomId]: updatedMessages.map((el) => ({ ...el })),
-  };
-  return updated;
-};
-
-const deleteReceivedMessages = (newMessagesObj, payload) => {
-  const chatRoomId = payload.chatRoomId;
-  let newUpdatedMessageObj = {};
-  Object.keys(newMessagesObj).forEach((el) => {
-    newUpdatedMessageObj = {
-      ...newUpdatedMessageObj,
-      [el]: (newMessagesObj[el] || []).map((mess) => ({ ...mess })),
-    };
-  });
-  let updatedMessages = newUpdatedMessageObj[chatRoomId];
-  updatedMessages = updatedMessages
-    .map((el) => ({ ...el }))
-    .filter((el) => !action.payload.idsArr.includes(el._id));
-  updatedMessages.push(payload.messageObj);
-  const updated = {
-    ...newUpdatedMessageObj,
     [chatRoomId]: updatedMessages.map((el) => ({ ...el })),
   };
   return updated;
@@ -80,6 +62,16 @@ export default (state = initialState, action) => {
         loading: { ...state.loading, getAllChatRoomMessages: false },
         error: { ...state.error, getAllChatRoomMessages: action.payload },
       };
+    case GET_ALL_CHAT_ROOMS_DATA_SUCCESS:
+      return {
+        ...state,
+        firebaseData: action.payload,
+        allChatRooms: updateMultipleChatRooms(
+          state.allChatRooms,
+          action.payload
+        ),
+        loading: { ...state.loading, getAllChatRoomMessages: false },
+      };
     case GET_ALL_CHAT_ROOMS_START:
       return {
         ...state,
@@ -87,9 +79,13 @@ export default (state = initialState, action) => {
         error: { ...state.error, getAllChatRooms: '' },
       };
     case GET_ALL_CHAT_ROOMS_SUCCESS:
+      console.log('action payload is', action.payload)
       return {
         ...state,
-        allChatRooms: addApiUrlInChatRoomsArr(action.payload),
+        allChatRooms: updateMultipleChatRooms(
+          addApiUrlInChatRoomsArr(action.payload),
+          state.firebaseData
+        ),
         loading: { ...state.loading, getAllChatRooms: false },
       };
     case GET_ALL_CHAT_ROOMS_FAILED:

@@ -25,6 +25,7 @@ import ProgressUploadStatus from './progressUploadStatus/ProgressUploadStatus';
 import ShowAlert from './alert/ShowAlert';
 import UserVerification from './admin/UserVerification'
 import TransportDetailItem from './transport/TransportDetailItem'
+import ChatRoomsListener from './chat/ChatRoomsListener'
 import {
   FormWrapper,
   FormInputWrapper,
@@ -63,5 +64,6 @@ export {
   ProgressUploadStatus,
   ShowAlert,
   UserVerification,
-  TransportDetailItem
+  TransportDetailItem,
+  ChatRoomsListener
 };

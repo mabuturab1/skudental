@@ -7,11 +7,7 @@ import {
 } from 'react-native-gifted-chat';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  sendMessages,
-  getAllChatRoomMessagesSuccess,
-} from '../../store/actions';
+import { useSelector } from 'react-redux';
 import {
   chatRoomsCollection,
   firestore,
@@ -28,21 +24,14 @@ const RoomScreen = ({ route }) => {
   const currentChatRoom =
     allChatRooms.find((el) => el._id === chatRoomId) || {};
   const firebaseId = currentChatRoom.firebaseId;
-  const dispatch = useDispatch();
   useEffect(() => {
-    const subscriber = chatRoomsCollection.doc(firebaseId).onSnapshot((doc) => {
-      if (doc.exists) {
-        const docData = doc.data();
-
-        setMessages(docData.messages?.map((el) => getTransformedMessages(el)));
-      }
-    });
-    return () => subscriber();
-  }, [dispatch, allChatRooms, firebaseId, chatRoomId]);
-  useEffect(() => {
-    return () => dispatch(getAllChatRoomMessagesSuccess({ messages }));
-  }, [dispatch]);
-
+    const currentRoom = allChatRooms.find((el) => el._id === chatRoomId) || {};
+    if (currentRoom.messages.length > messages.length) {
+      setMessages(
+        currentRoom.messages?.map((el) => getTransformedMessages(el))
+      );
+    }
+  }, [allChatRooms, messages, getTransformedMessages]);
   const getMemebersInfo = useCallback(
     (id) => {
       if (!id) return {};
@@ -57,19 +46,23 @@ const RoomScreen = ({ route }) => {
     },
     [allChatRooms]
   );
-  const getTransformedMessages = (message) => {
-    const msg = convertDate(message);
-    return {
-      _id: msg._id || uuid(),
-      text: msg.chatMessage,
-      createdAt: msg.createdAt || '',
-      user: getMemebersInfo(msg?.messageOwner),
-    };
-  };
+  const getTransformedMessages = useCallback(
+    (message) => {
+      const msg = convertDate(message);
+      return {
+        _id: msg._id || uuid(),
+        text: msg.chatMessage,
+        createdAt: msg.createdAt || '',
+        user: getMemebersInfo(msg?.messageOwner),
+      };
+    },
+    [getMemebersInfo]
+  );
 
   async function handleSend(messageObj) {
     if (!chatRoomId) return;
     let newMessageArr = messageObj.map((el) => ({
+      _id: el._id,
       chatMessage: el.text,
       messageOwner: el.user?._id,
       createdAt: el.createdAt,

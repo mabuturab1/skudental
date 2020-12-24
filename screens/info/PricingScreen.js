@@ -12,5 +12,9 @@ const PricingScreen = (props) => {
     />
   );
 };
-
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+});
 export default PricingScreen;

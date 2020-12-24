@@ -20,10 +20,34 @@ export const addApiUrlInChatRoom = (el) => ({
 export const updateMessageArr = (chatRoomsArr, payload) => {
   let updatedChatRooms = getNewCopy(chatRoomsArr);
   const currentChatRoomIndex = updatedChatRooms.findIndex(
-    (el) => payload.chatRoomId
+    (el) => payload.chatRoomId === el._id
   );
   if (currentChatRoomIndex < 0) return updatedChatRooms;
-  updatedChatRooms[currentChatRoomIndex].messages = payload.data.messages;
+  updatedChatRooms[currentChatRoomIndex].messages = payload.messages;
+  return updatedChatRooms;
+};
+export const convertFirebaseChatRoomsData = (snapshot) => {
+  const updatedArr = [];
+  snapshot.forEach((doc) => {
+    updatedArr.push({
+      chatRoomFirebaseId: doc.id,
+      messages: doc.data().messages,
+    });
+  });
+  return updatedArr;
+};
+
+export const updateMultipleChatRooms = (chatRoomsArr, payload) => {
+  let updatedChatRooms = getNewCopy(chatRoomsArr);
+  payload.forEach((el) => {
+    const currentChatRoomIndex = updatedChatRooms.findIndex(
+      (room) => el.chatRoomFirebaseId === room.firebaseId
+    );
+    console.log('current chat roomIndex', currentChatRoomIndex);
+    if (currentChatRoomIndex >= 0) {
+      updatedChatRooms[currentChatRoomIndex].messages = el.messages;
+    }
+  });
   return updatedChatRooms;
 };
 export const addApiUrlInChatRoomsArr = (chatRoomsArr = []) => {

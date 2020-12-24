@@ -17,16 +17,6 @@ import {
 } from './store/actions';
 import { messaging, requestUserPermission } from './helpers/firebase/Firebase';
 const getFontsConfig = () => ({
-  // OpenSansBold: require('./assets/fonts/OpenSans-Bold.ttf'),
-  // OpenSansBoldItalic: require('./assets/fonts/OpenSans-BoldItalic.ttf'),
-  // OpenSansExtraBold: require('./assets/fonts/OpenSans-ExtraBold.ttf'),
-  // OpenSansExtraBoldItalic: require('./assets/fonts/OpenSans-ExtraBoldItalic.ttf'),
-  // OpenSansItalic: require('./assets/fonts/OpenSans-Italic.ttf'),
-  // OpenSansLight: require('./assets/fonts/OpenSans-Light.ttf'),
-  // OpenSansLightItalic: require('./assets/fonts/OpenSans-LightItalic.ttf'),
-  // OpenSansRegular: require('./assets/fonts/OpenSans-Regular.ttf'),
-  // OpenSansSemiBold: require('./assets/fonts/OpenSans-SemiBold.ttf'),
-  // OpenSansSemiBoldItalic: require('./assets/fonts/OpenSans-SemiBoldItalic.ttf'),
   RobotoBlack: require('./assets/fonts/Roboto-Black.ttf'),
   RobotoBlackItalic: require('./assets/fonts/Roboto-BlackItalic.ttf'),
   RobotoBold: require('./assets/fonts/Roboto-Bold.ttf'),
@@ -59,14 +49,14 @@ const MainNavigationScreens = () => {
   }, [requestUserPermission]);
 
   useEffect(() => {
-    const socket = getSocket();
-    const eventHandler = (chatRoomId,messageObj) => {
-      dispatch(addNewMessage({chatRoomId, messageObj}));
-    };
-    socket.on('message', eventHandler);
-    return () => {
-      socket.off('message', eventHandler);
-    };
+    // const socket = getSocket();
+    // const eventHandler = (chatRoomId,messageObj) => {
+    //   dispatch(addNewMessage({chatRoomId, messageObj}));
+    // };
+    // socket.on('message', eventHandler);
+    // return () => {
+    //   socket.off('message', eventHandler);
+    // };
   }, [token]);
   return MainNavigator(auth);
 };

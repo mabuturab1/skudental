@@ -2,8 +2,6 @@ import axios from 'axios';
 import {
   apiRoutes,
   API_URL,
-  BASE_URL,
-  BASE_URL_IP,
 } from '../../constants/apiRoutes';
 import {
   getAxiosConfig,
@@ -12,6 +10,7 @@ import {
 } from '../../helpers/Utils';
 import { io } from 'socket.io-client';
 import { isSuccessDefault } from '../../constants/UIConstants';
+import { chatRoomsCollection } from '../../helpers/firebase/Firebase';
 let socket = io({ autoConnect: false });
 export const GET_ALL_CHAT_ROOM_MESSAGES_START =
   'GET_ALL_CHAT_ROOM_MESSAGES_START';
@@ -32,7 +31,7 @@ export const CLEAR_RECEIVED_MESSAGES = 'CLEAR_RECEIVED_MESSAGES';
 const getAllChatRoomMessagesStart = () => ({
   type: GET_ALL_CHAT_ROOM_MESSAGES_START,
 });
-const getAllChatRoomMessagesSuccess = (payload) => ({
+export const getAllChatRoomMessagesSuccess = (payload) => ({
   type: GET_ALL_CHAT_ROOM_MESSAGES_SUCCESS,
   payload,
 });
@@ -43,7 +42,7 @@ const getAllChatRoomMessagesFailed = (error = '') => ({
 const getAllChatRoomsStart = () => ({
   type: GET_ALL_CHAT_ROOMS_START,
 });
-const getAllChatRoomsSuccess = (payload) => ({
+ const getAllChatRoomsSuccess = (payload) => ({
   type: GET_ALL_CHAT_ROOMS_SUCCESS,
   payload,
 });
@@ -63,14 +62,14 @@ export const clearReceivedMessages = (payload) => ({
 });
 
 export const connectSocketIo = (token) => {
-  console.log('starting connection with sokcket io');
-  socket = io(BASE_URL_IP, {
-    extraHeaders: { Authorization: `Bearer ${token}` },
-  });
-  socket.open();
+  // console.log('starting connection with sokcket io');
+  // socket = io(BASE_URL_IP, {
+  //   extraHeaders: { Authorization: `Bearer ${token}` },
+  // });
+  // socket.open();
 };
 export const disConnectSocketIo = (token) => {
-  socket.disconnect();
+  // socket.disconnect();
 };
 socket.on('connect', () => {
   console.log('socket connected', socket.id);
@@ -78,21 +77,15 @@ socket.on('connect', () => {
 
 export const getSocket=()=>socket;
 
-export const getAllChatRoomMessages = (id) => {
+export const getAllChatRoomMessages = (id, callback) => {
   return async (dispatch, getState) => {
     try {
       
       dispatch(getAllChatRoomMessagesStart());
-      const response = await axios.post(
-        API_URL + apiRoutes.GET_CHAT_ROOM + '/' + id,
-        {},
-        {
-          ...getAxiosConfig(getState),
-        }
-      );
-      if (isValidServerResponse(response)) {
+      const doc= chatRoomsCollection.doc(id).get();
+      if (doc.exists) {
         dispatch(
-          getAllChatRoomMessagesSuccess(getServerResponseData(response))
+          getAllChatRoomMessagesSuccess(doc.data())
         );
       } else if (response.error) {
         dispatch(getAllChatRoomMessagesFailed(response.error));

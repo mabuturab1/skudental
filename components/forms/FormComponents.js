@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     paddingTop: 100,
   },
   singleFormFieldWrapper: {
-    marginVertical: 10,
+    marginVertical: 7,
   },
 
   textInput: {

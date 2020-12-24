@@ -8,7 +8,7 @@ import {
   getServerResponseData,
   isValidServerResponse,
 } from '../../helpers/Utils';
-import { auth } from '../../helpers/firebase/Firebase';
+import { auth, messaging } from '../../helpers/firebase/Firebase';
 import { showAlert } from '../alert/actions';
 import { connectSocketIo } from '../chatRoom/actions';
 export const USER_SIGNUP_START = 'USER_SIGNUP_START';
@@ -141,11 +141,13 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
       );
       const idToken = await firebaseResponse.user.getIdToken();
       const emailVerified = firebaseResponse.user.emailVerified;
+      const firebaseMessagingToken = await messaging.getToken();
       console.log('email verified is', emailVerified);
       const response = await axios.post(API_URL + apiRoutes.USER_SIGNIN, {
         ...userData,
         idToken,
         emailVerified,
+        firebaseMessagingToken,
       });
 
       if (isValidServerResponse(response)) {

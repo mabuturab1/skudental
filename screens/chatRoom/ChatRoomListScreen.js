@@ -13,10 +13,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LoadingIndicator, SingleChatView } from '../../components';
 import { ThemeColors } from '../../constants/Colors';
 import { routes } from '../../constants/routes';
+import { chatRoomsCollection } from '../../helpers/firebase/Firebase';
 import { isAndroid } from '../../helpers/Utils';
 import { getAllChatRooms } from '../../store/actions';
 const ChatRoomListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+  const userId = useSelector(({ auth }) => auth?.user?._id);
   const { allChatRooms = [], getAllChatRoomsLoading } = useSelector(
     ({ chatRoom }) => ({
       allChatRooms: chatRoom.allChatRooms,
@@ -26,10 +28,11 @@ const ChatRoomListScreen = ({ navigation }) => {
   useEffect(() => {
     dispatch(getAllChatRooms());
   }, [dispatch]);
+
   const onPress = (chatRoomId) => {
     navigation.navigate(routes.ChatRoom, { chatRoomId });
   };
- 
+
   const renderSingleItem = ({ item }) => (
     <SingleChatView item={item} onPress={onPress} key={item._id} />
   );

@@ -3,6 +3,7 @@ import RecordListScreen from './record/RecordListScreen';
 import LabDocketScreen from './info/LabDocketScreen';
 import PricingScreen from './info/PricingScreen';
 import HomeFeedScreen from './info/HomeFeedScreen';
+import WebViewLinkScreen from './info/WebViewLinkScreen';
 import CreateTransportRequestScreen from './pickup/CreateTransportRequestScreen';
 import PickupRequestDetailsScreen from './pickup/PickupDetailsScreen';
 import TransportListScreen from './pickup/TransportListScreen';
@@ -23,6 +24,7 @@ import ImagePreviewScreen from './record/ImagePreviewScreen';
 import RoomScreen from './chatRoom/RoomScreen';
 import ChatRoomListScreen from './chatRoom/ChatRoomListScreen';
 import VerifyUsersScreen from './admin/VerifyUsersScreen'
+
 export {
   RecordDetailsScreen,
   RecordListScreen,
@@ -48,5 +50,6 @@ export {
   RoomScreen,
   ChatRoomListScreen,
   UploadPhotoScreen,
-  VerifyUsersScreen
+  VerifyUsersScreen,
+  WebViewLinkScreen
 };

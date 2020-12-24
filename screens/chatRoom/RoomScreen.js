@@ -9,50 +9,46 @@ import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  clearReceivedMessages,
-  getAllChatRoomMessages,
   sendMessages,
+  getAllChatRoomMessagesSuccess,
 } from '../../store/actions';
-
+import {
+  chatRoomsCollection,
+  firestore,
+} from '../../helpers/firebase/Firebase';
+import { v4 as uuid } from 'uuid';
+import { convertDate } from '../../helpers/Utils';
 const RoomScreen = ({ route }) => {
-  const { userId, allChatRooms = [], newMessagesObj } = useSelector(
-    ({ auth, chatRoom }) => ({
-      userId: auth.user?._id,
-      allChatRooms: chatRoom.allChatRooms,
-      newMessagesObj: chatRoom.newMessagesObj,
-    })
-  );
+  const [messages, setMessages] = useState([]);
+  const { userId, allChatRooms = [] } = useSelector(({ auth, chatRoom }) => ({
+    userId: auth.user?._id,
+    allChatRooms: chatRoom.allChatRooms,
+  }));
   const chatRoomId = route.params.chatRoomId;
   const currentChatRoom =
     allChatRooms.find((el) => el._id === chatRoomId) || {};
-  const chatRoomMessages = currentChatRoom?.messages || [];
+  const firebaseId = currentChatRoom.firebaseId;
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAllChatRoomMessages(chatRoomId));
+    const subscriber = chatRoomsCollection.doc(firebaseId).onSnapshot((doc) => {
+      if (doc.exists) {
+        const docData = doc.data();
+
+        setMessages(docData.messages?.map((el) => getTransformedMessages(el)));
+      }
+    });
+    return () => subscriber();
+  }, [dispatch, allChatRooms, firebaseId, chatRoomId]);
+  useEffect(() => {
+    return () => dispatch(getAllChatRoomMessagesSuccess({ messages }));
   }, [dispatch]);
 
-  useEffect(() => {
-    const currentChatRoomMessages = newMessagesObj[chatRoomId] || [];
-    if (!currentChatRoomMessages.length) return;
-    const updateMessageObj = currentChatRoomMessages.map((el) => ({
-      ...el,
-      user: getMemebersInfo(el.user._id),
-    }));
-    const idsArr = currentChatRoomMessages.map((el) => el._id);
-    dispatch(clearReceivedMessages({ chatRoomId, idsArr }));
-    setMessages(updateMessageObj.concat(messages));
-  }, [newMessagesObj, chatRoomId, getMemebersInfo, messages]);
   const getMemebersInfo = useCallback(
     (id) => {
       if (!id) return {};
       const currentRoom =
         allChatRooms.find((el) => el._id === chatRoomId) || {};
       const user = currentRoom?.members?.find((el) => el._id === id);
-      console.log('returning obj', {
-        _id: id,
-        name: user?.name,
-        avatar: user?.profileImageUrl,
-      });
       return {
         _id: id,
         name: user?.name,
@@ -61,42 +57,27 @@ const RoomScreen = ({ route }) => {
     },
     [allChatRooms]
   );
-  const getTransformedMessages = (msg) => {
+  const getTransformedMessages = (message) => {
+    const msg = convertDate(message);
     return {
-      _id: msg._id,
+      _id: msg._id || uuid(),
       text: msg.chatMessage,
       createdAt: msg.createdAt || '',
       user: getMemebersInfo(msg?.messageOwner),
     };
   };
-  const [messages, setMessages] = useState(
-    chatRoomMessages.map((el) => getTransformedMessages(el)).reverse()
-  );
-  //   const { thread } = route.params;
-  //   const { user } = useContext(AuthContext);
-  //   const currentUser = user.toJSON();
 
   async function handleSend(messageObj) {
     if (!chatRoomId) return;
-    console.log('messages', messageObj);
     let newMessageArr = messageObj.map((el) => ({
       chatMessage: el.text,
       messageOwner: el.user?._id,
       createdAt: el.createdAt,
     }));
 
-    dispatch(
-      sendMessages(chatRoomId, newMessageArr, (isSuccess) => {
-        console.log('is success is', isSuccess);
-        if (isSuccess) {
-          const updateMessageObj = messageObj.map((el) => ({
-            ...el,
-            user: getMemebersInfo(el.user._id),
-          }));
-          setMessages(updateMessageObj.concat(messages));
-        }
-      })
-    );
+    await chatRoomsCollection
+      .doc(firebaseId)
+      .update({ messages: firestore.FieldValue.arrayUnion(...newMessageArr) });
   }
 
   function renderBubble(props) {

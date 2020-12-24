@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import jwt_decode from 'jwt-decode';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { firestore } from './firebase/Firebase';
 export const isAndroid = () => Platform.OS === 'android';
 export const isUserAuthenticated = (token) => {
   if (token) {
@@ -51,3 +51,24 @@ export const getErrorMessage = (error) => {
 export const isValidServerResponse = (response) =>
   response && response?.data?.data;
 export const getServerResponseData = (response) => response?.data?.data;
+
+export const convertDate = (firebaseObject) => {
+  if (!firebaseObject) return null;
+
+  for (const [key, value] of Object.entries(firebaseObject)) {
+    // covert items inside array
+    if (value && Array.isArray(value))
+      firebaseObject[key] = value.map((item) => convertDate(item));
+
+    // convert inner objects
+    if (value && typeof value === 'object') {
+      firebaseObject[key] = convertDate(value);
+    }
+    // convert simple properties
+    if (value && value['seconds']) {
+      console.log('has property seconds', value.toDate());
+      firebaseObject[key] = value.toDate();
+    }
+  }
+  return firebaseObject;
+};

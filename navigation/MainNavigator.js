@@ -32,6 +32,7 @@ import {
   ChatRoomListScreen,
   UploadPhotoScreen,
   VerifyUsersScreen,
+  WebViewLinkScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -96,9 +97,9 @@ const tabData = [
     wrapStackNavigator: false,
   },
   {
-    navigatorName: routes.RecordList,
-    component: RecordListNavigator,
-    componentName: 'Patient Record List',
+    navigatorName: routes.Pricing,
+    component: PricingScreen,
+    componentName: 'Pricing',
     wrapStackNavigator: false,
   },
   {
@@ -129,7 +130,7 @@ const getTabIcon = (routeName, focused) => {
         name: prefix + (focused ? 'home' : 'home-outline'),
         Icon: Ionicons,
       };
-    case routes.RecordList:
+    case routes.Pricing:
       return {
         name: prefix + (focused ? 'receipt' : 'receipt-outline'),
         Icon: Ionicons,
@@ -274,6 +275,8 @@ export default mainStackNavigator = (auth) => (
       name={routes.ConfirmPassword}
       component={ConfirmPasswordScreen}
     />
+    <Stack.Screen name={routes.WebviewLink} component={WebViewLinkScreen} />
+    <Stack.Screen name={routes.Pricing} component={PricingScreen} />
     <Stack.Screen
       name={routes.CreateTransportRequest}
       component={CreateTransportRequestScreen}

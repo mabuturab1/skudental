@@ -23,6 +23,9 @@ import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
 const authModule = auth();
 const messagingModule = messaging();
+import firestore from '@react-native-firebase/firestore';
+
+const chatRoomsCollection = firestore().collection('chatRooms');
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
   const enabled =
@@ -36,5 +39,7 @@ async function requestUserPermission() {
 export {
   authModule as auth,
   messagingModule as messaging,
+  chatRoomsCollection,
+  firestore,
   requestUserPermission,
 };

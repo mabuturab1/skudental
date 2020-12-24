@@ -11,6 +11,7 @@ import {
 import {
   addApiUrlInChatRoom,
   addApiUrlInChatRoomsArr,
+  updateMessageArr,
 } from './chatRoomUtilsFunctions';
 
 const initialState = {
@@ -37,6 +38,7 @@ const addNewMessage = (newMessagesObj, payload) => {
   };
   return updated;
 };
+
 const deleteReceivedMessages = (newMessagesObj, payload) => {
   const chatRoomId = payload.chatRoomId;
   let newUpdatedMessageObj = {};
@@ -69,10 +71,7 @@ export default (state = initialState, action) => {
     case GET_ALL_CHAT_ROOM_MESSAGES_SUCCESS:
       return {
         ...state,
-        allChatRooms: state.allChatRooms
-          .filter((el) => el._id !== action.payload._id)
-          .concat(addApiUrlInChatRoom(action.payload))
-          .map((room) => ({ ...room })),
+        allChatRooms: updateMessageArr(state.allChatRooms, action.payload),
         loading: { ...state.loading, getAllChatRoomMessages: false },
       };
     case GET_ALL_CHAT_ROOM_MESSAGES_FAILED:

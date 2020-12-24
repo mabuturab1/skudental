@@ -1,5 +1,5 @@
 export const BASE_URL_IP = 'http://192.168.10.5:4000';
-export const BASE_URL = 'http://localhost:4000';
+export const BASE_URL = 'https://skdental.herokuapp.com';
 export const API_URL = BASE_URL + '/api';
 export const apiRoutes = {
   USER_SIGNUP: '/user/signup',

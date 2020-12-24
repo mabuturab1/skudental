@@ -43,7 +43,6 @@ const RecordListScreen = ({ navigation }) => {
   const refreshData = () => {
     dispatch(getAllRecords());
   };
-
   return (
     <SafeAreaView style={styles.safeAreaWrapper}>
       {serverRecordsArr.length > 0 ? (

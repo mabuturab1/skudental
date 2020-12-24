@@ -89,19 +89,22 @@ const getTransformedPost = (item) => ({
   ...item,
   photo: {
     ...item.photo,
-    photoUrl: API_URL + '/' + item.photo.photoUrl,
+    photoUrl: processImageUrl(API_URL + '/', item.photo.photoUrl),
   },
   compressedPhoto: {
     ...item.compressedPhoto,
-    photoUrl: API_URL + '/' + item.compressedPhoto.photoUrl,
+    photoUrl: processImageUrl(API_URL + '/', item.compressedPhoto.photoUrl),
   },
-  imageUrl:
-    API_URL +
-    '/' +
-    (item.compressedPhoto?.compressedPhotoUrl || item.photo?.photoUrl),
-  originalImageUrl: API_URL + '/' + item.photo?.photoUrl,
-  audioUrl: item.audioUrl ? API_URL + '/' + item.audioUrl : null,
-  audioItem: item.audioUrl ? { uri: API_URL + '/' + item.audioUrl } : null,
+  imageUrl: item.compressedPhoto?.compressedPhotoUrl
+    ? processImageUrl(API_URL + '/', item.compressedPhoto?.compressedPhotoUrl)
+    : processImageUrl(API_URL + '/', item.photo?.photoUrl),
+  originalImageUrl: processImageUrl(API_URL + '/' , item.photo?.photoUrl),
+  audioUrl: item.audioUrl
+    ? processImageUrl(API_URL + '/', item.audioUrl)
+    : null,
+  audioItem: item.audioUrl
+    ? { uri: processImageUrl(API_URL + '/', item.audioUrl) }
+    : null,
 });
 const getTransformedRecord = (serverPost) => {
   return {
@@ -109,7 +112,9 @@ const getTransformedRecord = (serverPost) => {
     recordOwner: {
       ...serverPost.recordOwner,
       profileImageUrl: serverPost.recordOwner?.profileImageUrl
-        ? API_URL + '/' + serverPost?.recordOwner?.profileImageUrl
+        ? processImageUrl(
+            API_URL + '/' , serverPost?.recordOwner?.profileImageUrl
+          )
         : undefined,
     },
     createdAt: serverPost.createdAt
@@ -119,6 +124,9 @@ const getTransformedRecord = (serverPost) => {
       getTransformedPost(item)
     ),
   };
+};
+const processImageUrl = (path, url) => {
+  return path + url.replace(/^\/+/g, '');
 };
 export const addApiUrlInRecordArr = (record) => {
   let updatedRecordArr = [];

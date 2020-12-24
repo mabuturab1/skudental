@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
 
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingRight: 20,
   },
   smallPadding: {
     paddingHorizontal: 15,
@@ -132,7 +133,6 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'flex-end',
-    paddingHorizontal: 15,
   },
   coverPhoto: {
     width: Dimensions.get('screen').width,

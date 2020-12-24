@@ -18,6 +18,7 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
     const item = record?.attachedPosts[index];
     return item.audioItem;
   };
+  console.log('record owner profile url', record?.recordOwner?.profileImageUrl)
   return (
     <View style={styles.cardWrapper}>
       <View style={styles.infoContainer}>

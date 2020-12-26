@@ -33,7 +33,7 @@ const TransportListScreen = ({ navigation }) => {
   } = useSelector(({ transport }) => ({
     allTransportRequests: transport.allTransportRequests,
     getAllTransportRequestsLoading: transport.loading.getAllTransportRequests,
-    updateTransportRequest: transport.loading.updateTransportRequest,
+    updateTransportRequestLoading: transport.loading.updateTransportRequest,
   }));
   useEffect(() => {
     dispatch(getAllTransportRequests());

@@ -51,5 +51,7 @@ export const updateMultipleChatRooms = (chatRoomsArr, payload) => {
   return updatedChatRooms;
 };
 export const addApiUrlInChatRoomsArr = (chatRoomsArr = []) => {
-  return chatRoomsArr.map((el) => addApiUrlInChatRoom(el));
+  return chatRoomsArr
+    .filter((el) => el?.members?.length > 1)
+    .map((el) => addApiUrlInChatRoom(el));
 };

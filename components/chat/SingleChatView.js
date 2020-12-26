@@ -1,11 +1,20 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text, Image } from 'react-native';
+import { useSelector } from 'react-redux';
 const SingleChatView = ({ style, item, onPress }) => {
+  const getOtherMember = () => {
+    const userId = useSelector(({ auth }) => auth?.user?._id);
+    if (!item?.members?.length) return {};
+    if (item?.members?.length === 1) return item.members[0];
+    return item.members.find((el) => el?._id !== userId) || {};
+  };
   const getImageUrl = () => {
-    return item?.members?.find((el) => el.profileImageUrl)?.profileImageUrl;
+    const member=getOtherMember();
+    return member?.profileImageUrl;
   };
   const getName = () => {
-    return item?.members?.find((el) => el.name)?.name;
+    const member=getOtherMember();
+    return member?.name;
   };
   console.log('rendering chat view');
   return (

@@ -131,7 +131,7 @@ export const updateTransportRequest = (
 ) => {
   return async (dispatch, getState) => {
     try {
-      dispatch(createTransportRequestStart());
+      dispatch(updateTransportRequestStart());
       const response = await axios.post(
         API_URL + apiRoutes.UPDATE_TRANSPORT_REQUEST + '/' + id,
         updateData,
@@ -139,15 +139,15 @@ export const updateTransportRequest = (
       );
       if (isValidServerResponse(response)) {
         dispatch(
-          createTransportRequestSuccess(getServerResponseData(response))
+          updateTransportRequestSuccess(getServerResponseData(response))
         );
         isSuccess(true);
       } else if (response.error) {
-        dispatch(createTransportRequestFailed(response.error));
+        dispatch(updateTransportRequestFailed(response.error));
         isSuccess(false);
       }
     } catch (error) {
-      dispatch(createTransportRequestFailed('An error occurred'));
+      dispatch(updateTransportRequestFailed('An error occurred'));
       isSuccess(false);
       dispatch(showAlert('An error occurred', getErrorMessage(error)));
     }

@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Button } from 'react-native-paper';
 import { ThemeColors } from '../../constants/Colors';
 import LoadingIndicator from '../loader/LoadingIndicator';
-const CustomButton = ({ style, onPress, title, icon, loading }) => (
+const CustomButton = ({ style, onPress, title, icon, loading, textStyle={} }) => (
   <TouchableOpacity
     activeOpacity={0.7}
     style={{ ...styles.customButton, ...style }}
@@ -12,7 +12,7 @@ const CustomButton = ({ style, onPress, title, icon, loading }) => (
     {loading ? (
       <LoadingIndicator alignCenter={false} color={'white'} />
     ) : title != null ? (
-      <Text style={styles.titleStyle}>{title}</Text>
+      <Text style={{...styles.titleStyle, ...textStyle}}>{title}</Text>
     ) : (
       icon
     )}

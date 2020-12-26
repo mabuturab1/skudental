@@ -28,7 +28,7 @@ const RoomScreen = ({ route }) => {
     const currentRoom = allChatRooms.find((el) => el._id === chatRoomId) || {};
     if (currentRoom.messages.length > messages.length) {
       setMessages(
-        currentRoom.messages?.map((el) => getTransformedMessages(el))
+        currentRoom.messages?.map((el) => getTransformedMessages(el)).reverse()
       );
     }
   }, [allChatRooms, messages, getTransformedMessages]);

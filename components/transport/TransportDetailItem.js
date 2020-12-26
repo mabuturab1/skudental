@@ -39,7 +39,7 @@ const UserVerification = ({
       {isAdmin() ? (
         <TransportStatusItem
           initValue={transportRequest?.status}
-          onSave={onUpdateStatus}
+          onSave={ (status)=> onUpdateStatus(transportRequest, status)}
           loading={updateTransportRequestLoading}
           disableButton={disableButtons}
         />

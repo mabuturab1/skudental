@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import FlatButton from '../button/FlatButton';
 import { FormTextInput } from '../forms/FormComponents';
-const ArrangePickeupScreen = ({
+const TransportStatusItem = ({
   initValue,
   onSave,
   loading,
@@ -36,8 +36,10 @@ const ArrangePickeupScreen = ({
           />
           <View style={styles.submitButtonWrapper}>
             <FlatButton
+              style={{ width: 100 }}
+              textStyle={{ fontSize: 15 }}
               onPress={handleSubmit}
-              title={'Save'}
+              title={'Update'}
               loading={loading}
               disable={disableButtons}
             />
@@ -55,4 +57,4 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
 });
-export default ArrangePickeupScreen;
+export default TransportStatusItem;

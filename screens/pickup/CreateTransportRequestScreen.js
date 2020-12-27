@@ -18,11 +18,7 @@ const CreateTransportRequestScreen = ({ navigation }) => {
     ({ transport }) => transport.loading.createTransportRequest
   );
   const ValidationSchema = Yup.object({
-    address: Yup.string().required('Kindly enter an address'),
-    postalCode: Yup.string().required('Kindly enter your postal Code'),
-    city: Yup.string().required('Kindly enter your city'),
-    state: Yup.string(),
-    country: Yup.string().required('Kindly enter your country'),
+    practiceName: Yup.string().required('Kindly enter an practiceName'),
   });
   const onSubmit = (values) => {
     console.log('dispatching request');
@@ -36,11 +32,7 @@ const CreateTransportRequestScreen = ({ navigation }) => {
     );
   };
   const getInitValues = () => ({
-    address: '',
-    postalCode: '',
-    city: '',
-    state: '',
-    country: '',
+    practiceName:''
   });
   return (
     <ScrollWrapper>
@@ -62,56 +54,18 @@ const CreateTransportRequestScreen = ({ navigation }) => {
           <FormWrapper style={styles.wrapper}>
             <FormInputWrapper>
               <FormTextInput
-                placeholder={'Address'}
-                name='address'
-                value={values.address}
-                onChangeText={handleChange('address')}
-                onBlur={handleBlur('address')}
+                placeholder={'Pratice Name'}
+                name='practiceName'
+                value={values.practiceName}
+                onChangeText={handleChange('practiceName')}
+                onBlur={handleBlur('practiceName')}
                 multiline={true}
                 numberOfLines={4}
               />
-              <ErrorText errors={errors} touched={touched} name='address' />
+              <ErrorText errors={errors} touched={touched} name='practiceName' />
             </FormInputWrapper>
-            <FormInputWrapper>
-              <FormTextInput
-                placeholder={'Postal Code'}
-                name='postalCode'
-                value={values.postalCode}
-                onChangeText={handleChange('postalCode')}
-                onBlur={handleBlur('postalCode')}
-              />
-              <ErrorText errors={errors} touched={touched} name='postalCode' />
-            </FormInputWrapper>
-            <FormInputWrapper>
-              <FormTextInput
-                placeholder={'City'}
-                name='city'
-                value={values.city}
-                onChangeText={handleChange('city')}
-                onBlur={handleBlur('city')}
-              />
-              <ErrorText errors={errors} touched={touched} name='city' />
-            </FormInputWrapper>
-            <FormInputWrapper>
-              <FormTextInput
-                placeholder={'State'}
-                name='state'
-                value={values.state}
-                onChangeText={handleChange('state')}
-                onBlur={handleBlur('state')}
-              />
-              <ErrorText errors={errors} touched={touched} name='state' />
-            </FormInputWrapper>
-            <FormInputWrapper>
-              <FormTextInput
-                placeholder={'Country'}
-                name='country'
-                value={values.country}
-                onChangeText={handleChange('country')}
-                onBlur={handleBlur('country')}
-              />
-            </FormInputWrapper>
-            <ErrorText errors={errors} touched={touched} name='country' />
+          
+          
             <View style={styles.submitButtonWrapper}>
               <FlatButton
                 style={{ width: '100%' }}

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  EmptyList,
   LoadingIndicator,
   RoundedButton,
   TransportDetailItem,
@@ -75,26 +76,10 @@ const TransportListScreen = ({ navigation }) => {
           }
         />
       ) : (
-        <View style={styles.noDataWrapper}>
-          {getAllTransportRequestsLoading ? (
-            <LoadingIndicator />
-          ) : (
-            <Fragment>
-              <Text style={styles.noDataText}>
-                No Record found. Kindly pull down to refresh data
-              </Text>
-              <TouchableOpacity onPress={refreshData}>
-                <Ionicons
-                  name={
-                    isAndroid() ? 'md-refresh-circle' : 'ios-refresh-circle'
-                  }
-                  color={ThemeColors.primary}
-                  size={30}
-                />
-              </TouchableOpacity>
-            </Fragment>
-          )}
-        </View>
+        <EmptyList
+          dataLoading={getAllTransportRequestsLoading}
+          refreshData={refreshData}
+        />
       )}
       <View style={styles.addButtonWrapper}>
         <RoundedButton

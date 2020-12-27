@@ -13,18 +13,18 @@ import { ShowAlert, ChatRoomsListener } from './components';
 
 import { messaging, requestUserPermission } from './helpers/firebase/Firebase';
 const getFontsConfig = () => ({
-  RobotoBlack: require('./assets/fonts/Roboto-Black.ttf'),
-  RobotoBlackItalic: require('./assets/fonts/Roboto-BlackItalic.ttf'),
-  RobotoBold: require('./assets/fonts/Roboto-Bold.ttf'),
-  RobotoBoldItalic: require('./assets/fonts/Roboto-BoldItalic.ttf'),
-  RobotoItalic: require('./assets/fonts/Roboto-Italic.ttf'),
-  RobotoLight: require('./assets/fonts/Roboto-Light.ttf'),
-  RobotoLightItalic: require('./assets/fonts/Roboto-LightItalic.ttf'),
-  RobotoMedium: require('./assets/fonts/Roboto-Medium.ttf'),
-  RobotoMediumItalic: require('./assets/fonts/Roboto-MediumItalic.ttf'),
-  RobotoRegular: require('./assets/fonts/Roboto-Regular.ttf'),
-  RobotoThin: require('./assets/fonts/Roboto-Thin.ttf'),
-  RobotoThinItalic: require('./assets/fonts/Roboto-ThinItalic.ttf'),
+  RalewayBlack: require('./assets/fonts/Raleway-Black.ttf'),
+  RalewayBlackItalic: require('./assets/fonts/Raleway-BlackItalic.ttf'),
+  RalewayBold: require('./assets/fonts/Raleway-Bold.ttf'),
+  RalewayBoldItalic: require('./assets/fonts/Raleway-BoldItalic.ttf'),
+  RalewayItalic: require('./assets/fonts/Raleway-Italic.ttf'),
+  RalewayLight: require('./assets/fonts/Raleway-Light.ttf'),
+  RalewayLightItalic: require('./assets/fonts/Raleway-LightItalic.ttf'),
+  RalewayMedium: require('./assets/fonts/Raleway-Medium.ttf'),
+  RalewayMediumItalic: require('./assets/fonts/Raleway-MediumItalic.ttf'),
+  RalewayRegular: require('./assets/fonts/Raleway-Regular.ttf'),
+  RalewayThin: require('./assets/fonts/Raleway-Thin.ttf'),
+  RalewayThinItalic: require('./assets/fonts/Raleway-ThinItalic.ttf'),
 });
 const MainNavigationScreens = () => {
   const auth = useSelector(({ auth }) => auth);

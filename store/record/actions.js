@@ -35,6 +35,10 @@ export const GET_ALL_RECORDS_START = 'GET_ALL_RECORDS_START';
 export const GET_ALL_RECORDS_SUCCESS = 'GET_ALL_RECORDS_SUCCESS';
 export const GET_ALL_RECORDS_FAILED = 'GET_ALL_RECORDS_FAILED';
 
+export const GET_ALL_USER_RECORDS_START = 'GET_ALL_USER_RECORDS_START';
+export const GET_ALL_USER_RECORDS_SUCCESS = 'GET_ALL_USER_RECORDS_SUCCESS';
+export const GET_ALL_USER_RECORDS_FAILED = 'GET_ALL_USER_RECORDS_FAILED';
+
 export const GET_ALL_RECORDS_WITH_MESSAGES_START =
   'GET_ALL_RECORDS_WITH_MESSAGES_START';
 export const GET_ALL_RECORDS_WITH_MESSAGES_SUCCESS =
@@ -82,6 +86,16 @@ const getAllRecordsSuccess = (payload) => ({
 });
 const getAllRecordsFailed = (error = '') => ({
   type: GET_ALL_RECORDS_FAILED,
+  error,
+});
+
+const getAllUserRecordsStart = () => ({ type: GET_ALL_USER_RECORDS_START });
+const getAllUserRecordsSuccess = (payload) => ({
+  type: GET_ALL_USER_RECORDS_SUCCESS,
+  payload,
+});
+const getAllUserRecordsFailed = (error = '') => ({
+  type: GET_ALL_USER_RECORDS_FAILED,
   error,
 });
 const getAllRecordsWithMessagesStart = () => ({
@@ -756,6 +770,35 @@ export const getAllRecords = (recordData = {}) => {
   };
 };
 
+export const getAllUserRecords = (id, recordData = {}) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch(getAllUserRecordsStart());
+      const response = await axios.post(
+        API_URL + apiRoutes.GET_ALL_RECORDS + '/' + id,
+        recordData,
+        { ...getAxiosConfig(getState) }
+      );
+      if (isValidServerResponse(response)) {
+        let record = getServerResponseData(response);
+
+        dispatch(getAllUserRecordsSuccess(record));
+      } else if (response.error) {
+        dispatch(getAllUserRecordsFailed(response.error));
+      }
+    } catch (error) {
+      console.log('error occurred', error);
+      dispatch(getAllUserRecordsFailed('An error occurred'));
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot get records' + getErrorMessage(error)
+        )
+      );
+    }
+  };
+};
+
 export const getAllRecordsWithMessages = (recordData) => {
   return async (dispatch) => {
     try {
@@ -795,4 +838,3 @@ export const getAllMessages = (recordData) => {
     }
   };
 };
-

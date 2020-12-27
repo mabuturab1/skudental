@@ -211,10 +211,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loginButtonText: {
-    fontFamily: 'RobotoLight',
+    fontFamily: 'RalewayLight',
   },
   signinText: {
-    fontFamily: 'RobotoRegular',
+    fontFamily: 'RalewayRegular',
     color: ThemeColors.primary,
     paddingLeft: 5,
   },

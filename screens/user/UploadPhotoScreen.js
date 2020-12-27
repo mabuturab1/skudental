@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   updateUserPhoto: {
     marginTop: 20,
     textAlign: 'center',
-    fontFamily: 'RobotoBold',
+    fontFamily: 'RalewayBold',
     fontSize: 16,
   },
   uploadStatus: {

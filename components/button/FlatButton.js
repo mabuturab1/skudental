@@ -35,11 +35,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontSize: 12,
-    fontFamily: 'RobotoRegular',
+    fontFamily: 'RalewayRegular',
   },
   titleStyle: {
     color: 'white',
-    fontFamily: 'RobotoBold',
+    fontFamily: 'RalewayBold',
     fontSize: 16,
   },
 });

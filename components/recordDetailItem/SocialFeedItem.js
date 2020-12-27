@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import CarouselItems from './CarouselItems';
 import { ThemeColors } from '../../constants/Colors';
 import { useSelector } from 'react-redux';
 import AudioPlayer from '../audio/AudioPlayer';
+import { routes } from '../../constants/routes';
 const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
   const user = useSelector(({ auth }) => auth.user);
   const [activeCarouselItem, setActiveCarouselItem] = useState(0);
@@ -18,24 +19,35 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
     const item = record?.attachedPosts[index];
     return item.audioItem;
   };
-  console.log('record owner profile url', record?.recordOwner?.profileImageUrl)
+  console.log('record owner profile url', record?.recordOwner?.profileImageUrl);
   return (
     <View style={styles.cardWrapper}>
       <View style={styles.infoContainer}>
         <Image
           source={
             record?.recordOwner?.profileImageUrl
-              ? { uri:  record?.recordOwner?.profileImageUrl }
+              ? { uri: record?.recordOwner?.profileImageUrl }
               : require('../../assets/defaultImage.png')
           }
           style={styles.avatarImage}
         />
-        <View style={styles.usernameContainer}>
-          <Text> {record?.recordOwner?.name} </Text>
-          {record?.createdAt ? (
-            <Text style={styles.createdAt}> {record?.createdAt} </Text>
-          ) : null}
-        </View>
+        <TouchableOpacity
+          onPress={
+            record?.recordOwner?._id
+              ? () =>
+                  navigation.navigate(routes.UserRecordList, {
+                    userId: record?.recordOwner._id,
+                  })
+              : undefined
+          }
+        >
+          <View style={styles.usernameContainer}>
+            <Text> {record?.recordOwner?.name} </Text>
+            {record?.createdAt ? (
+              <Text style={styles.createdAt}> {record?.createdAt} </Text>
+            ) : null}
+          </View>
+        </TouchableOpacity>
       </View>
       <View>
         <CarouselItems
@@ -105,7 +117,7 @@ const styles = StyleSheet.create({
   feedText: {
     fontSize: 14,
     paddingHorizontal: 15,
-    fontFamily: 'RobotoMedium',
+    fontFamily: 'RalewayMedium',
     color: 'black',
     opacity: 0.7,
   },

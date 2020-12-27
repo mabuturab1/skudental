@@ -10,12 +10,8 @@ const UserVerification = ({
   disableButtons = false,
 }) => {
   const data = [
-    { label: 'Address', key: 'address' },
-    { label: 'Postal Code', key: 'postalCode' },
-    { label: 'City', key: 'city' },
-    { label: 'State', key: 'state' },
-    { label: 'Country', key: 'country' },
-    { label: 'Status', key: 'status' },
+    { label: 'Pratice Name', key: 'praticeName' },
+  
   ];
   const user = useSelector(({ auth }) => auth.user);
   const isAdmin = () => user?.role?.roleType === Role.Admin;
@@ -56,13 +52,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   transportRequestTitle: {
-    fontFamily: 'RobotoBold',
+    fontFamily: 'RalewayBold',
     fontSize: 16,
     paddingHorizontal: 10,
   },
   label: {
     fontWeight: 'bold',
-    fontFamily: 'RobotoBold',
+    fontFamily: 'RalewayBold',
     paddingHorizontal: 20,
     width: 200,
   },

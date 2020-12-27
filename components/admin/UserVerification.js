@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'bold',
-    fontFamily: 'RobotoBold',
+    fontFamily: 'RalewayBold',
     paddingHorizontal: 20,
   },
   textItem: { flexDirection: 'row', marginVertical: 10 },

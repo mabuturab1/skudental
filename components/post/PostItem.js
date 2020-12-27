@@ -15,6 +15,7 @@ import ProgressUploadStatus from '../progressUploadStatus/ProgressUploadStatus';
 const PostItem = ({
   postObj,
   itemIndex,
+  showPostEditButtons = true,
   isEditAllowed = true,
   onAddComments = () => {},
   onAudioUpdate = () => {},
@@ -32,50 +33,52 @@ const PostItem = ({
   };
   const [isEditMode, setIsEditMode] = useState(isEditAllowed);
   const [canSwitchToEditMode] = useState(isEditAllowed === false);
-  console.log('post obj is',postObj)
+  console.log('post obj is', postObj);
   return (
     <View style={styles.imageItemWrapper}>
       <View style={styles.topIconsContainer}>
-        <View style={styles.postButtons}>
-          <View style={styles.singleIcon}>
-            <TouchableOpacity onPress={onDelete}>
-              <AntDesign name='delete' size={24} color='white' />
-            </TouchableOpacity>
-          </View>
-          {canSwitchToEditMode ? (
-            <Fragment>
-              {!isEditMode ? (
+        {showPostEditButtons ? (
+          <View style={styles.postButtons}>
+            <View style={styles.singleIcon}>
+              <TouchableOpacity onPress={onDelete}>
+                <AntDesign name='delete' size={24} color='white' />
+              </TouchableOpacity>
+            </View>
+            {canSwitchToEditMode ? (
+              <Fragment>
+                {!isEditMode ? (
+                  <View style={styles.singleIcon}>
+                    <TouchableOpacity onPress={() => setIsEditMode(true)}>
+                      <FontAwesome name={'edit'} size={24} color={'white'} />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={styles.singleIcon}>
+                    <TouchableOpacity onPress={onEditPostItem}>
+                      <Ionicons
+                        name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
+                        size={24}
+                        color={'white'}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
                 <View style={styles.singleIcon}>
-                  <TouchableOpacity onPress={() => setIsEditMode(true)}>
-                    <FontAwesome name={'edit'} size={24} color={'white'} />
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View style={styles.singleIcon}>
-                  <TouchableOpacity onPress={onEditPostItem}>
-                    <Ionicons
-                      name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
-                      size={24}
-                      color={'white'}
+                  {!isCurrentReduxRecord ? (
+                    <ProgressUploadStatus
+                      isFailed={
+                        isValidValue(uploadProgress) && uploadProgress < 0
+                      }
+                      isComplete={isUploadComplete}
+                      progress={uploadProgress}
+                      onReUpload={onSavePost}
                     />
-                  </TouchableOpacity>
+                  ) : null}
                 </View>
-              )}
-              <View style={styles.singleIcon}>
-                {!isCurrentReduxRecord ? (
-                  <ProgressUploadStatus
-                    isFailed={
-                      isValidValue(uploadProgress) && uploadProgress < 0
-                    }
-                    isComplete={isUploadComplete}
-                    progress={uploadProgress}
-                    onReUpload={onSavePost}
-                  />
-                ) : null}
-              </View>
-            </Fragment>
-          ) : null}
-        </View>
+              </Fragment>
+            ) : null}
+          </View>
+        ) : null}
         <PostAudio
           isEditAllowed={isEditMode}
           initAudioItem={
@@ -158,7 +161,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     zIndex: 1000,
   },
- 
+
   singleIcon: {
     paddingRight: 30,
   },

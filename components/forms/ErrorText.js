@@ -4,7 +4,7 @@ const ErrorText = ({ errors, touched, name }) => {
   return (
     <HelperText
       type='error'
-      style={{ fontFamily: 'RobotoRegular' }}
+      style={{ fontFamily: 'RalewayRegular' }}
       visible={errors[name] != null && touched[name] === true}
     >
       {errors[name]}

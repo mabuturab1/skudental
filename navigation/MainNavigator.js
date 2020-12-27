@@ -33,6 +33,8 @@ import {
   UploadPhotoScreen,
   VerifyUsersScreen,
   WebViewLinkScreen,
+  UserRecordListScreen,
+  UserSingleRecordPreviewScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -45,7 +47,7 @@ const screenOptions = {
   headerTitleStyle: {
     alignSelf: 'flex-start',
     color: 'black',
-    fontFamily: 'RobotoBoldItalic',
+    fontFamily: 'RalewayBold',
   },
 
   headerTintColor: 'black',
@@ -265,6 +267,11 @@ export default mainStackNavigator = (auth) => (
       options={{ headerShown: false }}
       component={PreviewCarouselScreen}
     />
+    <Stack.Screen
+      name={routes.UserSingleRecordPreview}
+      options={{ headerShown: false }}
+      component={UserSingleRecordPreviewScreen}
+    />
     <Stack.Screen name={routes.PreviewRecord} component={PreviewRecordScreen} />
     <Stack.Screen
       name={routes.ImagePreview}
@@ -277,6 +284,10 @@ export default mainStackNavigator = (auth) => (
     />
     <Stack.Screen name={routes.WebviewLink} component={WebViewLinkScreen} />
     <Stack.Screen name={routes.Pricing} component={PricingScreen} />
+    <Stack.Screen
+      name={routes.UserRecordList}
+      component={UserRecordListScreen}
+    />
     <Stack.Screen
       name={routes.CreateTransportRequest}
       component={CreateTransportRequestScreen}

@@ -26,4 +26,6 @@ export const routes = {
   UploadPhoto: 'UploadPhoto',
   VerifyUsers: 'VerifyUsers',
   WebviewLink: 'WebviewLink',
+  UserRecordList:'UserRecordList',
+  UserSingleRecordPreview:"UserSingleRecordPreview"
 };

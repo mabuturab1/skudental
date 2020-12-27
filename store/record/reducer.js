@@ -14,6 +14,9 @@ import {
   GET_ALL_RECORDS_START,
   GET_ALL_RECORDS_SUCCESS,
   GET_ALL_RECORDS_FAILED,
+  GET_ALL_USER_RECORDS_START,
+  GET_ALL_USER_RECORDS_SUCCESS,
+  GET_ALL_USER_RECORDS_FAILED,
   GET_ALL_RECORD_WITH_MESSAGES_START,
   GET_ALL_RECORD_WITH_MESSAGES_SUCCESS,
   GET_ALL_RECORD_WITH_MESSAGES_FAILED,
@@ -30,7 +33,7 @@ import {
   CLEAR_UPLOADING_RECORD_POST,
   UPDATE_RECORD_POST_START,
   UPDATE_RECORD_POST_SUCCESS,
-  UPDATE_RECORD_POST_FAILED
+  UPDATE_RECORD_POST_FAILED,
 } from './actions';
 import {
   addApiUrlInRecordArr,
@@ -43,12 +46,14 @@ import {
 
 const initialState = {
   uploadingDataArr: [],
+  currentUserRecordsArr: [],
   serverRecordsArr: [],
   currentRecord: {},
   loading: {
     createRecord: false,
     updateRecord: false,
     getAllRecords: false,
+    getAllUserRecords: false,
     getAllRecordWithMessages: false,
     getAllMessages: false,
     sendRecordMessage: false,
@@ -57,6 +62,7 @@ const initialState = {
     createRecord: '',
     updateRecord: '',
     getAllRecords: '',
+    getAllUserRecords: '',
     getAllRecordWithMessages: '',
     getAllMessages: '',
     sendRecordMessage: '',
@@ -126,6 +132,26 @@ export default (state = initialState, action) => {
         ...state,
         loading: { ...state.loading, getAllRecords: false },
         error: { ...state.error, getAllRecords: action.payload },
+      };
+
+    case GET_ALL_USER_RECORDS_START:
+      return {
+        ...state,
+        currentUserRecordsArr: [],
+        loading: { ...state.loading, getAllUserRecords: true },
+        error: { ...state.error, getAllUserRecords: '' },
+      };
+    case GET_ALL_USER_RECORDS_SUCCESS:
+      return {
+        ...state,
+        currentUserRecordsArr: addApiUrlInRecordArr(action.payload),
+        loading: { ...state.loading, getAllUserRecords: false },
+      };
+    case GET_ALL_USER_RECORDS_FAILED:
+      return {
+        ...state,
+        loading: { ...state.loading, getAllUserRecords: false },
+        error: { ...state.error, getAllUserRecords: action.payload },
       };
 
     case GET_ALL_RECORD_WITH_MESSAGES_START:
@@ -228,22 +254,16 @@ export default (state = initialState, action) => {
             )
           : state.serverRecordsArr,
       };
-      case UPDATE_RECORD_POST_SUCCESS:
-        return {
-          ...state,
-          uploadingDataArr: !action.payload?.isServerRecord
-            ? updatePostObjInRecordsArr(
-                state.uploadingDataArr,
-                action.payload
-              )
-            : state.uploadingDataArr,
-          serverRecordsArr: action.payload.isServerRecord
-            ? updatePostObjInRecordsArr(
-                state.serverRecordsArr,
-                action.payload
-              )
-            : state.serverRecordsArr,
-        };
+    case UPDATE_RECORD_POST_SUCCESS:
+      return {
+        ...state,
+        uploadingDataArr: !action.payload?.isServerRecord
+          ? updatePostObjInRecordsArr(state.uploadingDataArr, action.payload)
+          : state.uploadingDataArr,
+        serverRecordsArr: action.payload.isServerRecord
+          ? updatePostObjInRecordsArr(state.serverRecordsArr, action.payload)
+          : state.serverRecordsArr,
+      };
     case UPDATE_CURRENT_RECORD:
       return {
         ...state,

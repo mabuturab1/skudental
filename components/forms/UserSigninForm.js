@@ -127,15 +127,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   registerButtonText: {
-    fontFamily: 'RobotoLight',
+    fontFamily: 'RalewayLight',
   },
   signupText: {
-    fontFamily: 'RobotoRegular',
+    fontFamily: 'RalewayRegular',
     color: ThemeColors.primary,
     paddingLeft: 5,
   },
   forgotPassword: {
-    fontFamily: 'RobotoLight',
+    fontFamily: 'RalewayLight',
     color: ThemeColors.lightBlack,
   },
 });

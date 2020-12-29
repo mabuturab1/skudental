@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { ThemeColors } from '../../constants/Colors';
 import { routes } from '../../constants/routes';
 import { isValidValue } from '../../helpers/Utils';
 import { uploadRecordPhoto } from '../../store/record/actions';
@@ -88,7 +89,7 @@ const UploadPostItem = ({
               durationOnRight={true}
               textColor='black'
               onlyIcon={true}
-              color='black'
+              color={ThemeColors.black}
             />
           ) : null}
         </View>

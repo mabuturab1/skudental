@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import { LoadingIndicator } from '..';
+import LoadingIndicator from '../loader/LoadingIndicator';
 import { ThemeColors } from '../../constants/Colors';
 import { isAndroid } from '../../helpers/Utils';
 const EmptyList = ({ dataLoading, refreshData }) => {

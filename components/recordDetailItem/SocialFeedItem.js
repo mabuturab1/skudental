@@ -5,6 +5,7 @@ import { ThemeColors } from '../../constants/Colors';
 import { useSelector } from 'react-redux';
 import AudioPlayer from '../audio/AudioPlayer';
 import { routes } from '../../constants/routes';
+import RecordStatusSet from '../post/RecordStatusSetButton';
 const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
   const user = useSelector(({ auth }) => auth.user);
   const [activeCarouselItem, setActiveCarouselItem] = useState(0);
@@ -19,6 +20,16 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
     const item = record?.attachedPosts[index];
     return item.audioItem;
   };
+  const getRecordItem = () => {
+    if (record.recordOwner?._id === user?._id) return record;
+    return null;
+  };
+  const navigateToUserProfile = () => {
+    if (record?.recordOwner?._id)
+      navigation.navigate(routes.UserRecordList, {
+        userId: record?.recordOwner._id,
+      });
+  };
   console.log('record owner profile url', record?.recordOwner?.profileImageUrl);
   return (
     <View style={styles.cardWrapper}>
@@ -31,25 +42,21 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
           }
           style={styles.avatarImage}
         />
-        <TouchableOpacity
-          onPress={
-            record?.recordOwner?._id
-              ? () =>
-                  navigation.navigate(routes.UserRecordList, {
-                    userId: record?.recordOwner._id,
-                  })
-              : undefined
-          }
-        >
-          <View style={styles.usernameContainer}>
-            <Text> {record?.recordOwner?.name} </Text>
+        <TouchableOpacity activeOpacity={0.6} onPress={navigateToUserProfile}>
+          <View style={styles.userNameContainer}>
+            <Text style={styles.userName}> {record?.recordOwner?.name} </Text>
             {record?.createdAt ? (
               <Text style={styles.createdAt}> {record?.createdAt} </Text>
             ) : null}
           </View>
         </TouchableOpacity>
       </View>
-      <View>
+      <View style={styles.carouselItemsWrapper}>
+        {record?.attachedPosts.length > 1 ? (
+          <Text style={styles.indexWrapper}>{`${activeCarouselItem + 1}/${
+            record?.attachedPosts.length
+          }`}</Text>
+        ) : null}
         <CarouselItems
           navigation={navigation}
           currentRecordIndex={currentRecordIndex}
@@ -64,11 +71,14 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
           {getAudioItem(activeCarouselItem) ? (
             <AudioPlayer
               onlyIcon={true}
-              color='#aeaeae'
+              color={ThemeColors.socialFeedIconColor}
               durationOnRight={true}
               textColor='black'
               audioItem={getAudioItem(activeCarouselItem)}
             />
+          ) : null}
+          {getRecordItem() ? (
+            <RecordStatusSet record={getRecordItem()} />
           ) : null}
         </View>
         <View style={styles.feedTextWrapper}>
@@ -95,7 +105,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
     marginVertical: 3,
   },
-  usernameContainer: { justifyContent: 'center', flexDirection: 'column' },
+  userNameContainer: { justifyContent: 'center', flexDirection: 'column' },
+  userName: { fontFamily: 'RalewaySemiBold', color: ThemeColors.mediumBlack },
   createdAt: { fontSize: 10 },
   ownerNameText: {
     fontSize: 18,
@@ -114,6 +125,22 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   feedTextWrapper: { height: 40 },
+  carouselItemsWrapper: { position: 'relative' },
+  indexWrapper: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    fontSize: 15,
+    zIndex: 1000,
+    backgroundColor: ThemeColors.mediumBlack,
+    borderRadius: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    color: 'white',
+    textAlignVertical: 'center',
+    fontFamily: 'RalewaySemiBold',
+    lineHeight: 18,
+  },
   feedText: {
     fontSize: 14,
     paddingHorizontal: 15,

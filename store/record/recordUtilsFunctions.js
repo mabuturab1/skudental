@@ -5,6 +5,14 @@ export const getNewCopy = (uploadingData) =>
     ...el,
     attachedPosts: el.attachedPosts.map((item) => ({ ...item })),
   }));
+export const getUpdatedRecord = (allRecords, payload) => {
+  let updatedRecord = getNewCopy(allRecords);
+  updatedRecord = updatedRecord.map((el) => {
+    if (el._id === payload._id) return getTransformedRecord(payload);
+    return { ...el };
+  });
+  return updatedRecord;
+};
 export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
   const newUploadingData = getNewCopy(uploadingData);
   if (newUploadingData.length <= payload.recordIndex) {
@@ -98,7 +106,7 @@ const getTransformedPost = (item) => ({
   imageUrl: item.compressedPhoto?.compressedPhotoUrl
     ? processImageUrl(API_URL + '/', item.compressedPhoto?.compressedPhotoUrl)
     : processImageUrl(API_URL + '/', item.photo?.photoUrl),
-  originalImageUrl: processImageUrl(API_URL + '/' , item.photo?.photoUrl),
+  originalImageUrl: processImageUrl(API_URL + '/', item.photo?.photoUrl),
   audioUrl: item.audioUrl
     ? processImageUrl(API_URL + '/', item.audioUrl)
     : null,
@@ -113,7 +121,8 @@ const getTransformedRecord = (serverPost) => {
       ...serverPost.recordOwner,
       profileImageUrl: serverPost.recordOwner?.profileImageUrl
         ? processImageUrl(
-            API_URL + '/' , serverPost?.recordOwner?.profileImageUrl
+            API_URL + '/',
+            serverPost?.recordOwner?.profileImageUrl
           )
         : undefined,
     },

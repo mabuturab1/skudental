@@ -20,12 +20,15 @@ import PostItem from './post/PostItem';
 import UploadPostItem from './post/UploadPostItem';
 import CircularProgressbar from './progressbar/CircularProgressbar';
 import PostAudio from './post/PostAudio';
+import RecordStatusSet from './post/RecordStatusSetButton';
 import SingleChatView from './chat/SingleChatView';
 import ProgressUploadStatus from './progressUploadStatus/ProgressUploadStatus';
 import ShowAlert from './alert/ShowAlert';
 import UserVerification from './admin/UserVerification';
 import TransportDetailItem from './transport/TransportDetailItem';
 import ChatRoomsListener from './chat/ChatRoomsListener';
+import BottomModalSheet from './bottomModal/BottomModal';
+
 import {
   FormWrapper,
   FormInputWrapper,
@@ -68,4 +71,6 @@ export {
   TransportDetailItem,
   ChatRoomsListener,
   EmptyList,
+  BottomModalSheet,
+  RecordStatusSet
 };

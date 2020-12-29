@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ThemeColors } from '../../constants/Colors';
+import LoadingIndicator from '../loader/LoadingIndicator';
 const CustomRoundedButton = ({ style, onPress, title, icon, other, loading=false }) => (
  
    <TouchableOpacity

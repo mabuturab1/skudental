@@ -3,5 +3,9 @@ export const ThemeColors = {
   scecondary: '#fff',
   listItemBorder: '#dddddd',
   lightBlack: 'rgba(0,0,0,0.5)',
-  red:'#f1453d'
+  mediumBlack: 'rgba(0,0,0,0.8)',
+  red:'#f1453d',
+  black:'#000000',
+  // iconColor:'#aeaeae'
+  socialFeedIconColor:'black'
 };

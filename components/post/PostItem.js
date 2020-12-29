@@ -15,7 +15,7 @@ import ProgressUploadStatus from '../progressUploadStatus/ProgressUploadStatus';
 const PostItem = ({
   postObj,
   itemIndex,
-  showPostEditButtons = true,
+  isPreviewOnly = false,
   isEditAllowed = true,
   onAddComments = () => {},
   onAudioUpdate = () => {},
@@ -37,7 +37,7 @@ const PostItem = ({
   return (
     <View style={styles.imageItemWrapper}>
       <View style={styles.topIconsContainer}>
-        {showPostEditButtons ? (
+        {!isPreviewOnly ? (
           <View style={styles.postButtons}>
             <View style={styles.singleIcon}>
               <TouchableOpacity onPress={onDelete}>
@@ -78,9 +78,9 @@ const PostItem = ({
               </Fragment>
             ) : null}
           </View>
-        ) : null}
+        ) : <View></View>}
         <PostAudio
-          isEditAllowed={isEditMode}
+          isEditAllowed={isEditMode && !isPreviewOnly}
           initAudioItem={
             postObj.audioUrl ? { uri: postObj.audioUrl } : postObj.audioItem
           }
@@ -106,7 +106,7 @@ const PostItem = ({
         />
       </View>
 
-      {!canSwitchToEditMode ? (
+      {!canSwitchToEditMode && !isPreviewOnly ? (
         <View style={styles.sendButton}>
           <RoundedButton
             onPress={sendImageData}

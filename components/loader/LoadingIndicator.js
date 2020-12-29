@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-const LoadingIndicator = (props) => {
-  const { color = '#00ff00', alignCenter = true } = props || {};
+const LoadingIndicator = ({color = '#00ff00', alignCenter = true}={}) => {
+  // const { color = '#00ff00', alignCenter = true } = props || {};
   let indicatorStyles = { ...styles.centerAlign };
   if (!alignCenter) {
     indicatorStyles = {};

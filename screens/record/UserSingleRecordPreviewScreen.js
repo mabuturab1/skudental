@@ -4,9 +4,9 @@ import { PostItem } from '../../components';
 import Carousel from 'react-native-snap-carousel';
 
 const UserSingleRecordPreviewScreen = ({ route, navigation }) => {
-  const { recordPost = {} } = route.params;
+  const { record = {} } = route.params;
   const windowWidth = Dimensions.get('window').width;
-  const { attachedPosts = [] } = recordPost;
+  const { attachedPosts = [] } = record;
 
   const renderItem = ({ item, index }) => {
     return (
@@ -14,7 +14,7 @@ const UserSingleRecordPreviewScreen = ({ route, navigation }) => {
         postObj={item}
         itemIndex={index}
         isLastItem={index + 1 === attachedPosts.length}
-        showPostEditButtons={false}
+        isPreviewOnly={true}
       />
     );
   };

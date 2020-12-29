@@ -37,6 +37,7 @@ import {
 } from './actions';
 import {
   addApiUrlInRecordArr,
+  getUpdatedRecord,
   getUpdatedUploadingDataObj,
   removeAttachedPostFromRecordsArrItem,
   removeItemFromUploadingArr,
@@ -104,7 +105,10 @@ export default (state = initialState, action) => {
     case UPDATE_RECORD_SUCCESS:
       return {
         ...state,
-
+        serverRecordsArr: getUpdatedRecord(
+          state.serverRecordsArr,
+          action.payload
+        ),
         loading: { ...state.loading, updateRecord: false },
       };
     case UPDATE_RECORD_FAILED:

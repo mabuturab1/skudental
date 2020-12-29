@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
@@ -15,7 +15,7 @@ import {
   FlatButton,
 } from '../../components';
 import ImagePicker from 'react-native-image-crop-picker';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { routes } from '../../constants/routes';
 import {
   clearUploadedRecord,
@@ -23,8 +23,6 @@ import {
   updateCurrentRecord,
 } from '../../store/record/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { isAndroid } from '../../helpers/Utils';
-import { StackActions } from '@react-navigation/native';
 const CreateRecordScreen = ({ navigation }) => {
   const formikRef = useRef();
   const dispatch = useDispatch();
@@ -75,6 +73,7 @@ const CreateRecordScreen = ({ navigation }) => {
     submissionDate: getCurrentDate(),
     patientName: recordData.patientName || '',
     additionalNotes: recordData.additionalNotes || '',
+    access: recordData.access || { isPublic: false },
   });
   const getPhotos = (values) => {
     ImagePicker.openPicker({
@@ -131,8 +130,27 @@ const CreateRecordScreen = ({ navigation }) => {
           values,
           errors,
           touched,
+          setFieldValue,
+          setFieldTouched,
         }) => (
           <FormWrapper style={styles.wrapper}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() =>
+                setFieldValue('access', { isPublic: !values.access.isPublic })
+              }
+            >
+              <View style={styles.statusSet}>
+                <Text style={styles.statusLabel}>Visibility Status:</Text>
+                <Text style={styles.statusValue}>
+                  {values?.access?.isPublic ? 'Public' : 'Private'}
+                </Text>
+                <MaterialIcons
+                  size={24}
+                  name={values?.access?.isPublic ? 'public' : 'public-off'}
+                />
+              </View>
+            </TouchableOpacity>
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
                 name='submissionDate'
@@ -209,6 +227,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingRight: 10,
   },
+  statusSet: { flexDirection: 'row' },
+  statusLabel: { fontSize: 14, fontFamily: 'RalewayBold', marginRight: 10 },
+  statusValue: { fontSize: 14, fontFamily: 'RalewaySemiBold', marginRight: 5 },
   imageList: {
     flex: 1,
   },

@@ -591,19 +591,22 @@ export const updateRecordPost = (
   };
 };
 
-export const updateRecord = (recordData) => {
+export const updateRecord = (id, recordData, isSuccess) => {
   return async (dispatch, getState) => {
     try {
       dispatch(updateRecordStart());
       const response = await axios.post(
-        API_URL + apiRoutes.UPLOAD_RECORD_FILE,
+        API_URL + apiRoutes.UPDATE_RECORD + '/' + id,
         recordData,
         { ...getAxiosConfig(getState) }
       );
       if (isValidServerResponse(response)) {
         dispatch(updateRecordSuccess(getServerResponseData(response)));
+
+        isSuccess(true);
       } else if (response.error) {
         dispatch(updateRecordFailed(response.error));
+        isSuccess(false);
       }
     } catch (error) {
       dispatch(updateRecordFailed('An error occurred'));
@@ -613,6 +616,7 @@ export const updateRecord = (recordData) => {
           'Cannot update record' + getErrorMessage(error)
         )
       );
+      isSuccess(false);
     }
   };
 };

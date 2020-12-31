@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import AudioPlayer from '../audio/AudioPlayer';
 import { routes } from '../../constants/routes';
 import RecordStatusSet from '../post/RecordStatusSetButton';
+import ViewMoreText from '../viewMoreText/ViewMoreText';
 const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
   const user = useSelector(({ auth }) => auth.user);
   const [activeCarouselItem, setActiveCarouselItem] = useState(0);
@@ -83,9 +84,11 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
         </View>
         <View style={styles.feedTextWrapper}>
           {getTextItem(activeCarouselItem) ? (
-            <Text style={styles.feedText}>
-              {getTextItem(activeCarouselItem)}
-            </Text>
+            <ViewMoreText numberOfLines={2} textStyle={styles.feedText}>
+              <Text style={styles.feedText}>
+                {getTextItem(activeCarouselItem)}
+              </Text>
+            </ViewMoreText>
           ) : (
             <Text style={{ ...styles.feedText, opacity: 0.2 }}>
               No comments{' '}
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
-  feedTextWrapper: { height: 40 },
+  feedTextWrapper: { minHeight: 50 },
   carouselItemsWrapper: { position: 'relative' },
   indexWrapper: {
     position: 'absolute',

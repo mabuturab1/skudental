@@ -37,6 +37,7 @@ import {
 
 import ErrorText from './forms/ErrorText';
 import EmptyList from './emptyList/EmptyList';
+import ViewMoreText from './viewMoreText/ViewMoreText';
 export {
   HeaderButton,
   LoadingIndicator,
@@ -72,5 +73,6 @@ export {
   ChatRoomsListener,
   EmptyList,
   BottomModalSheet,
-  RecordStatusSet
+  RecordStatusSet,
+  ViewMoreText,
 };

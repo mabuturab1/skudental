@@ -9,6 +9,13 @@ export const UserVerificationStatus = {
   Rejected: 2,
 };
 
+export const EmailSendingStatus = {
+  Pending: 0,
+  SendRequired: 1,
+  NotApproved: 2,
+  EmailSent: 3,
+};
+
 export const getUserVerificationLabel = (status) => {
   switch (status) {
     case UserVerificationStatus.Pending:

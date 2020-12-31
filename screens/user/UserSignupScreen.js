@@ -15,10 +15,10 @@ const UserSignUpScreen = ({ navigation }) => {
         { email: values.email, password: values.password },
         (isSuccess) => {
           if (isSuccess) {
-            dispatch(sendEmail());
+            // dispatch(sendEmail());
             navigation.reset({
               index: 0,
-              routes: [{ name: routes.Home }],
+              routes: [{ name: routes.UserNotApproved }],
             });
           }
         }

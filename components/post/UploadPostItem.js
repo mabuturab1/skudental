@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
+import ViewMoreText from '../viewMoreText/ViewMoreText';
 import { ThemeColors } from '../../constants/Colors';
 import { routes } from '../../constants/routes';
 import { isValidValue } from '../../helpers/Utils';
@@ -62,7 +63,11 @@ const UploadPostItem = ({
     <View style={styles.wrapper}>
       <View style={{ ...styles.iconWrapper, ...styles.smallPadding }}>
         {postObj.additionalComments != null ? (
-          <Text style={styles.commentsText}>{postObj.additionalComments}</Text>
+          <ViewMoreText numberOfLines={2}>
+            <Text style={styles.commentsText}>
+              {postObj.additionalComments}
+            </Text>
+          </ViewMoreText>
         ) : null}
         <TouchableOpacity
           onPress={() =>

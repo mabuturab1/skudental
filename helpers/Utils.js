@@ -10,6 +10,8 @@ export const isUserAuthenticated = (token) => {
   return false;
 };
 
+export const isUserVerified = (user) => user?.role?.verifiedByAdmin;
+
 export const getAxiosConfig = (getState, additionalHeader = {}) => {
   const { auth } = getState();
   return {

@@ -4,7 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { HeaderButton, MaterialMenu } from '../components';
-import { isAndroid, isUserAuthenticated } from '../helpers/Utils';
+import {
+  isAndroid,
+  isUserAuthenticated,
+  isUserVerified,
+} from '../helpers/Utils';
 import { Ionicons } from '@expo/vector-icons';
 import {
   RecordDetailsScreen,
@@ -35,6 +39,7 @@ import {
   WebViewLinkScreen,
   UserRecordListScreen,
   UserSingleRecordPreviewScreen,
+  UserNotApprovedScreen,
 } from '../screens';
 import { StyleSheet, View } from 'react-native';
 import { ThemeColors } from '../constants/Colors';
@@ -184,7 +189,7 @@ const popupMenu = (navigation, user) => {
     { label: 'Lab Docket', id: 'LAB_DOCKET' },
     { label: 'Logout', id: 'LOGOUT' },
   ];
-  if (isAdmin || true)
+  if (isAdmin)
     popupMenuData.unshift({ label: 'Verify Users', id: 'VERIFY_USERS' });
   const onPopupMenuClick = (id) => {
     switch (id) {
@@ -248,7 +253,11 @@ export default mainStackNavigator = (auth) => (
   <Stack.Navigator
     screenOptions={screenOptions}
     initialRouteName={
-      isUserAuthenticated(auth.token) ? routes.Home : routes.Auth
+      isUserAuthenticated(auth.token)
+        ? isUserVerified(auth?.user)
+          ? routes.Home
+          : routes.UserNotApproved
+        : routes.Auth
     }
   >
     <Stack.Screen
@@ -297,6 +306,11 @@ export default mainStackNavigator = (auth) => (
       options={{ headerShown: false }}
       name={routes.Auth}
       component={AuthNavigator}
+    />
+    <Stack.Screen
+      options={{ headerShown: false }}
+      name={routes.UserNotApproved}
+      component={UserNotApprovedScreen}
     />
     <Stack.Screen
       options={{ headerShown: false }}

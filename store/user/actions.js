@@ -1,7 +1,10 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL, apiRoutes } from '../../constants/apiRoutes';
-import { isSuccessDefault } from '../../constants/UIConstants';
+import {
+  EmailSendingStatus,
+  isSuccessDefault,
+} from '../../constants/UIConstants';
 import {
   getAxiosConfig,
   getErrorMessage,
@@ -120,7 +123,6 @@ export const sendEmail = () => {
     try {
       console.log('sending email');
       await auth.currentUser.sendEmailVerification();
-      console.log('email sent');
     } catch (error) {
       console.log('error in sending email', error);
     }
@@ -152,6 +154,13 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
 
       if (isValidServerResponse(response)) {
         const result = getServerResponseData(response);
+        if (
+          result.sendVerificationEmailToUser ===
+            EmailSendingStatus.SendRequired &&
+          !emailVerified
+        ) {
+          dispatch(sendEmail());
+        }
         dispatch(userSigninSuccess(result));
 
         const token = result.token;
@@ -159,7 +168,7 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
         await AsyncStorage.setItem('token', token);
 
         connectSocketIo(token);
-        isSuccess(true);
+        isSuccess(true, result?.user);
       } else if (response.error) {
         dispatch(userSigninFailed(response.error));
         isSuccess(false);

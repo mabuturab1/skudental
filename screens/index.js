@@ -19,6 +19,7 @@ import UpdateUserScreen from './user/UpdateUserScreen';
 import ConfirmPasswordScreen from './user/ConfirmPasswordScreen';
 import UploadPhotoScreen from './user/UploadPhotoScreen';
 import LogoutScreen from './user/LogoutScreen';
+import UserNotApprovedScreen from './user/UserNotApprovedScreen';
 import EmailScreen from './user/passwordReset/EmailScreen';
 import PasswordResetScreen from './user/passwordReset/PasswordResetScreen';
 import PinScreen from './user/passwordReset/PinScreen';
@@ -56,4 +57,5 @@ export {
   WebViewLinkScreen,
   UserRecordListScreen,
   UserSingleRecordPreviewScreen,
+  UserNotApprovedScreen,
 };

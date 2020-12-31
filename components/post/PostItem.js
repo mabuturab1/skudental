@@ -102,6 +102,7 @@ const PostItem = ({
           placeholderTextColor='rgba(255,255,255,0.6)'
           placeholder={isEditMode ? 'Add comments' : ''}
           editable={isEditMode}
+          multiline
           onChangeText={(text) => onAddComments(itemIndex, text)}
         />
       </View>

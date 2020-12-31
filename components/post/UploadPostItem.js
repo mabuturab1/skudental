@@ -63,11 +63,13 @@ const UploadPostItem = ({
     <View style={styles.wrapper}>
       <View style={{ ...styles.iconWrapper, ...styles.smallPadding }}>
         {postObj.additionalComments != null ? (
-          <ViewMoreText numberOfLines={2}>
-            <Text style={styles.commentsText}>
-              {postObj.additionalComments}
-            </Text>
-          </ViewMoreText>
+          <View style={styles.additionalCommentsWrapper}>
+            <ViewMoreText numberOfLines={2}>
+              <Text style={styles.commentsText}>
+                {postObj.additionalComments}
+              </Text>
+            </ViewMoreText>
+          </View>
         ) : null}
         <TouchableOpacity
           onPress={() =>
@@ -116,16 +118,19 @@ const styles = StyleSheet.create({
   wrapper: {
     width: Dimensions.get('screen').width,
     flex: 1,
-    height: 500,
+    minHeight: 550,
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     marginVertical: 10,
   },
+  additionalCommentsWrapper: {
+    flex: 1,
+  },
   iconWrapper: {
     flexDirection: 'row',
     width: '100%',
-    height: 40,
+    minHeight: 55,
 
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
   },
   singleIconWrapper: {
     width: 40,
-    height: '100%',
+    height: 55,
     justifyContent: 'center',
     alignItems: 'flex-end',
   },

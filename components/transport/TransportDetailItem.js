@@ -10,7 +10,8 @@ const UserVerification = ({
   disableButtons = false,
 }) => {
   const data = [
-    { label: 'Pratice Name', key: 'praticeName' },
+    { label: 'Pratice Name', key: 'practiceName' },
+    { label: 'Status', key: 'status' },
   
   ];
   const user = useSelector(({ auth }) => auth.user);

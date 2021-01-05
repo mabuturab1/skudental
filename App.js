@@ -69,11 +69,13 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor} onBeforeLift={showApp}>
-        <NavigationContainer>
-          <MainNavigationScreens />
-          <ShowAlert />
-          <ChatRoomsListener />
-        </NavigationContainer>
+        {fontsLoaded ? (
+          <NavigationContainer>
+            <MainNavigationScreens />
+            <ShowAlert />
+            <ChatRoomsListener />
+          </NavigationContainer>
+        ) : null}
       </PersistGate>
     </Provider>
   );

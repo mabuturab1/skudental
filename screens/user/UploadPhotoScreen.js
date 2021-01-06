@@ -11,11 +11,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateUser, updateUserPhoto } from '../../store/actions';
 
 import ImagePicker from 'react-native-image-crop-picker';
-import { ProgressUploadStatus } from '../../components';
+import { LoadingIndicator, ProgressUploadStatus } from '../../components';
 import moment from 'moment';
 import { FontAwesome } from '@expo/vector-icons';
 const UploadPhotoScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const user = useSelector(({ auth }) => auth.user);
   const nextUpdateDue = useRef(0);
   const [progress, setProgress] = useState(0);
@@ -71,6 +72,8 @@ const UploadPhotoScreen = ({ navigation }) => {
         <View style={styles.uploadPhotoWrapper}>
           <Image
             style={styles.roundPhoto}
+            onLoadStart={() => setLoading(true)}
+            onLoadEnd={() => setLoading(false)}
             source={
               uploadedPhoto.current
                 ? { uri: uploadedPhoto.current.path }
@@ -84,6 +87,7 @@ const UploadPhotoScreen = ({ navigation }) => {
           </View>
         </View>
       </TouchableOpacity>
+      {loading ? <LoadingIndicator /> : null}
 
       {uploadedPhoto.current ? (
         <View style={styles.uploadStatus}>
@@ -105,6 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
+    position: 'relative',
   },
   uploadPhotoWrapper: { position: 'relative' },
   roundPhoto: {

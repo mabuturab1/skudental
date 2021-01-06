@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Dimensions, Text } from 'react-native';
+import { LoadingIndicator } from '..';
 const fullWidth = Dimensions.get('window').width;
-const CarouselItem = ({ postObj }) => {
-  const getNewHeight = (width, tempHeight) => {
-    if (!width || !tempHeight) return tempHeight;
-    return tempHeight * (fullWidth / width);
+const CarouselItem = ({ postObj, heightReceived }) => {
+  const getEstimatedHeight = (resizedWidth, originalDimesions) => {
+    if (!resizedWidth || !originalDimesions) return null;
+    if (!originalDimesions.width || !originalDimesions.height) return null;
+    const estimatedHeight =
+      resizedWidth * (originalDimesions.height / originalDimesions.width);
+    const newHeight = estimatedHeight * (fullWidth / resizedWidth);
+    return newHeight;
   };
   const [height, setHeight] = useState(
-    getNewHeight(
+    getEstimatedHeight(
       postObj?.compressedPhoto?.dimensions?.width,
-      postObj?.compressedPhoto?.dimensions?.height
+      postObj?.photo?.dimensions
     )
   );
+  const [loading, setLoading] = useState(false);
   const imageUrl = postObj.compressedPhoto?.photoUrl;
+
   useEffect(() => {
     if (height !== null) return;
     Image.getSize(imageUrl, (width, height) => {
@@ -24,10 +31,13 @@ const CarouselItem = ({ postObj }) => {
     <View style={styles.imageWrapper}>
       <Image
         onError={(error) => console.log('Cannot load image')}
-        style={{ ...styles.image, height }}
+        onLoadStart={() => setLoading(true)}
+        onLoadEnd={() => setLoading(false)}
+        style={{ ...styles.image, height: height || 300 }}
         source={{ uri: imageUrl }}
         // resizeMode={FastImage.resizeMode.contain}
       />
+      {loading ? <LoadingIndicator /> : null}
     </View>
   );
 };

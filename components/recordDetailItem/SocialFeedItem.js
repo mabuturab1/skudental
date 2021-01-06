@@ -31,7 +31,6 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
         userId: record?.recordOwner._id,
       });
   };
-  console.log('record owner profile url', record?.recordOwner?.profileImageUrl);
   return (
     <View style={styles.cardWrapper}>
       <View style={styles.infoContainer}>

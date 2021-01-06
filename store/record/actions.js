@@ -756,7 +756,7 @@ export const getAllRecords = (recordData = {}) => {
       );
       if (isValidServerResponse(response)) {
         let record = getServerResponseData(response);
-
+        console.log('all records are', record);
         dispatch(getAllRecordsSuccess(record));
       } else if (response.error) {
         dispatch(getAllRecordsFailed(response.error));

@@ -135,7 +135,8 @@ const getTransformedRecord = (serverPost) => {
   };
 };
 const processImageUrl = (path, url) => {
-  return path + url.replace(/^\/+/g, '');
+  // return path + url.replace(/^\/+/g, '');
+  return url;
 };
 export const addApiUrlInRecordArr = (record) => {
   let updatedRecordArr = [];

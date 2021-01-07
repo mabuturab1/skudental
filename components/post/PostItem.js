@@ -33,7 +33,6 @@ const PostItem = ({
   };
   const [isEditMode, setIsEditMode] = useState(isEditAllowed);
   const [canSwitchToEditMode] = useState(isEditAllowed === false);
-  console.log('post obj is', postObj);
   return (
     <View style={styles.imageItemWrapper}>
       <View style={styles.topIconsContainer}>

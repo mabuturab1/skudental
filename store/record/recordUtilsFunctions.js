@@ -1,11 +1,11 @@
 import { API_URL } from '../../constants/apiRoutes';
 import moment from 'moment';
-export const getNewCopy = (uploadingData) =>
+export const getNewCopy = (uploadingData = []) =>
   uploadingData.map((el) => ({
     ...el,
     attachedPosts: el.attachedPosts.map((item) => ({ ...item })),
   }));
-export const getUpdatedRecord = (allRecords, payload) => {
+export const getUpdatedRecord = (allRecords = [], payload) => {
   let updatedRecord = getNewCopy(allRecords);
   updatedRecord = updatedRecord.map((el) => {
     if (el._id === payload._id) return getTransformedRecord(payload);
@@ -13,7 +13,7 @@ export const getUpdatedRecord = (allRecords, payload) => {
   });
   return updatedRecord;
 };
-export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
+export const getUpdatedUploadingDataObj = (uploadingData = [], payload) => {
   const newUploadingData = getNewCopy(uploadingData);
   if (newUploadingData.length <= payload.recordIndex) {
     return newUploadingData;
@@ -46,7 +46,7 @@ export const getUpdatedUploadingDataObj = (uploadingData, payload) => {
   return newUploadingData;
 };
 
-export const updateRecordObjInUploadingData = (uploadingData, payload) => {
+export const updateRecordObjInUploadingData = (uploadingData = [], payload) => {
   const newUploadingData = getNewCopy(uploadingData);
   if (newUploadingData.length <= payload.recordIndex) {
     return newUploadingData;
@@ -57,7 +57,7 @@ export const updateRecordObjInUploadingData = (uploadingData, payload) => {
   return newUploadingData;
 };
 
-export const updatePostObjInRecordsArr = (uploadingData, payload) => {
+export const updatePostObjInRecordsArr = (uploadingData = [], payload) => {
   const newUploadingData = getNewCopy(uploadingData);
   if (newUploadingData.length <= payload.currentRecordIndex) {
     return newUploadingData;
@@ -65,19 +65,21 @@ export const updatePostObjInRecordsArr = (uploadingData, payload) => {
   let attachedPosts = newUploadingData[payload.itemIndex].attachedPosts;
   if (attachedPosts.length <= payload.itemIndex) return newUploadingData;
   attachedPosts[payload.itemIndex] = getTransformedPost(payload.updatedPostObj);
-  console.log('updated post is', attachedPosts[payload.itemIndex]);
   newUploadingData[payload.itemIndex].attachedPosts = attachedPosts;
   return newUploadingData;
 };
 
-export const removeItemFromUploadingArr = (uploadingArr, index) => {
+export const removeItemFromUploadingArr = (uploadingArr = [], index) => {
   let updatedUploadingArr = getNewCopy(uploadingArr);
   if (updatedUploadingArr.length > index) {
     updatedUploadingArr.splice(index, 1);
   }
   return updatedUploadingArr;
 };
-export const removeAttachedPostFromRecordsArrItem = (recordsArr, payload) => {
+export const removeAttachedPostFromRecordsArrItem = (
+  recordsArr = [],
+  payload
+) => {
   let updatedRecordsArr = getNewCopy(recordsArr);
 
   if (updatedRecordsArr.length > payload.index) {

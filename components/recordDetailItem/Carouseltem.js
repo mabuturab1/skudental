@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Dimensions, Text } from 'react-native';
-import { LoadingIndicator } from '..';
+import LoadingIndicator from '../loader/LoadingIndicator';
 const fullWidth = Dimensions.get('window').width;
 const CarouselItem = ({ postObj, heightReceived }) => {
   const getEstimatedHeight = (resizedWidth, originalDimesions) => {

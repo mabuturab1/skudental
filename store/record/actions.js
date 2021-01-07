@@ -519,7 +519,6 @@ export const proceedForPostUpdate = (
           uploadProgressUpdate,
           (dataUploaded, updatedPostObj) => {
             isSuccess(dataUploaded);
-            console.log('data uploaded is', dataUploaded);
 
             if (dataUploaded) {
               dispatch(
@@ -756,7 +755,6 @@ export const getAllRecords = (recordData = {}) => {
       );
       if (isValidServerResponse(response)) {
         let record = getServerResponseData(response);
-        console.log('all records are', record);
         dispatch(getAllRecordsSuccess(record));
       } else if (response.error) {
         dispatch(getAllRecordsFailed(response.error));

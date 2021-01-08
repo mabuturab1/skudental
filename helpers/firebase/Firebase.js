@@ -22,6 +22,7 @@
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
 const authModule = auth();
+const EmailAuthProvider = auth.EmailAuthProvider;
 const messagingModule = messaging();
 import firestore from '@react-native-firebase/firestore';
 
@@ -41,5 +42,6 @@ export {
   messagingModule as messaging,
   chatRoomsCollection,
   firestore,
+  EmailAuthProvider,
   requestUserPermission,
 };

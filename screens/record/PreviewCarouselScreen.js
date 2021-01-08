@@ -26,21 +26,6 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
   };
 
   const sendImageData = () => {
-    console.log('send image data is');
-    // dispatch(
-    //   startUploadingData(
-    //     {
-    //       recordData: recordData,
-    //       attachedPosts: updatedAttachedPosts.current,
-    //     },
-    //     uploadingDataArr.length
-    //   )
-    // );
-    // navigation.dispatch(
-    //   StackActions.replace(routes.PreviewRecord, {
-    //     currentRecordIndex: uploadingDataArr.length,
-    //   })
-    // );
     dispatch(
       updateCurrentRecord({
         recordData,
@@ -50,7 +35,6 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
     navigation.goBack();
   };
   const deletePost = (item, index) => {
-    console.log('item is',  index)
     updatedAttachedPosts.current.splice(index, 1);
     dispatch(proceedForPostDeletion(item._id, true, null, index, false));
   };

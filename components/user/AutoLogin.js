@@ -16,7 +16,6 @@ const AutoLogin = () => {
     const decoded = jwt_decode(token);
     const expirationTime =
       decoded.exp * 1000 - Date.now() - tokenExpirationMarginMillis;
-    console.log('expiration time is', expirationTime);
     if (expirationTime < 0) {
       return;
     }

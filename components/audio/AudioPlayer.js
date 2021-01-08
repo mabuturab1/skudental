@@ -52,7 +52,6 @@ const AudioPlayer = ({
   };
 
   const playSound = async () => {
-    console.log('audio item uri is', audioItem.uri);
     try {
       if (!audioItem.uri) return;
       const { sound } = await Audio.Sound.createAsync(
@@ -85,8 +84,9 @@ const AudioPlayer = ({
   useEffect(() => {
     return playingSound
       ? () => {
-          console.log('Unloading Sound');
-          playingSound.unloadAsync();
+          try {
+            playingSound.unloadAsync();
+          } catch (error) {}
         }
       : undefined;
   }, [playingSound]);

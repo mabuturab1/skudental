@@ -17,9 +17,6 @@ const ViewMoreTextContent = ({
 
   const onTextLayout = useCallback((e) => {
     setLengthMore(e.nativeEvent.lines.length >= numberOfLines); //to check the text is more than 4 lines or not
-    // console.log(e.nativeEvent);
-    console.log('number of lines', numberOfLines)
-    console.log('text num lines is', e.nativeEvent.lines.length >= numberOfLines);
   }, []);
 
   return (

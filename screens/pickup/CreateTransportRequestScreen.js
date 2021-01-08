@@ -21,10 +21,8 @@ const CreateTransportRequestScreen = ({ navigation }) => {
     practiceName: Yup.string().required('Kindly enter an practiceName'),
   });
   const onSubmit = (values) => {
-    console.log('dispatching request');
     dispatch(
       createTransportRequest(values, (isSuccess) => {
-        console.log('is request success', isSuccess);
         if (isSuccess) {
           navigation.goBack();
         }

@@ -57,7 +57,6 @@ const UploadPhotoScreen = ({ navigation }) => {
       updateUserPhoto(
         uploadedPhoto.current,
         (isSuccess) => {
-          console.log('update successful', isSuccess);
           setIsComplete(isSuccess);
           setIsFailed(!isSuccess);
         },

@@ -1,4 +1,8 @@
-import { SHOW_ALERT_MESSAGE, CLEAR_ALERT_MESSAGE } from './actions';
+import {
+  SHOW_ALERT_MESSAGE,
+  CLEAR_ALERT_MESSAGE,
+  CLEAR_ALL_ALERTS,
+} from './actions';
 
 const initialState = {
   alertCount: 0,
@@ -27,6 +31,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         alertArr: state.alertArr.filter((el) => el.id !== action.payload),
+      };
+    case CLEAR_ALL_ALERTS:
+      return {
+        ...state,
+        alertArr: [],
       };
   }
   return state;

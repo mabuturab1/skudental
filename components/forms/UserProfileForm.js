@@ -25,42 +25,29 @@ const UserProfileForm = ({
   loading = false,
 }) => {
   const getValidationSchema = () => {
-    const signupObj = {
-      password: Yup.string()
-        .min(6, 'Password should be atleast 6 characters')
-        .required('Kindly enter a valid password'),
-    };
-    const updateUserObj = {
-      currentPassword: Yup.string()
-        .min(6, 'Password should be atleast 6 characters')
-        .required('Kindly enter a valid password'),
-      newPassword: Yup.string()
-        .min(6, 'Password should be atleast 5 characters')
-        .required('Kindly enter a valid password'),
-    };
     let schemaObj = {
       name: Yup.string().required('Kindly enter your name'),
       email: Yup.string()
         .trim()
         .email('Kindly enter a valid email')
         .required('Kindly enter your email'),
+      password: Yup.string()
+        .min(6, 'Password should be atleast 6 characters')
+        .required('Kindly enter a valid password'),
+
       confirmPassword: Yup.string()
         .min(5, 'Password should be atleast 5 characters')
         .required('Kindly enter a valid password')
         .oneOf([Yup.ref('password'), null], 'Passwords must match'),
     };
-    const mergeObj = isSignup ? signupObj : updateUserObj;
-    schemaObj = { ...schemaObj, ...mergeObj };
     return schemaObj;
   };
   const ValidationSchema = Yup.object(getValidationSchema());
 
   const getInitValues = () => ({
     name: initValues['name'] || '',
-    password: isSignup ? '' : undefined,
-    newPassword: !isSignup ? '' : undefined,
-    currentPassword: !isSignup ? '' : undefined,
-    confirmPassword: '',
+    password: initValues['password'] || '',
+    confirmPassword: initValues['password'] || '',
     email: initValues['email'] || '',
   });
   const roleData = [
@@ -109,33 +96,17 @@ const UserProfileForm = ({
               <ErrorText errors={errors} touched={touched} name='email' />
             </FormInputWrapper>
 
-            {!isSignup ? (
-              <FormInputWrapper style={styles.singleFormFieldWrapper}>
-                <FormTextInput
-                  placeholder='New Password'
-                  value={values.newPassword}
-                  onChangeText={handleChange('newPassword')}
-                  onBlur={handleBlur('newPassword')}
-                  secureTextEntry={true}
-                />
-                <ErrorText
-                  errors={errors}
-                  touched={touched}
-                  name='newPassword'
-                />
-              </FormInputWrapper>
-            ) : (
-              <FormInputWrapper style={styles.singleFormFieldWrapper}>
-                <FormTextInput
-                  placeholder='Password'
-                  value={values.password}
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  secureTextEntry={true}
-                />
-                <ErrorText errors={errors} touched={touched} name='password' />
-              </FormInputWrapper>
-            )}
+            <FormInputWrapper style={styles.singleFormFieldWrapper}>
+              <FormTextInput
+                placeholder={isSignup ? 'Password' : 'New Password'}
+                value={values.password}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                secureTextEntry={true}
+              />
+              <ErrorText errors={errors} touched={touched} name='password' />
+            </FormInputWrapper>
+
             <FormInputWrapper style={styles.singleFormFieldWrapper}>
               <FormTextInput
                 placeholder='Confirm password'

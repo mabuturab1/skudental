@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, Fragment } from 'react';
+import React, { useState, useCallback, useEffect, Fragment } from 'react';
 import { Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearAlert } from '../../store/actions';
+import { clearAlert, clearAllAlerts } from '../../store/actions';
 
 const ShowAlert = (props) => {
   const dispatch = useDispatch();
+  const [appInitiated, setAppInitiated] = useState(false);
   const { alertCount, alertArr } = useSelector(({ alert }) => ({
     alertCount: alert.alertCount,
     alertArr: alert.alertArr,
@@ -20,10 +21,21 @@ const ShowAlert = (props) => {
     []
   );
   useEffect(() => {
+    dispatch(clearAllAlerts());
+    console.log('clearing all alerts');
+  }, []);
+  useEffect(() => {
+    console.log('alert arr is', alertArr)
+    if (!appInitiated && !alertArr.length) setAppInitiated(true);
+  }, [alertArr]);
+  useEffect(() => {
+    console.log('app initiated is', appInitiated)
+    if (!appInitiated) return;
     if (alertArr.length) {
+      console.log('creating alert')
       createAlert(alertArr[0]);
     }
-  }, [createAlert, alertCount, alertArr]);
+  }, [createAlert, alertCount, alertArr, appInitiated]);
   return <Fragment></Fragment>;
 };
 

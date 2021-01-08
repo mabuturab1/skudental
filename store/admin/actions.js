@@ -58,12 +58,7 @@ export const getAllUsers = () => {
 export const verifyUser = (id, userData) => {
   return async (dispatch, getState) => {
     try {
-      console.log(
-        'dispatching user',
-        id,
-        userData,
-        API_URL + apiRoutes.VERIFY_USER + '/' + id
-      );
+     
       dispatch(verifyUserStart());
       const response = await axios.post(
         API_URL + apiRoutes.VERIFY_USER + '/' + id,
@@ -72,9 +67,7 @@ export const verifyUser = (id, userData) => {
           ...getAxiosConfig(getState),
         }
       );
-      console.log('dispatching user success', id);
       if (isValidServerResponse(response)) {
-        console.log('verify user resp', getServerResponseData(response));
         dispatch(verifyUserSuccess(getServerResponseData(response)));
       } else if (response.error) {
         dispatch(verifyUserFailed(response.error));

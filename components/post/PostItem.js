@@ -12,6 +12,7 @@ import PostAudio from './PostAudio';
 import { isAndroid, isValidValue } from '../../helpers/Utils';
 import RoundedButton from '../button/RoundedButton';
 import ProgressUploadStatus from '../progressUploadStatus/ProgressUploadStatus';
+import LoadingIndicator from '../loader/LoadingIndicator';
 const PostItem = ({
   postObj,
   itemIndex,
@@ -31,10 +32,12 @@ const PostItem = ({
     setIsEditMode(false);
     onSavePost();
   };
+  const [imageLoading, setImageLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(isEditAllowed);
   const [canSwitchToEditMode] = useState(isEditAllowed === false);
   return (
     <View style={styles.imageItemWrapper}>
+      {imageLoading ? <LoadingIndicator /> : null}
       <View style={styles.topIconsContainer}>
         {!isPreviewOnly ? (
           <View style={styles.postButtons}>
@@ -77,7 +80,9 @@ const PostItem = ({
               </Fragment>
             ) : null}
           </View>
-        ) : <View></View>}
+        ) : (
+          <View></View>
+        )}
         <PostAudio
           isEditAllowed={isEditMode && !isPreviewOnly}
           initAudioItem={
@@ -89,6 +94,8 @@ const PostItem = ({
       </View>
       <Image
         onError={({ nativeEvent: { error } }) => console.log(error)}
+        onLoadStart={() => setImageLoading(true)}
+        onLoadEnd={() => setImageLoading(false)}
         style={styles.singleImage}
         source={{
           uri: postObj.imageUrl,

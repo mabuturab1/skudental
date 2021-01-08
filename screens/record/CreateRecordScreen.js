@@ -49,12 +49,10 @@ const CreateRecordScreen = ({ navigation }) => {
         path: el.imageUrl,
       }));
     }
-    console.log('updated images', updatedImages.length);
     return updatedImages;
   }, []);
   const [images, setImages] = useState(getAttachedImages(currentRecord));
   useEffect(() => {
-    console.log('modifying images');
     setImages(getAttachedImages(currentRecord));
   }, [currentRecord, getAttachedImages]);
 

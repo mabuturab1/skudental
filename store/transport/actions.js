@@ -101,7 +101,6 @@ export const createTransportRequest = (
   return async (dispatch, getState) => {
     try {
       dispatch(createTransportRequestStart());
-      console.log('dispatching request with', userData)
       const response = await axios.post(
         API_URL + apiRoutes.CREATE_TRANSPORT_REQUEST,
         userData,

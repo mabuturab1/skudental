@@ -402,7 +402,6 @@ const updateUploadProgressPercentage = (
   callback
 ) => {
   var percentCompleted = getProgress(progressEvent);
-  console.log('nex update due', nextUpdateDue, nextUpdateDue > moment().unix());
   if (nextUpdateDue > moment().unix()) {
     return;
   }
@@ -453,8 +452,6 @@ const uploadPostToAWS = async (
     throw Error('Cannot upload photo');
   }
   const { audio, image } = getServerResponseData(responseUrl);
-  console.log('audio signed url is', audio);
-  console.log('image signed url is', image);
   let scaleFactor = 1;
   if (audio && image) {
     scaleFactor = 0.5;
@@ -472,7 +469,6 @@ const uploadPostToAWS = async (
           progressEvent,
           nextUpdateDue,
           (percent) => {
-            console.log('percent image completed ', percent);
             nextUpdateDue = moment().add(2, 'seconds').unix();
             updateUploadProgress(scaleFactor * percent);
           }
@@ -493,7 +489,6 @@ const uploadPostToAWS = async (
             progressEvent,
             nextUpdateDue,
             (percent) => {
-              console.log('percent audio completed ', percent);
               nextUpdateDue = moment().add(2, 'seconds').unix();
               updateUploadProgress(50 + scaleFactor * percent);
             }
@@ -538,12 +533,7 @@ export const uploadRecordPhoto = (
           );
         }
       );
-      console.log(
-        'audio uploaded',
-        audioUploaded,
-        'imageUploaded',
-        imageUploaded
-      );
+
       let dimensions = null;
       try {
         dimensions = await getImageSize(fileInfo?.imageFile?.path);
@@ -622,7 +612,6 @@ export const proceedForPostUpdate = (
 ) => {
   return async (dispatch, getState) => {
     const { record } = getState();
-    console.log('iscurrent redux record', isCurrentReduxRecord, itemIndex);
     if (
       isAllValuesValid([isCurrentReduxRecord, itemIndex]) &&
       isCurrentReduxRecord
@@ -630,7 +619,6 @@ export const proceedForPostUpdate = (
       let attachedPosts = (
         record?.currentRecord?.attachedPosts || []
       ).map((el) => ({ ...el }));
-      console.log('attachedpost length', attachedPosts.length, updatedRecord);
       if (attachedPosts.length) {
         console.log('item index is', itemIndex);
         attachedPosts[itemIndex] = updatedRecord;
@@ -704,7 +692,6 @@ export const updateRecordPost = (
           throw Error('Cannot upload post');
         }
         const { url, fields = {} } = audio;
-        console.log('url is', url, fields);
         await axios.post(
           // API_URL + apiRoutes.UPLOAD_PHOTO,
           url,

@@ -13,7 +13,6 @@ const ChatRoomsListener = ({ children }) => {
       .onSnapshot((snapshot) => {
         if (snapshot && !snapshot.empty) {
           const convertedData = convertFirebaseChatRoomsData(snapshot);
-          console.log('converted data is', convertedData);
           dispatch(getAllChatRoomsDataSuccess(convertedData));
         }
       });

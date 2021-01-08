@@ -11,7 +11,11 @@ import {
   getServerResponseData,
   isValidServerResponse,
 } from '../../helpers/Utils';
-import { auth, messaging } from '../../helpers/firebase/Firebase';
+import {
+  auth,
+  EmailAuthProvider,
+  messaging,
+} from '../../helpers/firebase/Firebase';
 import { showAlert } from '../alert/actions';
 import { connectSocketIo } from '../chatRoom/actions';
 export const USER_SIGNUP_START = 'USER_SIGNUP_START';
@@ -135,7 +139,6 @@ const firebaseLogin = async (email, password) => {
 export const userSignin = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
-      console.log('user signin', userData);
       dispatch(userSigninStart());
       const firebaseResponse = await firebaseLogin(
         userData.email,
@@ -144,7 +147,6 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
       const idToken = await firebaseResponse.user.getIdToken(true);
       const emailVerified = firebaseResponse.user.emailVerified;
       const firebaseMessagingToken = await messaging.getToken();
-      console.log('email verified is', emailVerified);
       const response = await axios.post(API_URL + apiRoutes.USER_SIGNIN, {
         ...userData,
         idToken,
@@ -187,7 +189,7 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
   };
 };
 
-export const userRefreshToken = (isSuccess=isSuccessDefault) => {
+export const userRefreshToken = (isSuccess = isSuccessDefault) => {
   return async (dispatch) => {
     try {
       const idToken = await auth.currentUser.getIdToken(true);
@@ -216,6 +218,25 @@ export const userRefreshToken = (isSuccess=isSuccessDefault) => {
           'Cannot re authenticate user' + getErrorMessage(error)
         )
       );
+    }
+  };
+};
+
+export const confirmPassword = (userData, isSuccess = isSuccessDefault) => {
+  return async (dispatch) => {
+    try {
+      const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        userData.password
+      );
+      const firebaseResponse = await auth.currentUser.reauthenticateWithCredential(
+        credential
+      );
+      isSuccess(true);
+    } catch (error) {
+      console.log('error in confirm password is', error);
+      dispatch(showAlert('An error occurred', getErrorMessage(error)));
+      isSuccess(false);
     }
   };
 };
@@ -283,7 +304,6 @@ export const updateUserPhoto = (
         throw Error('Cannot upload photo');
       }
       const { url, fields = {} } = getServerResponseData(responseUrl);
-      console.log('url is', url, fields);
       await axios.post(
         // API_URL + apiRoutes.UPLOAD_PHOTO,
         url,
@@ -336,12 +356,10 @@ export const firebaseResetPassword = (
 ) => {
   return async (dispatch) => {
     try {
-      console.log('sending firebase reset password email');
       dispatch(forgotPasswordStart());
       await auth.sendPasswordResetEmail(userData.email);
       dispatch(forgotPasswordSuccess(userData.email));
       isSuccess(true);
-      console.log('sending firebase reset password email sent');
     } catch (error) {
       dispatch(forgotPasswordFailed('An error occurred'));
       isSuccess(false);

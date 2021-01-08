@@ -69,7 +69,6 @@ export const convertDate = (firebaseObject) => {
     }
     // convert simple properties
     if (value && value['seconds']) {
-      console.log('has property seconds', value.toDate());
       firebaseObject[key] = value.toDate();
     }
   }

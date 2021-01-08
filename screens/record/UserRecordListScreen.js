@@ -57,7 +57,7 @@ const UserRecordListScreen = ({ navigation, route }) => {
       >
         <View style={styles.imageTile}>
           <ImageTile
-            imageUrl={post.imageUrl}
+            imageUrl={post?.compressedPhoto?.photoUrl || post.imageUrl}
             overlayText={item?.createdAt}
             showOverlayText={true}
             overlayTextStyles={{ fontSize: 14 }}
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  userName: { fontFamily: 'RalewayBold', color: ThemeColors.mediumBlack,  },
+  userName: { fontFamily: 'RalewayBold', color: ThemeColors.mediumBlack },
   userOverview: { flexDirection: 'row' },
   infoLabelValueWrapper: { alignItems: 'center', marginHorizontal: 15 },
   infoLabel: { fontSize: 16, fontFamily: 'RalewaySemiBold' },

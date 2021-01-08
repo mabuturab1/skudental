@@ -43,7 +43,6 @@ export const updateMultipleChatRooms = (chatRoomsArr, payload) => {
     const currentChatRoomIndex = updatedChatRooms.findIndex(
       (room) => el.chatRoomFirebaseId === room.firebaseId
     );
-    console.log('current chat roomIndex', currentChatRoomIndex);
     if (currentChatRoomIndex >= 0) {
       updatedChatRooms[currentChatRoomIndex].messages = el.messages;
     }

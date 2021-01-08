@@ -9,7 +9,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { store, persistor } from './store/store';
 import { useFonts } from 'expo-font';
 import 'react-native-get-random-values';
-import { ShowAlert, ChatRoomsListener } from './components';
+import { ShowAlert, ChatRoomsListener, AutoLogin } from './components';
 
 import { messaging, requestUserPermission } from './helpers/firebase/Firebase';
 const getFontsConfig = () => ({
@@ -74,6 +74,7 @@ export default function App() {
             <MainNavigationScreens />
             <ShowAlert />
             <ChatRoomsListener />
+            <AutoLogin />
           </NavigationContainer>
         ) : null}
       </PersistGate>

@@ -27,6 +27,7 @@ const CarouselItem = ({ postObj, heightReceived }) => {
       setHeight(newHeight);
     });
   }, [height, imageUrl]);
+  console.log('image url is', imageUrl)
   return (
     <View style={styles.imageWrapper}>
       <Image

@@ -52,21 +52,26 @@ const AudioPlayer = ({
   };
 
   const playSound = async () => {
-    if (!audioItem.uri) return;
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: audioItem.uri },
-      {},
-      onPlaybackStatus,
-      true
-    );
-    var status = await sound.getStatusAsync();
-    setFileDuration(status.durationMillis);
-    setPlayingSound(sound);
-    updatePlayStatus(true);
+    console.log('audio item uri is', audioItem.uri);
+    try {
+      if (!audioItem.uri) return;
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: audioItem.uri },
+        {},
+        onPlaybackStatus,
+        true
+      );
+      var status = await sound.getStatusAsync();
+      setFileDuration(status.durationMillis);
+      setPlayingSound(sound);
+      updatePlayStatus(true);
 
-    await sound.setProgressUpdateIntervalAsync(50);
-    await sound.playAsync();
-    currentPlayingItem.current = audioItem;
+      await sound.setProgressUpdateIntervalAsync(50);
+      await sound.playAsync();
+      currentPlayingItem.current = audioItem;
+    } catch (error) {
+      console.log('error while playing audio', error);
+    }
   };
   const stopSound = useCallback(async () => {
     try {

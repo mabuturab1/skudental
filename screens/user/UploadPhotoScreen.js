@@ -39,7 +39,12 @@ const UploadPhotoScreen = ({ navigation }) => {
       mediaType: 'photo',
     })
       .then((image) => {
-        uploadedPhoto.current = image;
+        uploadedPhoto.current = {
+          ...image,
+          name: image.path?.split('/')?.pop()
+            ? Date.now().toString() + image.path?.split('/').pop()
+            : Date.now().toString() + image.mime,
+        };
         startUploadingFile();
       })
       .catch((error) => {
@@ -65,7 +70,6 @@ const UploadPhotoScreen = ({ navigation }) => {
     setIsFailed(false);
     setProgress(0);
   };
-  console.log('user obj is', user);
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity onPress={onPhotoUpload}>

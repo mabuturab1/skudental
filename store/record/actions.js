@@ -2,6 +2,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { apiRoutes, API_URL } from '../../constants/apiRoutes';
 import { isSuccessDefault } from '../../constants/UIConstants';
+import { Image } from 'react-native';
 import {
   getAxiosConfig,
   getErrorMessage,
@@ -350,7 +351,9 @@ const getPhotoFormData = (fileInfo) => {
     ...fileInfo.imageFile,
     uri: fileInfo.imageFile.path,
     type: fileInfo.imageFile.mime,
-    name: fileInfo.imageFile.path?.split('/').pop() || Date.now().toString(),
+    name:
+      fileInfo.imageFile.path?.split('/')?.pop() ||
+      Date.now().toString() + fileInfo.imageFile?.mime,
   };
 
   formData.append('photo', photo);
@@ -360,20 +363,51 @@ const getPhotoFormData = (fileInfo) => {
   formData.append('additionalComments', fileInfo.additionalComments);
   return formData;
 };
-const getUpdatePhotoFormData = (fileInfo) => {
-  let formData = new FormData();
-  if (fileInfo.updateAudioItem && fileInfo.audioItem) {
-    formData.append('audio', fileInfo.audioItem);
-    formData.append('additionalComments', fileInfo.additionalComments);
-    return formData;
-  }
+const getUpdatePhotoData = (fileInfo, updateAWSUrlOnly = false) => {
   return {
     additionalComments: fileInfo.additionalComments,
     deleteAudioItem: fileInfo.updateAudioItem && fileInfo.audioItem === null,
+    updateAudioUrl:
+      updateAWSUrlOnly && fileInfo.audioItem
+        ? fileInfo.audioItem?.name
+        : undefined,
   };
 };
+
+const getFormDataForAWSItem = (item, fields = {}) => {
+  let updatedItem = {
+    ...item,
+    uri: item.path,
+    type: item.mime,
+    name: item.path?.split('/').pop() || Date.now().toString() + item.mime,
+  };
+  return createFormDataForAWSItem(updatedItem, fields);
+};
+
+const createFormDataForAWSItem = (updatedItem, fields) => {
+  let formData = new FormData();
+  Object.keys(fields).forEach((el) => {
+    formData.append(el, fields[el]);
+  });
+  formData.append('file', updatedItem);
+  return formData;
+};
+
 const getProgress = (progressEvent) =>
   Math.round((progressEvent.loaded * 100) / progressEvent.total);
+
+const updateUploadProgressPercentage = (
+  progressEvent,
+  nextUpdateDue,
+  callback
+) => {
+  var percentCompleted = getProgress(progressEvent);
+  console.log('nex update due', nextUpdateDue, nextUpdateDue > moment().unix());
+  if (nextUpdateDue > moment().unix()) {
+    return;
+  }
+  callback(percentCompleted);
+};
 
 const updateProgress = (
   recordIndex,
@@ -393,6 +427,95 @@ const updateProgress = (
     })
   );
 };
+
+const uploadPostToAWS = async (
+  recordId,
+  fileInfo,
+  getState,
+  updateUploadProgress
+) => {
+  let nextUpdateDue = 0;
+  let audioUploaded = false;
+  let imageUploaded = false;
+  const responseUrl = await axios.post(
+    API_URL + apiRoutes.UPLOAD_RECORD_SIGNED_URL,
+    {
+      isUserPhoto: false,
+      recordData: {
+        audioName: fileInfo.audioItem?.name,
+        photoName: fileInfo?.imageFile?.name,
+      },
+      recordId,
+    },
+    { ...getAxiosConfig(getState) }
+  );
+  if (!isValidServerResponse(responseUrl)) {
+    throw Error('Cannot upload photo');
+  }
+  const { audio, image } = getServerResponseData(responseUrl);
+  console.log('audio signed url is', audio);
+  console.log('image signed url is', image);
+  let scaleFactor = 1;
+  if (audio && image) {
+    scaleFactor = 0.5;
+  }
+  if (!image) {
+    throw Error('Cannot create post');
+  }
+  const { url: imageUrl, fields: imageFields } = image;
+  await axios.post(
+    imageUrl,
+    getFormDataForAWSItem(fileInfo.imageFile, imageFields),
+    {
+      onUploadProgress: (progressEvent) => {
+        updateUploadProgressPercentage(
+          progressEvent,
+          nextUpdateDue,
+          (percent) => {
+            console.log('percent image completed ', percent);
+            nextUpdateDue = moment().add(2, 'seconds').unix();
+            updateUploadProgress(scaleFactor * percent);
+          }
+        );
+      },
+    }
+  );
+  imageUploaded = true;
+  nextUpdateDue = 0;
+  if (audio) {
+    const { url: audioUrl, fields: audioFields } = audio;
+    await axios.post(
+      audioUrl,
+      createFormDataForAWSItem(fileInfo.audioItem, audioFields),
+      {
+        onUploadProgress: (progressEvent) => {
+          updateUploadProgressPercentage(
+            progressEvent,
+            nextUpdateDue,
+            (percent) => {
+              console.log('percent audio completed ', percent);
+              nextUpdateDue = moment().add(2, 'seconds').unix();
+              updateUploadProgress(50 + scaleFactor * percent);
+            }
+          );
+        },
+      }
+    );
+    console.log('audio uploaded');
+    audioUploaded = true;
+  }
+  return { audioUploaded, imageUploaded };
+};
+const getImageSize = (filePath) =>
+  new Promise(
+    (resolve, reject) => {
+      Image.getSize(filePath, (width, height) => {
+        resolve({ width, height });
+      });
+    },
+    (error) => reject(error)
+  );
+
 export const uploadRecordPhoto = (
   recordId,
   fileInfo,
@@ -402,32 +525,43 @@ export const uploadRecordPhoto = (
 ) => {
   return async (dispatch, getState) => {
     try {
-      let formData = getPhotoFormData(fileInfo);
-      let nextUpdateDue = 0;
-
-      const fileHeader = { 'Content-Type': 'multipart/form-data' };
-      const url = API_URL + apiRoutes.UPLOAD_RECORD_FILE + `/${recordId}`;
-
-      var myHeaders = new Headers();
-      myHeaders.append('Content-Type', 'multipart/form-data');
+      let { audioUploaded, imageUploaded } = await uploadPostToAWS(
+        recordId,
+        fileInfo,
+        getState,
+        (percentCompleted) => {
+          updateProgress(
+            currentRecordIndex,
+            itemIndex,
+            percentCompleted,
+            dispatch
+          );
+        }
+      );
+      console.log(
+        'audio uploaded',
+        audioUploaded,
+        'imageUploaded',
+        imageUploaded
+      );
+      let dimensions = null;
+      try {
+        dimensions = await getImageSize(fileInfo?.imageFile?.path);
+      } catch (error) {}
       const response = await axios.post(
         API_URL + apiRoutes.UPLOAD_RECORD_FILE + `/${recordId}`,
-        formData,
         {
-          ...getAxiosConfig(getState, fileHeader),
-          onUploadProgress: (progressEvent) => {
-            var percentCompleted = getProgress(progressEvent);
-            if (nextUpdateDue > moment().unix()) {
-              return;
-            }
-            nextUpdateDue = moment().add(4, 'seconds').unix();
-            updateProgress(
-              currentRecordIndex,
-              itemIndex,
-              percentCompleted,
-              dispatch
-            );
-          },
+          photo: imageUploaded
+            ? {
+                photoUrl: fileInfo.imageFile?.name,
+                dimensions,
+              }
+            : undefined,
+          audioName: audioUploaded ? fileInfo?.audioItem?.name : undefined,
+          additionalComments: fileInfo.additionalComments,
+        },
+        {
+          ...getAxiosConfig(getState),
         }
       );
       if (isValidServerResponse(response)) {
@@ -451,7 +585,8 @@ export const uploadRecordPhoto = (
       console.log(
         'An error occurred while uploading file',
         error,
-        error.message
+        error.message,
+        error.errorMessage
       );
 
       // dispatch(clearUploadingRecord(currentRecordIndex));
@@ -547,28 +682,57 @@ export const updateRecordPost = (
 ) => {
   return async (dispatch, getState) => {
     try {
-      let formData = getUpdatePhotoFormData(fileInfo);
       let nextUpdateDue = 0;
+      let formData = null;
+      if (fileInfo.updateAudioItem && fileInfo.audioItem) {
+        const responseUrl = await axios.post(
+          API_URL + apiRoutes.UPLOAD_RECORD_SIGNED_URL,
+          {
+            isUserPhoto: false,
+            recordData: {
+              audioName: fileInfo.audioItem?.name,
+            },
+            postId,
+          },
+          { ...getAxiosConfig(getState) }
+        );
+        if (!isValidServerResponse(responseUrl)) {
+          throw Error('Cannot upload post');
+        }
+        const { audio = {} } = getServerResponseData(responseUrl);
+        if (!audio) {
+          throw Error('Cannot upload post');
+        }
+        const { url, fields = {} } = audio;
+        console.log('url is', url, fields);
+        await axios.post(
+          // API_URL + apiRoutes.UPLOAD_PHOTO,
+          url,
+          createFormDataForAWSItem(fileInfo.audioItem, fields),
+          {
+            // ...getAxiosConfig(getState),
+            onUploadProgress: (progressEvent) => {
+              updateUploadProgressPercentage(
+                progressEvent,
+                nextUpdateDue,
+                (percent) => {
+                  nextUpdateDue = moment().add(4, 'seconds').unix();
+                  updateUploadProgress(percent);
+                }
+              );
+            },
+          }
+        );
+        formData = getUpdatePhotoData(fileInfo, true);
+      } else formData = getUpdatePhotoData(fileInfo);
 
-      const fileHeader =
-        formData instanceof FormData
-          ? { 'Content-Type': 'multipart/form-data' }
-          : {};
       var myHeaders = new Headers();
       myHeaders.append('Content-Type', 'multipart/form-data');
       const response = await axios.post(
         API_URL + apiRoutes.UPDATE_RECORD_POST + `/${postId}`,
         formData,
         {
-          ...getAxiosConfig(getState, fileHeader),
-          onUploadProgress: (progressEvent) => {
-            var percentCompleted = getProgress(progressEvent);
-            if (nextUpdateDue > moment().unix()) {
-              return;
-            }
-            nextUpdateDue = moment().add(4, 'seconds').unix();
-            updateUploadProgress(percentCompleted);
-          },
+          ...getAxiosConfig(getState),
         }
       );
       if (isValidServerResponse(response)) {

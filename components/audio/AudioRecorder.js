@@ -53,10 +53,11 @@ const AudioRecorder = ({
       const audioItem = {
         id: uuidv4(),
         recordDate: moment().format(),
-        name:
-          uri?.split('/').pop() || Date.now().toString() + isAndroid()
-            ? '.m4a'
-            : '.caf',
+        name: uri?.split('/')?.pop()
+          ? Date.now().toString() + uri?.split('/').pop()
+          : Date.now().toString() + isAndroid()
+          ? '.m4a'
+          : '.caf',
         uri,
         durationMillis: status.durationMillis,
         type: 'audio/mp4',

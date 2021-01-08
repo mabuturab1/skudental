@@ -15,7 +15,7 @@ export const EmailSendingStatus = {
   NotApproved: 2,
   EmailSent: 3,
 };
-
+export const tokenExpirationMarginMillis=10000;
 export const getUserVerificationLabel = (status) => {
   switch (status) {
     case UserVerificationStatus.Pending:

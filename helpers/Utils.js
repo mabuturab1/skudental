@@ -1,11 +1,12 @@
 import { Platform } from 'react-native';
 import jwt_decode from 'jwt-decode';
 import { firestore } from './firebase/Firebase';
+import { tokenExpirationMarginMillis } from '../constants/UIConstants';
 export const isAndroid = () => Platform.OS === 'android';
 export const isUserAuthenticated = (token) => {
   if (token) {
     const decoded = jwt_decode(token);
-    return Date.now() < decoded.exp * 1000;
+    return Date.now() < decoded.exp * 1000 - tokenExpirationMarginMillis - 4000;
   }
   return false;
 };

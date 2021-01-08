@@ -141,7 +141,7 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
         userData.email,
         userData.password
       );
-      const idToken = await firebaseResponse.user.getIdToken();
+      const idToken = await firebaseResponse.user.getIdToken(true);
       const emailVerified = firebaseResponse.user.emailVerified;
       const firebaseMessagingToken = await messaging.getToken();
       console.log('email verified is', emailVerified);
@@ -187,6 +187,39 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
   };
 };
 
+export const userRefreshToken = (isSuccess=isSuccessDefault) => {
+  return async (dispatch) => {
+    try {
+      const idToken = await auth.currentUser.getIdToken(true);
+      const email = auth.currentUser.email;
+      const response = await axios.post(
+        API_URL + apiRoutes.USER_REFRESH_TOKEN,
+        { email, idToken }
+      );
+      if (isValidServerResponse(response)) {
+        const result = getServerResponseData(response);
+        dispatch(userSigninSuccess(result));
+        const token = result.token;
+        await AsyncStorage.setItem('token', token);
+        isSuccess(true, result?.user);
+      } else if (response.error) {
+        dispatch(userSigninFailed(response.error));
+        isSuccess(false);
+      }
+    } catch (error) {
+      console.log('user refresh token failed', error, error.message);
+      dispatch(userSigninFailed('An error occurred'));
+      isSuccess(false);
+      dispatch(
+        showAlert(
+          'An error occurred',
+          'Cannot re authenticate user' + getErrorMessage(error)
+        )
+      );
+    }
+  };
+};
+
 export const updateUser = (userData, isSuccess = isSuccessDefault) => {
   return async (dispatch, getState) => {
     try {
@@ -218,15 +251,19 @@ export const updateUser = (userData, isSuccess = isSuccessDefault) => {
     }
   };
 };
-const getUserImageFormData = (image) => {
+const getUserImageFormData = (image, fields = {}) => {
   let formData = new FormData();
+  Object.keys(fields).forEach((el) => {
+    formData.append(el, fields[el]);
+  });
   let photo = {
     ...image,
     uri: image.path,
     type: image.mime,
-    name: image.path?.split('/').pop() || Date.now().toString() + image.mime,
+    name: image.path?.split('/')?.pop() || Date.now().toString() + image.mime,
   };
-  formData.append('photo', photo);
+  // formData.append('photo', photo);
+  formData.append('file', photo);
   return formData;
 };
 export const updateUserPhoto = (
@@ -237,12 +274,32 @@ export const updateUserPhoto = (
   return async (dispatch, getState) => {
     try {
       dispatch(updateUserStart());
+      const responseUrl = await axios.post(
+        API_URL + apiRoutes.UPLOAD_RECORD_SIGNED_URL,
+        { isUserPhoto: true, fileName: image.name },
+        { ...getAxiosConfig(getState) }
+      );
+      if (!isValidServerResponse(responseUrl)) {
+        throw Error('Cannot upload photo');
+      }
+      const { url, fields = {} } = getServerResponseData(responseUrl);
+      console.log('url is', url, fields);
+      await axios.post(
+        // API_URL + apiRoutes.UPLOAD_PHOTO,
+        url,
+        getUserImageFormData(image, fields),
+        {
+          // ...getAxiosConfig(getState),
+          onUploadProgress: uploadProgressUpdate,
+        }
+      );
       const response = await axios.post(
-        API_URL + apiRoutes.UPLOAD_PHOTO,
-        getUserImageFormData(image),
+        API_URL + apiRoutes.UPLOAD_PHOTO_STATUS,
+        {
+          fileName: image.name,
+        },
         {
           ...getAxiosConfig(getState),
-          onUploadProgress: uploadProgressUpdate,
         }
       );
       if (response && response.data) {
@@ -254,7 +311,13 @@ export const updateUserPhoto = (
         isSuccess(false);
       }
     } catch (error) {
-      console.log('error uploading photo', error);
+      console.log(
+        'error uploading photo',
+        error,
+        error?.msg,
+        error?.errorMessage,
+        error?.message
+      );
       dispatch(updateUserFailed('An error occurred'));
       dispatch(
         showAlert(

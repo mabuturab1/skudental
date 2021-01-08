@@ -38,6 +38,7 @@ import {
 import ErrorText from './forms/ErrorText';
 import EmptyList from './emptyList/EmptyList';
 import ViewMoreText from './viewMoreText/ViewMoreText';
+import AutoLogin from './user/AutoLogin';
 export {
   HeaderButton,
   LoadingIndicator,
@@ -75,4 +76,5 @@ export {
   BottomModalSheet,
   RecordStatusSet,
   ViewMoreText,
+  AutoLogin
 };

@@ -84,7 +84,12 @@ const CreateRecordScreen = ({ navigation }) => {
         setImages(selectedImages);
         const postItems = selectedImages.map((el) => ({
           imageUrl: el.path,
-          imageFile: el,
+          imageFile: {
+            ...el,
+            name: el.path?.split('/')?.pop()
+              ? Date.now().toString() + el.path?.split('/').pop()
+              : Date.now().toString() + el.mime,
+          },
           additionalComments: '',
           audioItem: null,
           uploadComplete: false,

@@ -18,12 +18,12 @@ const EmptyList = ({ dataLoading, refreshData }) => {
       ) : (
         <Fragment>
           <Text style={styles.noDataText}>
-            No Record found. Kindly pull down to refresh data
+            No Records found. Try again
           </Text>
           <TouchableOpacity onPress={refreshData}>
             <Ionicons
               name={isAndroid() ? 'md-refresh-circle' : 'ios-refresh-circle'}
-              color={ThemeColors.primary}
+              color={ThemeColors.black}
               size={30}
             />
           </TouchableOpacity>

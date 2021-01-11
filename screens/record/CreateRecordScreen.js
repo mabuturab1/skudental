@@ -146,7 +146,9 @@ const CreateRecordScreen = ({ navigation }) => {
               <View style={styles.statusSet}>
                 <Text style={styles.statusLabel}>Visibility Status:</Text>
                 <Text style={styles.statusValue}>
-                  {values?.access?.isPublic ? 'Public' : 'Private'}
+                  {values?.access?.isPublic
+                    ? 'Post to dentogram'
+                    : 'Post to lab'}
                 </Text>
                 <MaterialIcons
                   size={24}

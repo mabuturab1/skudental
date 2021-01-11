@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
   customButton: {
     borderRadius: 10000,
     borderWidth: 1,
-    borderColor: ThemeColors.primary,
-    backgroundColor: ThemeColors.primary,
+    borderColor: ThemeColors.black,
+    backgroundColor: ThemeColors.black,
     color: '#fff',
     textAlign: 'center',
     fontSize: 12,

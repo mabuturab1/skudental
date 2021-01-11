@@ -49,8 +49,8 @@ const PostStatusSet = ({ record }) => {
             {!loading ? (
               <Text style={styles.publicStatus}>
                 {isPublic
-                  ? `Hide your record from public`
-                  : 'Share your record with public'}
+                  ? `Share your record with the lab only`
+                  : 'Share your record with dentogram'}
               </Text>
             ) : (
               <View style={styles.loader}>

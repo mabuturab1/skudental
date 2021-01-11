@@ -20,7 +20,7 @@ const UserVerification = ({
   return (
     <View style={styles.wrapper}>
       <Text style={styles.transportRequestTitle}>
-        Trasnport Request
+        Transport Request
         {` ${
           transportRequest?.requestOwner?.name
             ? 'By: ' + transportRequest?.requestOwner?.name

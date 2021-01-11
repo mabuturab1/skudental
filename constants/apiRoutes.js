@@ -4,7 +4,7 @@ export const API_URL = BASE_URL + '/api';
 export const apiRoutes = {
   USER_SIGNUP: '/user/signup',
   USER_SIGNIN: '/user/signin',
-  USER_REFRESH_TOKEN:'/user/refreshtoken',
+  USER_REFRESH_TOKEN: '/user/refreshtoken',
   UPDATE_USER: '/user/updateuser',
   VERIFY_EMAIL: '/user/verfiyEmail',
   VERIFY_USER: '/admin/verifyuser',

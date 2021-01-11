@@ -29,6 +29,7 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
     if (record?.recordOwner?._id)
       navigation.navigate(routes.UserRecordList, {
         userId: record?.recordOwner._id,
+        title: record?.recordOwner?.name,
       });
   };
   return (

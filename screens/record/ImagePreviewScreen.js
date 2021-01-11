@@ -19,7 +19,9 @@ const ImagePreviewScreen = ({ route, navigation }) => {
   const postItemObj = useRef(postObj);
   const [uploadProgress, setUploadProgress] = useState(null);
   const [isUploadComplete, setIsUploadComplete] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
   const deletePost = () => {
+    setIsDeleting(true);
     dispatch(
       proceedForPostDeletion(
         postObj._id,
@@ -29,6 +31,7 @@ const ImagePreviewScreen = ({ route, navigation }) => {
         isServerRecord,
         (isSuccess) => {
           if (isSuccess) navigation.goBack();
+          else setIsDeleting(false);
         }
       )
     );
@@ -81,6 +84,7 @@ const ImagePreviewScreen = ({ route, navigation }) => {
           ...postObj,
           imageUrl: postObj.originalImageUrl || postObj.imageUrl,
         }}
+        showLoaderAtActionsContainer={isDeleting}
         onAddComments={updateComments}
         onAudioUpdate={updateAudio}
         onDelete={deletePost}

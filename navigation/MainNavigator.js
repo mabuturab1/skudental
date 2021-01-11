@@ -294,6 +294,9 @@ export default mainStackNavigator = (auth) => (
     <Stack.Screen name={routes.WebviewLink} component={WebViewLinkScreen} />
     <Stack.Screen name={routes.Pricing} component={PricingScreen} />
     <Stack.Screen
+      options={({ route }) => ({
+        title: route?.params?.title || 'UserRecords',
+      })}
       name={routes.UserRecordList}
       component={UserRecordListScreen}
     />

@@ -6,6 +6,7 @@ import { Feather, FontAwesome } from '@expo/vector-icons';
 import moment from 'moment';
 import { useCallback } from 'react';
 import { ThemeColors } from '../../constants/Colors';
+import  LoadingIndicator  from '../loader/LoadingIndicator';
 const AudioPlayer = ({
   audioItem = {},
   onPlaybackStatusUpdate = () => {},
@@ -18,6 +19,7 @@ const AudioPlayer = ({
 }) => {
   const [playingSound, setPlayingSound] = useState();
   const [soundPlayStatus, setSoundPlayStatus] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
   const [durationMillis, setDurationMillis] = useState(0);
   const [fileDuration, setFileDuration] = useState(0);
   const currentPlayingItem = useRef(audioItem);
@@ -54,12 +56,14 @@ const AudioPlayer = ({
   const playSound = async () => {
     try {
       if (!audioItem.uri) return;
+      setIsBuffering(true);
       const { sound } = await Audio.Sound.createAsync(
         { uri: audioItem.uri },
         {},
         onPlaybackStatus,
         true
       );
+      setIsBuffering(false);
       var status = await sound.getStatusAsync();
       setFileDuration(status.durationMillis);
       setPlayingSound(sound);
@@ -69,6 +73,7 @@ const AudioPlayer = ({
       await sound.playAsync();
       currentPlayingItem.current = audioItem;
     } catch (error) {
+      setIsBuffering(false);
       console.log('error while playing audio', error);
     }
   };
@@ -112,11 +117,19 @@ const AudioPlayer = ({
           }
         >
           <View style={{ ...styles.iconWrapper }}>
-            <Feather
-              name={soundPlayStatus ? 'stop-circle' : 'play'}
-              size={isSmallAudioPlayerButton ? 12 : 24}
-              color={color}
-            />
+            {isBuffering ? (
+              <LoadingIndicator
+                alignCenter={false}
+                isSmall={true}
+                color={color}
+              />
+            ) : (
+              <Feather
+                name={soundPlayStatus ? 'stop-circle' : 'play'}
+                size={isSmallAudioPlayerButton ? 12 : 24}
+                color={color}
+              />
+            )}
           </View>
         </TouchableOpacity>
       ) : (
@@ -154,5 +167,6 @@ const styles = StyleSheet.create({
     padding: 15,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
   },
 });

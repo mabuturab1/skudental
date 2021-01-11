@@ -90,7 +90,7 @@ const UserSignInScreen = ({
             {isLogin ? (
               <View style={styles.registerButtonWrapper}>
                 <Text style={styles.registerButtonText}>
-                  Dont't have an account?
+                  Don't have an account?
                 </Text>
                 <TouchableOpacity
                   activeOpacity={0.85}

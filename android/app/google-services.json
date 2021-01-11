@@ -1,21 +1,20 @@
 {
   "project_info": {
-    "project_number": "851288471005",
-    "firebase_url": "https://upwork-abuturab1.firebaseio.com",
-    "project_id": "upwork-abuturab1",
-    "storage_bucket": "upwork-abuturab1.appspot.com"
+    "project_number": "331613827531",
+    "project_id": "skdental-app",
+    "storage_bucket": "skdental-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:851288471005:android:afd95b2ee076d971dd3234",
+        "mobilesdk_app_id": "1:331613827531:android:e83a04a8780df255e1c64e",
         "android_client_info": {
           "package_name": "com.skudentallab.sku"
         }
       },
       "oauth_client": [
         {
-          "client_id": "851288471005-10el5dd0n0hr0rc6e162oh34ddvq1duc.apps.googleusercontent.com",
+          "client_id": "331613827531-mbojkpif7f6mcmrpu8ugbhg10b8vpkic.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.skudentallab.sku",
@@ -23,20 +22,20 @@
           }
         },
         {
-          "client_id": "851288471005-hc2vser4mr65jjmj1tp5i5kekth5k17q.apps.googleusercontent.com",
+          "client_id": "331613827531-cem0nf1ojeei2s0b9umva2mdp5a6v709.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDeiyK8dYGIgG_XMWGPtuZhKdcRYDFj-Z0"
+          "current_key": "AIzaSyCF2-DAf3BzaRtZOrQnb9HavLOXDseCTV0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "851288471005-hc2vser4mr65jjmj1tp5i5kekth5k17q.apps.googleusercontent.com",
+              "client_id": "331613827531-cem0nf1ojeei2s0b9umva2mdp5a6v709.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -13,6 +13,7 @@ import { isAndroid, isValidValue } from '../../helpers/Utils';
 import RoundedButton from '../button/RoundedButton';
 import ProgressUploadStatus from '../progressUploadStatus/ProgressUploadStatus';
 import LoadingIndicator from '../loader/LoadingIndicator';
+import { ThemeColors } from '../../constants/Colors';
 const PostItem = ({
   postObj,
   itemIndex,
@@ -25,6 +26,7 @@ const PostItem = ({
   isUploadComplete = true,
   isCurrentReduxRecord = false,
   isLastItem,
+  showLoaderAtActionsContainer = false,
   sendImageData,
   onSavePost = () => {},
 }) => {
@@ -40,57 +42,73 @@ const PostItem = ({
       {imageLoading ? <LoadingIndicator /> : null}
       <View style={styles.topIconsContainer}>
         {!isPreviewOnly ? (
-          <View style={styles.postButtons}>
-            <View style={styles.singleIcon}>
-              <TouchableOpacity onPress={onDelete}>
-                <AntDesign name='delete' size={24} color='white' />
-              </TouchableOpacity>
+          showLoaderAtActionsContainer ? (
+            <View style={styles.postButtons}>
+              <LoadingIndicator
+                alignCenter={false}
+                color={'white'}
+                isSmall={true}
+              />
             </View>
-            {canSwitchToEditMode ? (
-              <Fragment>
-                {!isEditMode ? (
+          ) : (
+            <View style={styles.postButtons}>
+              <View style={styles.singleIcon}>
+                <TouchableOpacity onPress={onDelete}>
+                  <AntDesign name='delete' size={24} color='white' />
+                </TouchableOpacity>
+              </View>
+              {canSwitchToEditMode ? (
+                <Fragment>
+                  {!isEditMode ? (
+                    <View style={styles.singleIcon}>
+                      <TouchableOpacity onPress={() => setIsEditMode(true)}>
+                        <FontAwesome name={'edit'} size={24} color={'white'} />
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <View style={styles.singleIcon}>
+                      <TouchableOpacity onPress={onEditPostItem}>
+                        <Ionicons
+                          name={
+                            isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'
+                          }
+                          size={24}
+                          color={'white'}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  )}
                   <View style={styles.singleIcon}>
-                    <TouchableOpacity onPress={() => setIsEditMode(true)}>
-                      <FontAwesome name={'edit'} size={24} color={'white'} />
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  <View style={styles.singleIcon}>
-                    <TouchableOpacity onPress={onEditPostItem}>
-                      <Ionicons
-                        name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
-                        size={24}
-                        color={'white'}
+                    {!isCurrentReduxRecord ? (
+                      <ProgressUploadStatus
+                        isFailed={
+                          isValidValue(uploadProgress) && uploadProgress < 0
+                        }
+                        isComplete={isUploadComplete}
+                        progress={uploadProgress}
+                        onReUpload={onSavePost}
                       />
-                    </TouchableOpacity>
+                    ) : null}
                   </View>
-                )}
-                <View style={styles.singleIcon}>
-                  {!isCurrentReduxRecord ? (
-                    <ProgressUploadStatus
-                      isFailed={
-                        isValidValue(uploadProgress) && uploadProgress < 0
-                      }
-                      isComplete={isUploadComplete}
-                      progress={uploadProgress}
-                      onReUpload={onSavePost}
-                    />
-                  ) : null}
-                </View>
-              </Fragment>
-            ) : null}
-          </View>
+                </Fragment>
+              ) : null}
+            </View>
+          )
         ) : (
           <View></View>
         )}
-        <PostAudio
-          isEditAllowed={isEditMode && !isPreviewOnly}
-          initAudioItem={
-            postObj.audioUrl ? { uri: postObj.audioUrl } : postObj.audioItem
-          }
-          itemIndex={itemIndex}
-          onAudioUpdate={(audio) => onAudioUpdate(itemIndex, audio)}
-        />
+        {!showLoaderAtActionsContainer ? (
+          <PostAudio
+            isEditAllowed={isEditMode && !isPreviewOnly}
+            initAudioItem={
+              postObj.audioUrl ? { uri: postObj.audioUrl } : postObj.audioItem
+            }
+            itemIndex={itemIndex}
+            onAudioUpdate={(audio) => onAudioUpdate(itemIndex, audio)}
+          />
+        ) : (
+          <View></View>
+        )}
       </View>
       <Image
         onError={({ nativeEvent: { error } }) => console.log(error)}
@@ -117,6 +135,7 @@ const PostItem = ({
         <View style={styles.sendButton}>
           <RoundedButton
             onPress={sendImageData}
+            style={{ backgroundColor: ThemeColors.primary }}
             icon={
               <Ionicons
                 name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}

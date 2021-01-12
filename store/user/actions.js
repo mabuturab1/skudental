@@ -17,7 +17,6 @@ import {
   messaging,
 } from '../../helpers/firebase/Firebase';
 import { showAlert } from '../alert/actions';
-import { connectSocketIo } from '../chatRoom/actions';
 export const USER_SIGNUP_START = 'USER_SIGNUP_START';
 export const USER_SIGNUP_SUCCESS = 'USER_SIGNUP_SUCCESS';
 export const USER_SIGNUP_FAILED = 'USER_SIGNUP_FAILED';
@@ -169,7 +168,7 @@ export const userSignin = (userData, isSuccess = isSuccessDefault) => {
 
         await AsyncStorage.setItem('token', token);
 
-        connectSocketIo(token);
+      
         isSuccess(true, result?.user);
       } else if (response.error) {
         dispatch(userSigninFailed(response.error));

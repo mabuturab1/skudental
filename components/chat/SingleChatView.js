@@ -16,7 +16,6 @@ const SingleChatView = ({ style, item, onPress }) => {
     const member=getOtherMember();
     return member?.name;
   };
-  console.log('rendering chat view');
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={() => onPress(item._id)}>
       <View style={{ ...styles.chatViewWrapper, ...style }}>

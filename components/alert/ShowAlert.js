@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, Fragment } from 'react';
-import { Alert } from 'react-native';
+import Snackbar from 'react-native-snackbar';
 import { useDispatch, useSelector } from 'react-redux';
+import { ThemeColors } from '../../constants/Colors';
 import { clearAlert, clearAllAlerts } from '../../store/actions';
 
 const ShowAlert = (props) => {
@@ -12,27 +13,35 @@ const ShowAlert = (props) => {
   }));
   const createAlert = useCallback(
     ({ title = 'Alert', message = 'An error occurred', id }) =>
-      Alert.alert(
-        title,
-        message,
-        [{ text: 'OK', onPress: () => dispatch(clearAlert(id)) }],
-        { cancelable: false }
-      ),
+      Snackbar.show({
+        text: message,
+        duration: Snackbar.LENGTH_INDEFINITE,
+        backgroundColor: ThemeColors.black,
+        numberOfLines: 6,
+        action: {
+          text: 'OK',
+          textColor: 'white',
+          onPress: () => {
+            Snackbar.dismiss();
+            dispatch(clearAlert(id));
+          },
+        },
+      }),
     []
   );
   useEffect(() => {
     dispatch(clearAllAlerts());
-    console.log('clearing all alerts');
+    
   }, []);
   useEffect(() => {
-    console.log('alert arr is', alertArr)
+  
     if (!appInitiated && !alertArr.length) setAppInitiated(true);
   }, [alertArr]);
   useEffect(() => {
-    console.log('app initiated is', appInitiated)
+ 
     if (!appInitiated) return;
     if (alertArr.length) {
-      console.log('creating alert')
+      
       createAlert(alertArr[0]);
     }
   }, [createAlert, alertCount, alertArr, appInitiated]);

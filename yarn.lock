@@ -6701,6 +6701,11 @@ react-native-screens@~2.10.1:
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.10.1.tgz#06d22fae87ef0ce51c616c34a199726db1403b95"
   integrity sha512-Z2kKSk4AwWRQNCBmTjViuBQK0/Lx0jc25TZptn/2gKYUCOuVRvCekoA26u0Tsb3BIQ8tWDsZW14OwDlFUXW1aw==
 
+react-native-snackbar@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-snackbar/-/react-native-snackbar-2.3.1.tgz#62cef7c60d043f31d07641799e36bfd1445f826b"
+  integrity sha512-eWVEvdCiyx2K57Zv7xnnTzHuBqJSIA8SgFnKXQkmejENk97L+vTWik/QzXmwQ9AOxHVRmogBoHADVbdxGOfPZw==
+
 react-native-snap-carousel@^3.9.1:
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-3.9.1.tgz#6fd9bd8839546c2c6043a41d2035afbc6fe0443e"

@@ -30,7 +30,7 @@ import {
   UPDATE_UPLOAD_PROGRESS,
   CLEAR_UPLOADING_RECORD,
   UPDATE_CURRENT_RECORD,
-  CLEAR_UPLOADING_RECORD_POST,
+  CLEAR_RECORD_POST,
   UPDATE_RECORD_POST_START,
   UPDATE_RECORD_POST_SUCCESS,
   UPDATE_RECORD_POST_FAILED,
@@ -58,6 +58,7 @@ const initialState = {
     getAllRecordWithMessages: false,
     getAllMessages: false,
     sendRecordMessage: false,
+    deletingRecord: false,
   },
   error: {
     createRecord: '',
@@ -67,6 +68,7 @@ const initialState = {
     getAllRecordWithMessages: '',
     getAllMessages: '',
     sendRecordMessage: '',
+    deletingRecord: '',
   },
 };
 
@@ -136,6 +138,27 @@ export default (state = initialState, action) => {
         ...state,
         loading: { ...state.loading, getAllRecords: false },
         error: { ...state.error, getAllRecords: action.payload },
+      };
+
+    case DELETE_RECORD_START:
+      return {
+        ...state,
+        loading: { ...state.loading, deleteRecord: true },
+        error: { ...state.error, deleteRecord: '' },
+      };
+    case DELETE_RECORD_SUCCESS:
+      return {
+        ...state,
+        serverRecordsArr: state.serverRecordsArr.filter(
+          (el) => el._id !== action.payload
+        ),
+        loading: { ...state.loading, deleteRecord: false },
+      };
+    case DELETE_RECORD_FAILED:
+      return {
+        ...state,
+        loading: { ...state.loading, deleteRecord: false },
+        error: { ...state.error, deleteRecord: action.payload },
       };
 
     case GET_ALL_USER_RECORDS_START:
@@ -242,15 +265,16 @@ export default (state = initialState, action) => {
           action.payload
         ),
       };
-    case CLEAR_UPLOADING_RECORD_POST:
+    case CLEAR_RECORD_POST:
       return {
         ...state,
-        uploadingDataArr: !action.payload?.isServerRecord
+        uploadingDataArr: !action.payload.isServerRecord
           ? removeAttachedPostFromRecordsArrItem(
               state.uploadingDataArr,
               action.payload
             )
           : state.uploadingDataArr,
+
         serverRecordsArr: action.payload.isServerRecord
           ? removeAttachedPostFromRecordsArrItem(
               state.serverRecordsArr,

@@ -2,14 +2,20 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import CarouselItems from './CarouselItems';
 import { ThemeColors } from '../../constants/Colors';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import AudioPlayer from '../audio/AudioPlayer';
 import { routes } from '../../constants/routes';
 import RecordStatusSet from '../post/RecordStatusSetButton';
 import ViewMoreText from '../viewMoreText/ViewMoreText';
+import { deleteRecord } from '../../store/actions';
+import LoadingIndicator from '../loader/LoadingIndicator';
+import { createAlert } from '../alert/AlertModal';
+import MaterialMenu from '../menu/Menu';
 const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
   const user = useSelector(({ auth }) => auth.user);
+  const dispatch = useDispatch();
   const [activeCarouselItem, setActiveCarouselItem] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
   const getTextItem = (index) => {
     if (record?.attachedPosts.length <= index) return null;
     const item = record?.attachedPosts[index];
@@ -32,8 +38,45 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
         title: record?.recordOwner?.name,
       });
   };
+  const popupMenu = () => {
+    const popupMenuData = [{ label: 'Delete Record', id: 'DELETE' }];
+
+    const onPopupMenuClick = (id) => {
+      switch (id) {
+        case 'DELETE':
+          deletePost();
+      }
+    };
+    return (
+      <MaterialMenu
+        data={popupMenuData}
+        color={ThemeColors.black}
+        onItemClick={onPopupMenuClick}
+        iconSize={18}
+      />
+    );
+  };
+  const deletePost = () => {
+    createAlert(
+      'Delete Record',
+      'By deleting your record, all attached posts will be deleted. Click Ok to proceed',
+      (result) => {
+        if (!result) return;
+        setIsDeleting(true);
+        dispatch(deleteRecord(record._id), (isSuccess) => {
+          setIsDeleting(false);
+        });
+      }
+    );
+  };
+  console.log('deleting post', isDeleting);
   return (
     <View style={styles.cardWrapper}>
+      {isDeleting ? (
+        <View style={styles.loadingIndicator}>
+          <LoadingIndicator />
+        </View>
+      ) : null}
       <View style={styles.infoContainer}>
         <Image
           source={
@@ -52,6 +95,7 @@ const SocialFeedItem = ({ navigation, record, currentRecordIndex }) => {
           </View>
         </TouchableOpacity>
       </View>
+      <View style={styles.popupMenu}>{popupMenu()}</View>
       <View style={styles.carouselItemsWrapper}>
         {record?.attachedPosts.length > 1 ? (
           <Text style={styles.indexWrapper}>{`${activeCarouselItem + 1}/${
@@ -121,6 +165,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'white',
     marginVertical: 10,
+    position: 'relative',
   },
   feedButtonWrapper: {
     height: 40,
@@ -150,6 +195,18 @@ const styles = StyleSheet.create({
     fontFamily: 'RalewayMedium',
     color: 'black',
     opacity: 0.7,
+  },
+  popupMenu: {
+    position: 'absolute',
+    top: 10,
+    right: 0,
+  },
+  loadingIndicator: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    zIndex: 1000,
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
 });
 export default SocialFeedItem;

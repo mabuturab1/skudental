@@ -8,7 +8,7 @@ import AlertReducer from './alert/reducer';
 import AdminReducer from './admin/reducer';
 import ReduxThunk from 'redux-thunk';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import freeze from 'redux-freeze'
 const persistConfig = {
   // Root
   key: 'root',
@@ -32,7 +32,11 @@ const rootReducer = (state, action) => {
 
   return appReducer(state, action);
 };
+const middlewares=[ReduxThunk];
+// if(__DEV__){
+//   middlewares.push(freeze);
+// }
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-const store = createStore(persistedReducer, applyMiddleware(ReduxThunk));
+const store = createStore(persistedReducer, applyMiddleware(...middlewares));
 let persistor = persistStore(store);
 export { store, persistor };

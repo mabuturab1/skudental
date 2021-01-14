@@ -16,7 +16,7 @@ const ImagePreviewScreen = ({ route, navigation }) => {
     isServerRecord,
   } = route.params;
   const dispatch = useDispatch();
-  const postItemObj = useRef(postObj);
+  const postItemObj = useRef({...postObj});
   const [uploadProgress, setUploadProgress] = useState(null);
   const [isUploadComplete, setIsUploadComplete] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -37,6 +37,7 @@ const ImagePreviewScreen = ({ route, navigation }) => {
     );
   };
   const updateComments = (index, text) => {
+    console.log('updated comments', index, text);
     postItemObj.current.additionalComments = text;
   };
   const updateAudio = (index, audioItem) => {
@@ -81,8 +82,9 @@ const ImagePreviewScreen = ({ route, navigation }) => {
       <PostItem
         itemIndex={0}
         postObj={{
-          ...postObj,
-          imageUrl: postObj.originalImageUrl || postObj.imageUrl,
+          ...postItemObj.current,
+          imageUrl: postItemObj.current.originalImageUrl || postItemObj.current.imageUrl,
+          
         }}
         showLoaderAtActionsContainer={isDeleting}
         onAddComments={updateComments}

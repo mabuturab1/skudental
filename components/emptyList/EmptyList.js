@@ -14,7 +14,7 @@ const EmptyList = ({ dataLoading, refreshData }) => {
   return (
     <View style={styles.noDataWrapper}>
       {dataLoading ? (
-        <LoadingIndicator />
+        <LoadingIndicator color={'black'} />
       ) : (
         <Fragment>
           <Text style={styles.noDataText}>

@@ -60,7 +60,7 @@ export const UPDATE_UPLOAD_PROGRESS = 'UPDATE_UPLOAD_PROGRESS';
 
 export const CLEAR_UPLOADING_RECORD = 'CLEAR_UPLOADING_RECORD';
 export const UPDATE_CURRENT_RECORD = 'UPDATE_CURRENT_RECORD';
-export const CLEAR_UPLOADING_RECORD_POST = 'CLEAR_UPLOADING_RECORD_POST';
+export const CLEAR_RECORD_POST = 'CLEAR_RECORD_POST';
 
 const createRecordStart = () => ({ type: CREATE_RECORD_START });
 const createRecordSuccess = (record, recordIndex) => ({
@@ -175,8 +175,8 @@ const clearUploadingRecord = (payload) => ({
   payload,
 });
 
-export const clearUploadingRecordPost = (payload) => ({
-  type: CLEAR_UPLOADING_RECORD_POST,
+export const clearRecordPost = (payload) => ({
+  type: CLEAR_RECORD_POST,
   payload,
 });
 
@@ -248,17 +248,16 @@ export const proceedForPostDeletion = (
         record?.currentRecord?.attachedPosts || []
       ).map((el) => ({ ...el }));
       if (attachedPosts.length) {
-        console.log('item index is', itemIndex);
         attachedPosts.splice(itemIndex, 1);
         dispatch(updateCurrentRecord({ attachedPosts }));
+        isSuccess(true);
         return;
       }
     }
     if (
       isValidValue(id) &&
       isValidValue(currentRecordIndex) &&
-      isValidValue(itemIndex) &&
-      isValidValue(isServerRecord)
+      isValidValue(itemIndex) 
     ) {
       dispatch(
         deleteRecordPost(id, (recordDeleted) => {
@@ -266,9 +265,10 @@ export const proceedForPostDeletion = (
 
           if (recordDeleted) {
             dispatch(
-              clearUploadingRecordPost({
+              clearRecordPost({
                 index: currentRecordIndex,
                 attachedItemIndex: itemIndex,
+                id,
                 isServerRecord,
               })
             );
@@ -291,17 +291,16 @@ export const deleteRecord = (id, isSuccess = isSuccessDefault) => {
 
       if (isValidServerResponse(response)) {
         const record = getServerResponseData(response);
-        dispatch(deleteRecordSuccess(record));
+        dispatch(deleteRecordSuccess(id));
         isSuccess(true);
       } else if (response.error) {
         console.log(response.error);
         isSuccess(false);
       }
     } catch (error) {
-      console.log('create record failed', error, error.message);
+      console.log('delete record failed', error, error.message);
       dispatch(deleteRecordFailed('An error occurred'));
       isSuccess(false);
-      dispatch(deleteRecordFailed('An error occurred'));
       dispatch(
         showAlert(
           'An error occurred',
@@ -322,8 +321,11 @@ export const deleteRecordPost = (id, isSuccess = isSuccessDefault) => {
       );
 
       if (isValidServerResponse(response)) {
-        const record = getServerResponseData(response);
-        dispatch(deleteRecordPostSuccess(record));
+        const result = getServerResponseData(response);
+        dispatch(deleteRecordPostSuccess(result));
+        if (result.recordDeleted && result.recordId) {
+          dispatch(deleteRecordSuccess(result.recordId));
+        }
         isSuccess(true);
       } else if (response.error) {
         console.log(response.error);

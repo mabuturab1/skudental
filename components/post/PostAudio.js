@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import RoundedButton from '../button/RoundedButton';
 import AudioPlayer from '../audio/AudioPlayer';
 import AudioRecorder from '../audio/AudioRecorder';
 import { MaterialIcons } from '@expo/vector-icons';
+import { ThemeColors } from '../../constants/Colors';
 
 const PostAudio = ({
   itemIndex,
@@ -11,12 +12,17 @@ const PostAudio = ({
   initAudioItem = null,
   isEditAllowed = true,
   onlyIcon = true,
+  tempId = null,
 }) => {
+  console.log('init audio item is', initAudioItem);
   const [audioItem, setAudioItem] = useState(initAudioItem);
   const deleteAudioItem = () => {
     setAudioItem(null);
     onAudioUpdate(null);
   };
+  useEffect(() => {
+    setAudioItem(initAudioItem);
+  }, [tempId]);
   const [isRecordingPlaying, setIsRecordingPlaying] = useState(false);
   const updateAudioItem = (audio) => {
     setAudioItem(audio);
@@ -48,7 +54,7 @@ const PostAudio = ({
       {audioItem && isEditAllowed && !isRecordingPlaying && (
         <View style={styles.audioButton}>
           {onlyIcon ? (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => deleteAudioItem()}>
               <View style={styles.iconWrapper}>
                 <MaterialIcons name={'delete'} size={24} color='white' />
               </View>
@@ -69,7 +75,6 @@ const styles = StyleSheet.create({
   wrapper: {
     position: 'relative',
     flexDirection: 'row',
-    backgroundColor: 'black',
     flexWrap: 'wrap',
     flexDirection: 'row',
   },

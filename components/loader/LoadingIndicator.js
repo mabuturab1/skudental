@@ -1,7 +1,8 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ThemeColors } from '../../constants/Colors';
 const LoadingIndicator = ({
-  color = '#000000',
+  color = ThemeColors.primary,
   alignCenter = true,
   isSmall = false,
 } = {}) => {

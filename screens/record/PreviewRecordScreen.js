@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { SafeAreaView, StyleSheet, FlatList, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { UploadPostItem } from '../../components';
+import { isSuccessDefault } from '../../constants/UIConstants';
 import { proceedForPostDeletion } from '../../store/actions';
 const PreviewRecordScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -60,14 +61,15 @@ const PreviewRecordScreen = ({ route, navigation }) => {
     } else deleteRecordItem(itemIndex);
   };
 
-  const deleteRecordItem = (itemIndex) => {
+  const deleteRecordItem = (itemIndex, isSuccess = isSuccessDefault) => {
     dispatch(
       proceedForPostDeletion(
         attachedPosts[itemIndex]._id,
         isCurrentReduxRecord,
         currentRecordIndex,
         itemIndex,
-        isServerRecord
+        isServerRecord,
+        isSuccess
       )
     );
   };
@@ -78,7 +80,7 @@ const PreviewRecordScreen = ({ route, navigation }) => {
         postObj={item}
         itemIndex={index}
         navigation={navigation}
-        deleteItem={deleteRecord}
+        deleteItem={deleteRecordItem}
         isCurrentReduxRecord={isCurrentReduxRecord}
         isServerRecord={isServerRecord}
         currentRecordIndex={currentRecordIndex}

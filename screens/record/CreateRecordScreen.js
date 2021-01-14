@@ -16,6 +16,7 @@ import {
 } from '../../components';
 import ImagePicker from 'react-native-image-crop-picker';
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { v4 as uuidv4 } from 'uuid';
 import { routes } from '../../constants/routes';
 import {
   clearUploadedRecord,
@@ -93,6 +94,7 @@ const CreateRecordScreen = ({ navigation }) => {
           uploadComplete: false,
           recordUpdateFailed: false,
           progress: 0,
+          postTempId: uuidv4(),
         }));
         const newRecord = {
           recordData: values,

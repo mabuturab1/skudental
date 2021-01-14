@@ -18,6 +18,8 @@ import { isValidValue } from '../../helpers/Utils';
 import { uploadRecordPhoto } from '../../store/record/actions';
 import AudioPlayer from '../audio/AudioPlayer';
 import ProgressUploadStatus from '../progressUploadStatus/ProgressUploadStatus';
+import { createAlert } from '../alert/AlertModal';
+import LoadingIndicator from '../loader/LoadingIndicator';
 const UploadPostItem = ({
   postObj,
   navigation,
@@ -28,8 +30,8 @@ const UploadPostItem = ({
   deleteItem = () => {},
 }) => {
   const dispatch = useDispatch();
+  const [isDeleting, setIsDeleting] = useState(false);
   const uploadingDataArr = useSelector(({ record }) => record.uploadingDataArr);
-
   useEffect(() => {}, []);
   const showImagePreview = () => {
     navigation.navigate(routes.ImagePreview, {
@@ -39,6 +41,23 @@ const UploadPostItem = ({
       itemIndex,
       isCurrentReduxRecord,
     });
+  };
+  const onDeletePost = (itemIndex) => {
+    if (!postObj._id) {
+      deletItem(itemIndex);
+      return;
+    }
+    createAlert(
+      'Delete Record',
+      'By deleting your post, any audio audio/comments attached to this post, will be deleted also. Click Ok to proceed',
+      (result) => {
+        if (!result) return;
+        setIsDeleting(true);
+        deleteItem(itemIndex, (isSuccess) => {
+          if (!isSuccess) setIsDeleting(false);
+        });
+      }
+    );
   };
   const reUploadData = () => {
     try {
@@ -61,6 +80,12 @@ const UploadPostItem = ({
     !postObj.uploadComplete;
   return (
     <View style={styles.wrapper}>
+     {isDeleting ? (
+        <View style={styles.loadingIndicator}>
+          <LoadingIndicator />
+        </View>
+      ) : null}
+
       <View style={{ ...styles.iconWrapper, ...styles.smallPadding }}>
         {postObj.additionalComments != null ? (
           <View style={styles.additionalCommentsWrapper}>
@@ -73,7 +98,7 @@ const UploadPostItem = ({
         ) : null}
         <TouchableOpacity
           onPress={() =>
-            !isFileUploading() ? deleteItem(itemIndex) : undefined
+            !isFileUploading() ? onDeletePost(itemIndex) : undefined
           }
         >
           <View style={styles.singleIconWrapper}>
@@ -118,6 +143,7 @@ const styles = StyleSheet.create({
   wrapper: {
     width: Dimensions.get('screen').width,
     flex: 1,
+    position: 'relative',
     minHeight: 550,
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -162,6 +188,13 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+  },
+  loadingIndicator: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    zIndex: 1000,
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
 });
 export default UploadPostItem;

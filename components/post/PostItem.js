@@ -14,6 +14,7 @@ import RoundedButton from '../button/RoundedButton';
 import ProgressUploadStatus from '../progressUploadStatus/ProgressUploadStatus';
 import LoadingIndicator from '../loader/LoadingIndicator';
 import { ThemeColors } from '../../constants/Colors';
+import { createAlert } from '../alert/AlertModal';
 const PostItem = ({
   postObj,
   itemIndex,
@@ -25,7 +26,6 @@ const PostItem = ({
   uploadProgress = 0,
   isUploadComplete = true,
   isCurrentReduxRecord = false,
-  isLastItem,
   showLoaderAtActionsContainer = false,
   sendImageData,
   onSavePost = () => {},
@@ -34,12 +34,27 @@ const PostItem = ({
     setIsEditMode(false);
     onSavePost();
   };
+  const onDeletePost = () => {
+    if (!postObj._id) {
+      console.log('deleting post', isCurrentReduxRecord, postObj._id);
+      onDelete();
+      return;
+    }
+    createAlert(
+      'Delete Record',
+      'By deleting your post, any audio audio/comments attached to this post, will be deleted also. Click Ok to proceed',
+      (result) => {
+        if (!result) return;
+        onDelete();
+      }
+    );
+  };
   const [imageLoading, setImageLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(isEditAllowed);
   const [canSwitchToEditMode] = useState(isEditAllowed === false);
   return (
     <View style={styles.imageItemWrapper}>
-      {imageLoading ? <LoadingIndicator /> : null}
+      {imageLoading ? <LoadingIndicator color={ThemeColors.primary} /> : null}
       <View style={styles.topIconsContainer}>
         {!isPreviewOnly ? (
           showLoaderAtActionsContainer ? (
@@ -53,7 +68,7 @@ const PostItem = ({
           ) : (
             <View style={styles.postButtons}>
               <View style={styles.singleIcon}>
-                <TouchableOpacity onPress={onDelete}>
+                <TouchableOpacity onPress={onDeletePost}>
                   <AntDesign name='delete' size={24} color='white' />
                 </TouchableOpacity>
               </View>
@@ -103,6 +118,7 @@ const PostItem = ({
             initAudioItem={
               postObj.audioUrl ? { uri: postObj.audioUrl } : postObj.audioItem
             }
+            tempId={postObj._id || postObj.postTempId}
             itemIndex={itemIndex}
             onAudioUpdate={(audio) => onAudioUpdate(itemIndex, audio)}
           />
@@ -135,7 +151,10 @@ const PostItem = ({
         <View style={styles.sendButton}>
           <RoundedButton
             onPress={sendImageData}
-            style={{ backgroundColor: ThemeColors.primary }}
+            style={{
+              backgroundColor: ThemeColors.primary,
+              borderColor: ThemeColors.primary,
+            }}
             icon={
               <Ionicons
                 name={isAndroid() ? 'md-save-sharp' : 'ios-save-sharp'}
@@ -186,6 +205,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     zIndex: 1000,
+    backgroundColor: ThemeColors.mediumBlack,
   },
 
   singleIcon: {

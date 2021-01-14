@@ -1,23 +1,20 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, SafeAreaView, StyleSheet, Dimensions } from 'react-native';
 import { PostItem } from '../../components';
 import Carousel from 'react-native-snap-carousel';
-import { routes } from '../../constants/routes';
-import { StackActions } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   proceedForPostDeletion,
-  startUploadingData,
   updateCurrentRecord,
 } from '../../store/record/actions';
+import { getArrayCopy } from '../../helpers/Utils';
 const PreviewCarouselScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const windowWidth = Dimensions.get('window').width;
   const { attachedPosts = [], recordData = {} } = useSelector(
     ({ record }) => record.currentRecord
   );
-  const updatedAttachedPosts = useRef(attachedPosts);
-
+  const updatedAttachedPosts = useRef(getArrayCopy(attachedPosts));
   const updateComments = (index, text) => {
     updatedAttachedPosts.current[index].additionalComments = text;
   };
@@ -35,8 +32,24 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
     navigation.goBack();
   };
   const deletePost = (item, index) => {
-    updatedAttachedPosts.current.splice(index, 1);
-    dispatch(proceedForPostDeletion(item._id, true, null, index, false));
+    console.log(
+      'updated attached posts length',
+      updatedAttachedPosts.current.length
+    );
+    dispatch(
+      proceedForPostDeletion(
+        item._id,
+        true,
+        null,
+        index,
+        false,
+        (isSuccess) => {
+          if (isSuccess) {
+            updatedAttachedPosts.current.splice(index, 1);
+          }
+        }
+      )
+    );
   };
 
   const renderItem = ({ item, index }) => {
@@ -54,13 +67,14 @@ const PreviewCarouselScreen = ({ route, navigation }) => {
   };
 
   const carouselRef = useRef();
+  console.log('attached posts are', attachedPosts);
   return (
     <SafeAreaView style={styles.safeAreaWrapper}>
       <View style={styles.carouselWrapper}>
         <Carousel
           layout={'default'}
           ref={carouselRef}
-          data={attachedPosts}
+          data={updatedAttachedPosts.current}
           sliderWidth={windowWidth}
           itemWidth={windowWidth}
           renderItem={renderItem}

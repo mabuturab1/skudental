@@ -5,7 +5,8 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../header/HeaderButton';
 import { isAndroid } from '../../helpers/Utils';
 import { Fragment } from 'react';
-const MaterialMenu = ({ data, onItemClick }) => {
+import { ThemeColors } from '../../constants/Colors';
+const MaterialMenu = ({ data, onItemClick, color='black', iconSize=24 }) => {
   const menuRef = useRef();
   const showMenu = () => menuRef.current.show();
   const hideMenu = () => menuRef.current.hide();
@@ -15,7 +16,7 @@ const MaterialMenu = ({ data, onItemClick }) => {
   };
   const MenuButton = (
     <HeaderButtons HeaderButtonComponent={HeaderButton}>
-      <Item title='Menu' iconName={isAndroid()?'md-ellipsis-vertical':'ios-ellipsis-vertical'} onPress={showMenu} />
+      <Item title='Menu' iconSize={iconSize} color={color} iconName={isAndroid()?'md-ellipsis-vertical':'ios-ellipsis-vertical'} onPress={showMenu} />
     </HeaderButtons>
   );
   return (
